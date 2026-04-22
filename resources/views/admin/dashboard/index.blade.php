@@ -3,13 +3,10 @@
 @section('title', 'Dashboard')
 
 @section('content')
-  <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body">
-          <h1>Dashboard</h1>
+    <h4 class="fw-bold py-3 mb-4">Dashboard</h4>
+    <div class="card">
+        <div class="card-body text-center text-muted">
+            Halaman <strong>Dashboard</strong> belum diisi.
         </div>
-      </div>
     </div>
-  </div>
-@endsection
+    @endsection

@@ -23,5 +23,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@pmmbn.com',
             'password' => Hash::make('admin123'),
         ]);
+
+        $this->call(CategorySeeder::class);
+        $this->call(TagSeeder::class);
+        // $this->call(ArticleSeeder::class);
     }
 }

@@ -1,0 +1,42 @@
+---
+description: Admin Laravel + Blade Sneat (PMMBN) — layout, form, rute admin.*
+globs:
+  - resources/views/admin/**/*.blade.php
+  - routes/web-admin.php
+alwaysApply: false
+---
+
+# Referensi desain (sumber kebenaran visual)
+
+- Style, struktur layout, spacing, tipografi, hierarki heading, dan pola komponen UI admin harus **disesuaikan dengan** template Sneat/HTML di [`references/admin-template/`](references/admin-template/) (salinan atau cuplikan tema admin resmi, disimpan di workspace lokal Anda).
+- Folder `references/` biasanya tidak di-commit (lihat `.gitignore`); itu disengaja agar salinan template besar tidak masuk Git. Taruh HTML referensi Sneat ke `references/admin-template/` di mesin Anda bila perlu konsistensi tambahan.
+- Sebelum mendesain halaman/section baru atau menyelaraskan tampilan, **baca file HTML yang relevan** di folder itu (mis. tabel, form, card, breadcrumb) dan terjemahkan ke Blade dengan class yang sama, bukan mengarang pola baru dari ingatan.
+- Aset statis (CSS/JS/vendor) dalam app mengacu ke `public/assets/` seperti layout sekarang; referensi `references/admin-template/` dipakai untuk **konvensi markup & komposisi**, bukan path asset mentah.
+
+# Admin UI (Sneat / Bootstrap)
+
+- Halaman admin memakai `@extends('admin.layouts.app')`, isi di `@section('content')`, judul tab di `@section('title', '...')`.
+- Komponen mengikuti pola Sneat: `card`, `card-body`, `table-responsive`, `form-control` / `form-select` / `form-label`, `btn btn-primary`, `alert` untuk feedback — konsisten dengan cuplikan di `references/admin-template/` bila tersedia.
+- Sidebar menu: link memakai `route('admin....')`, state aktif dengan `request()->routeIs('admin.nama.*')` bila perlu.
+
+# Rute
+
+- Rute admin terdaftar di [`routes/web-admin.php`](routes/web-admin.php); bootstrap memuatnya dengan prefix `admin` dan nama `admin.*` (lihat `bootstrap/app.php`).
+- Named route untuk fitur admin: gunakan awalan `admin.` (mis. `admin.articles.index`), jangan mengarahkan menu ke closure dashboard kecuali memang placeholder.
+
+# Form
+
+- `POST`/`DELETE`: `@csrf`; `PUT`/`PATCH`: `@csrf` + `@method('PUT')`.
+- Upload file: `enctype="multipart/form-data"` pada `<form>`.
+- Validasi: tampilkan `@error` per field dan blok ringkas `@if ($errors->any())` bila relevan.
+
+# Konten
+
+- Teks UI boleh Indonesia (sesuai penamaan menu proyek); konsisten dalam satu halaman.
+- Konten artikel/teks panjang: default **textarea** kecuali ada permintaan eksplisit untuk WYSIWYG.
+- Pengecualian: form artikel admin memakai **Quill** (full editor) seperti [`resources/views/admin/articles/_form.blade.php`](resources/views/admin/articles/_form.blade.php), bukan textarea biasa.
+
+# Backend terkait (jangan improvisasi berlebihan)
+
+- Model admin yang punya audit: ikuti pola `SoftDeletes` + `Userstamps` seperti `Category` / `Article` yang sudah ada.
+- Akses halaman admin dilindungi middleware `auth` di grup rute yang sama dengan resource admin.

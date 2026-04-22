@@ -1,0 +1,34 @@
+---
+description: Pakai Select2 untuk semua input select/option (Bukan select native saja)
+globs:
+  - resources/views/**/*.blade.php
+  - public/assets/js/**/*.js
+alwaysApply: false
+---
+
+# Select2 untuk `<select>`
+
+- **Jangan** mengandalkan `<select class="form-select">` saja tanpa Select2 untuk daftar pilihan (filter form, form CRUD, multiselect). Ke **c**uali ada permintaan eksplisit mempertahankan native (mis. aksesibilitas khusus).
+- **Markup**: tambahkan class `select2` pada `<select>` bersama `form-select` agar selaras dengan tema Sneat.
+- **Wrapper**: sering dibungkus `div.select2-primary` > `div.position-relative` (terutama filter), atau cukup `position-relative` lalu inisialisasi di JS (lihat [`public/assets/js/admin-article-form.js`](public/assets/js/admin-article-form.js)).
+- **Aset** (bila belum di layout/stack halaman): CSS/JS Select2 lewat `public/assets/vendor/libs/select2/` memakai `{{ asset('assets/vendor/libs/select2/select2.css') }}` dan `select2.js` — **jQuery harus sudah dimuat** sebelum inisialisasi.
+- **Inisialisasi** (jQuery): cek `typeof $.fn.select2 !== 'undefined'`, pilih elemen, sesuaikan `wrap('<div class="position-relative"></div>')` bila perlu, lalu `select2({ ... })` dengan `width: '100%'`; untuk elemen di **modal** set `dropdownParent` ke parent yang tepat agar dropdown tidak terpotong.
+
+## Contoh singkat (Blade)
+
+```html
+<div class="select2-primary">
+  <div class="position-relative w-100">
+    <select name="category_id" id="filter_category_id" class="select2 form-select">...</select>
+  </div>
+</div>
+```
+
+## Contoh inisialisasi (JS)
+
+```javascript
+$el.wrap('<div class="position-relative"></div>');
+$el.select2({ placeholder: '...', allowClear: true, dropdownParent: $el.parent(), width: '100%' });
+```
+
+Referensi di repo: [`resources/views/admin/articles/index.blade.php`](resources/views/admin/articles/index.blade.php) (filter kategori) dan [`public/assets/js/admin-article-form.js`](public/assets/js/admin-article-form.js).
