@@ -13,7 +13,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-lg-center fw-medium">
-                <li class="nav-item"><a class="nav-link active text-brand" aria-current="page"
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('home.index') ? 'active' : '' }} text-brand" aria-current="page"
                         href="#">Beranda</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="tentangDropdown" role="button"
