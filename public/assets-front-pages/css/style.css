@@ -1,0 +1,481 @@
+/* =========================================
+           1. GLOBAL & UTILITIES
+           ========================================= */
+:root {
+  --brand-color: #8b1515;
+  /* Warna merah marun utama */
+  --brand-dark: #5e0d0d;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Mencegah horizontal scroll saat animasi masuk */
+
+.text-brand {
+  color: var(--brand-color) !important;
+}
+
+.bg-brand {
+  background-color: var(--brand-color) !important;
+}
+
+/* Tombol Animasi Hover */
+.btn-brand {
+  background-color: var(--brand-color);
+  color: white;
+  border-radius: 25px;
+  padding: 8px 24px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-brand:hover {
+  background-color: var(--brand-dark);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(139, 21, 21, 0.3);
+}
+
+.btn-outline-brand {
+  border: 2px solid var(--brand-color);
+  color: var(--brand-color);
+  border-radius: 25px;
+  padding: 8px 24px;
+  transition: all 0.3s ease;
+  background: transparent;
+}
+
+.btn-outline-brand:hover {
+  background-color: var(--brand-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* =========================================
+           2. NAVBAR SECTION
+           ========================================= */
+.main-navbar {
+  transition: all 0.3s ease;
+  padding-top: 0.8rem !important;
+  padding-bottom: 0.8rem !important;
+}
+
+.main-navbar .navbar-brand span {
+  font-size: 0.95rem !important;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+
+.main-navbar .navbar-nav {
+  gap: 0.25rem;
+}
+
+.main-navbar .nav-link {
+  font-size: 0.86rem;
+  color: #6a6a6a;
+  padding: 0.6rem 0.72rem !important;
+}
+
+.main-navbar .nav-link.active {
+  color: var(--brand-color) !important;
+  font-weight: 700;
+}
+
+.main-navbar .nav-link.dropdown-toggle::after {
+  content: "";
+  display: inline-block;
+  margin-left: 0.45rem;
+  vertical-align: middle;
+  border-top-width: 0.28em;
+  border-right: 0.28em solid transparent;
+  border-left: 0.28em solid transparent;
+  border-top-style: solid;
+  border-top-color: currentColor;
+  width: auto;
+  height: auto;
+  position: static;
+  left: auto;
+  bottom: auto;
+  background-color: transparent;
+  transform: none;
+  transition: transform 0.2s ease;
+}
+
+.main-navbar .nav-link.dropdown-toggle.show::after {
+  transform: rotate(180deg);
+}
+
+/* Animasi garis bawah pada menu navbar */
+.nav-link {
+  position: relative;
+  transition: color 0.3s ease;
+  font-weight: 500;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: var(--brand-color);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover {
+  color: var(--brand-color);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.main-navbar .nav-link:not(.dropdown-toggle)::after {
+  display: none;
+}
+
+.main-navbar .nav-link.dropdown-toggle:hover::after {
+  width: auto;
+}
+
+.main-navbar .dropdown-menu {
+  border: 0;
+  border-radius: 0.55rem;
+  box-shadow: 0 10px 24px rgba(20, 20, 20, 0.14);
+  min-width: 150px;
+  margin-top: 0.4rem;
+  padding: 0.45rem 0;
+}
+
+.main-navbar .dropdown-item {
+  font-size: 0.85rem;
+  color: #5f5f5f;
+  padding: 0.42rem 0.85rem;
+}
+
+.main-navbar .dropdown-item:hover,
+.main-navbar .dropdown-item:focus,
+.main-navbar .dropdown-item:active {
+  color: var(--brand-color);
+  background-color: #f7eded;
+}
+
+@media (max-width: 991.98px) {
+  .main-navbar .navbar-nav {
+    gap: 0;
+    padding-top: 0.7rem;
+  }
+
+  .main-navbar .nav-link {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .main-navbar .dropdown-menu {
+    border-radius: 0.45rem;
+    margin-top: 0.15rem;
+    box-shadow: none;
+    border: 1px solid #ebebeb;
+  }
+}
+
+/* =========================================
+           3. HERO SECTION
+           ========================================= */
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=1920&q=80') center/cover;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  color: white;
+  background-attachment: fixed;
+  /* Parallax effect ringan */
+}
+
+/* =========================================
+           4. TENTANG & VIDEO SECTION
+           ========================================= */
+.play-btn {
+  transition: all 0.3s ease;
+}
+
+.play-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(220, 53, 69, 0.6) !important;
+}
+
+/* =========================================
+           5. PROGRAM SECTION
+           ========================================= */
+/* Efek kartu melayang (lift up) */
+.program-card {
+  border-radius: 15px;
+  transition: all 0.4s ease;
+  height: 100%;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.program-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(139, 21, 21, 0.2);
+}
+
+.program-card.active {
+  background-color: var(--brand-color);
+  color: white;
+}
+
+.program-card i {
+  transition: transform 0.3s ease;
+}
+
+.program-card:hover i {
+  transform: translate(5px, -5px);
+  color: var(--brand-color) !important;
+  opacity: 1 !important;
+}
+
+.program-card.active:hover i {
+  color: white !important;
+}
+
+.program-showcase {
+  background: #efefef;
+}
+
+.program-showcase-image {
+  min-height: 420px;
+  height: 100%;
+}
+
+.program-showcase-content {
+  padding: 2.5rem 2rem 2rem 0;
+}
+
+.program-showcase-content .row {
+  margin-left: -90px;
+}
+
+.program-showcase-content .program-card {
+  min-height: 290px;
+  border-radius: 12px;
+}
+
+.program-nav i {
+  transition: transform 0.3s ease;
+}
+
+.program-nav button:hover i {
+  transform: scale(1.08);
+}
+
+@media (max-width: 991.98px) {
+  .program-showcase-content {
+    padding: 1.5rem;
+  }
+
+  .program-showcase-content .row {
+    margin-left: 0;
+  }
+}
+
+/* =========================================
+           6. BERITA SECTION
+           ========================================= */
+.news-section {
+  background-color: #f3f3f3 !important;
+}
+
+.news-heading-left {
+  max-width: 620px;
+}
+
+.news-heading-subtitle {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.news-heading-cta {
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.news-filter .nav-link {
+  border: 1px solid transparent;
+  background-color: #e8dede;
+  color: #2a2a2a;
+  font-weight: 500;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+
+.news-filter .nav-link::after {
+  display: none;
+}
+
+.news-filter .nav-link.active {
+  background-color: var(--brand-color);
+  color: #fff;
+}
+
+#newsCardGrid {
+  transition: opacity 0.2s ease;
+}
+
+#newsCardGrid.is-switching {
+  opacity: 0.65;
+}
+
+.news-card {
+  border: 0;
+  border-radius: 14px;
+  background-color: #fff;
+  padding: 0.75rem 0.8rem 0.95rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.news-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.11);
+}
+
+.news-card h5 {
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.6rem;
+  color: #1d1d1d;
+}
+
+.news-card:hover h5 {
+  color: var(--brand-color);
+}
+
+/* Efek Zoom gambar pada berita */
+.news-img-wrapper {
+  overflow: hidden;
+  border-radius: 9px;
+  margin-bottom: 1rem;
+}
+
+.news-img-wrapper img {
+  width: 100%;
+  height: 146px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.news-card:hover .news-img-wrapper img {
+  transform: scale(1.06);
+  /* Gambar membesar saat di-hover */
+}
+
+.news-date {
+  font-size: 0.72rem;
+  color: #a9a9a9;
+}
+
+.news-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.55rem;
+}
+
+.news-views {
+  font-size: 0.72rem;
+  color: #a9a9a9;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.news-views i {
+  font-size: 0.78rem;
+}
+
+.news-excerpt {
+  font-size: 0.85rem;
+  color: #505050;
+  line-height: 1.35;
+  margin-bottom: 0;
+}
+
+@media (max-width: 991.98px) {
+  .news-heading-left {
+    max-width: 100%;
+  }
+
+  .news-heading-cta {
+    align-self: flex-start;
+  }
+
+  .news-card h5 {
+    font-size: 1.15rem;
+  }
+
+  .news-img-wrapper img {
+    height: 170px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .news-filter {
+    flex-wrap: nowrap;
+  }
+
+  .news-filter .nav-link {
+    font-size: 0.9rem;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* =========================================
+           7. STATISTIK SECTION
+           ========================================= */
+.stats-section {
+  background-color: var(--brand-color);
+  color: white;
+}
+
+.stat-number {
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.col-md-3:hover .stat-number {
+  transform: scale(1.2);
+}
+
+/* =========================================
+           8. FOOTER SECTION
+           ========================================= */
+footer a {
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: white !important;
+  padding-left: 5px;
+}
+
+/* Efek geser teks ringan */
+footer .bi {
+  transition: all 0.3s ease;
+}
+
+footer .bi:hover {
+  color: var(--brand-color) !important;
+  transform: translateY(-3px);
+  display: inline-block;
+}
