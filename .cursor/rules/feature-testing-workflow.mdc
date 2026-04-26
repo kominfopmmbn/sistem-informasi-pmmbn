@@ -1,0 +1,38 @@
+---
+description: Setelah ubah/tambah fitur — jalankan tes terkait; buat file tes jika belum ada (PHPUnit).
+alwaysApply: true
+---
+
+# Workflow tes fitur (PHPUnit)
+
+## Kapan wajib
+
+Setelah mengimplementasikan atau mengubah perilaku fitur (HTTP, auth, validasi, aturan model, job penting), **selalu** jalankan tes yang relevan dan perbaiki kegagalan sebelum menganggap tugas selesai.
+
+Lingkungan tes mengikuti [`phpunit.xml`](phpunit.xml) (`sqlite` `:memory:`, `APP_ENV=testing`).
+
+## Menjalankan tes
+
+Utamakan scope ketat:
+
+```bash
+php artisan test tests/Feature/Admin/ArticleCrudTest.php
+php artisan test --filter=test_index_shows_articles
+```
+
+Jika perlu seluruh suite: `php artisan test`.
+
+## Belum ada file tes
+
+- **Feature** (route, controller, form request, alur request/response): tambah di `tests/Feature/...`, namespace folder mirror domain (mis. `Tests\Feature\Admin\...` untuk admin). Ikuti pola [`tests/Feature/Admin/ArticleCrudTest.php`](tests/Feature/Admin/ArticleCrudTest.php): `RefreshDatabase`, guest vs `actingAs`, assert status/redirect/view sesuai kebutuhan.
+- **Unit** (rule/helper murni tanpa HTTP Laravel): `tests/Unit/...`, contoh [`tests/Unit/QuillContentNotEmptyTest.php`](tests/Unit/QuillContentNotEmptyTest.php).
+
+## Minimal yang wajar
+
+- Minimal satu skenario **sukses** untuk jalur utama yang diubah.
+- Jika ada gate keamanan atau validasi penting: tambah skenario **gagal** atau **guest**/unauthorized.
+- Hindari tes yang hanya menegaskan potongan HTML panjang atau salinan penuh view.
+
+## Bukan bagian workflow ini
+
+Jangan memicu `npm run prod` atau mengubah CI hanya karena aturan ini; fokus pada PHPUnit dan kualitas tes fitur.

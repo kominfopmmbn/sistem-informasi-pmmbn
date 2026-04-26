@@ -6,6 +6,8 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\User;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -20,13 +22,31 @@ class ArticleCrudTest extends TestCase
     {
         parent::setUp();
         $this->withoutMiddleware(PreventRequestForgery::class);
+        $this->seed(RoleSeeder::class);
+        $this->seed(PermissionSeeder::class);
     }
 
     private function actingAsUser(): void
     {
         /** @var User $user */
         $user = User::factory()->create();
+        $user->assignRole('Administrator');
         $this->actingAs($user);
+    }
+
+    /**
+     * Penulis / editor artikel: CRUD artikel sendiri, tanpa mengelola artikel orang lain.
+     *
+     * @return list<string>
+     */
+    private function articleEditorPermissions(): array
+    {
+        return [
+            'articles.view',
+            'articles.create',
+            'articles.update',
+            'articles.delete',
+        ];
     }
 
     public function test_guest_is_redirected_from_articles_index_to_admin_login(): void
@@ -39,6 +59,15 @@ class ArticleCrudTest extends TestCase
     {
         $this->post(route('admin.articles.store'), [])
             ->assertRedirect(route('admin.auth.login'));
+    }
+
+    public function test_index_forbidden_without_articles_view_permission(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->get(route('admin.articles.index'))->assertForbidden();
     }
 
     public function test_index_shows_articles_and_respects_query_filters(): void
@@ -338,5 +367,98 @@ class ArticleCrudTest extends TestCase
 
         $this->assertFalse(Storage::disk('public')->exists($path));
         $this->assertSoftDeleted('articles', ['id' => $article->id]);
+    }
+
+    public function test_index_without_articles_other_only_lists_own_articles(): void
+    {
+        /** @var User $author */
+        $author = User::factory()->create();
+        $author->givePermissionTo($this->articleEditorPermissions());
+        $other = User::factory()->create();
+        $this->actingAs($author);
+
+        $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-own']);
+        $mine = Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Milik Saya',
+            'slug' => 'milik-saya',
+            'content' => '<p></p>',
+            'published_at' => now(),
+            'is_draft' => false,
+        ]);
+        $mine->forceFill(['created_by' => $author->id])->save();
+
+        $theirs = Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Milik Lain',
+            'slug' => 'milik-lain',
+            'content' => '<p></p>',
+            'published_at' => now(),
+            'is_draft' => false,
+        ]);
+        $theirs->forceFill(['created_by' => $other->id])->save();
+
+        $this->get(route('admin.articles.index'))->assertOk()
+            ->assertViewHas('articles', fn ($paginator) => $paginator->total() === 1
+                && $paginator->first()->is($mine));
+    }
+
+    public function test_without_articles_other_cannot_edit_update_or_delete_others_article(): void
+    {
+        /** @var User $author */
+        $author = User::factory()->create();
+        $author->givePermissionTo($this->articleEditorPermissions());
+        $other = User::factory()->create();
+        $this->actingAs($author);
+
+        $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-x']);
+        $theirs = Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Bukan Saya',
+            'slug' => 'bukan-saya',
+            'content' => '<p></p>',
+            'published_at' => now(),
+            'is_draft' => false,
+        ]);
+        $theirs->forceFill(['created_by' => $other->id])->save();
+
+        $this->get(route('admin.articles.edit', $theirs))->assertForbidden();
+
+        $this->put(route('admin.articles.update', $theirs), [
+            'save_action' => 'publish',
+            'title' => 'Curian',
+            'content' => '<p></p>',
+            'category_id' => (string) $cat->id,
+            'published_at' => '2025-06-01 10:00',
+        ])->assertForbidden();
+
+        $this->delete(route('admin.articles.destroy', $theirs))->assertForbidden();
+    }
+
+    public function test_with_articles_other_non_admin_sees_and_can_edit_others_article(): void
+    {
+        /** @var User $editor */
+        $editor = User::factory()->create();
+        $editor->givePermissionTo(array_merge($this->articleEditorPermissions(), [
+            'articles.other',
+        ]));
+        $other = User::factory()->create();
+        $this->actingAs($editor);
+
+        $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-other']);
+        $theirs = Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Karya Lain',
+            'slug' => 'karya-lain',
+            'content' => '<p></p>',
+            'published_at' => now(),
+            'is_draft' => false,
+        ]);
+        $theirs->forceFill(['created_by' => $other->id])->save();
+
+        $this->get(route('admin.articles.index'))->assertOk()
+            ->assertViewHas('articles', fn ($paginator) => $paginator->total() === 1);
+
+        $this->get(route('admin.articles.edit', $theirs))->assertOk();
     }
 }

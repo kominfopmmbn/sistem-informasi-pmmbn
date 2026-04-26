@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -27,10 +29,37 @@ Route::group([
         ->middleware('auth');
 });
 
-Route::middleware('auth')->prefix('users')->name('users.')->group(function (): void {
-    Route::get('/', function () {
-        return view('admin.users.index');
-    })->name('index');
-});
+Route::middleware(['auth'])->group(function (): void {
+    Route::resource('users', UserController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:users.view',
+            'create' => 'permission:users.create',
+            'store' => 'permission:users.create',
+            'edit' => 'permission:users.update',
+            'update' => 'permission:users.update',
+            'destroy' => 'permission:users.delete',
+        ]);
 
-Route::middleware('auth')->resource('articles', ArticleController::class)->except(['show']);
+    Route::resource('articles', ArticleController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:articles.view',
+            'create' => 'permission:articles.create',
+            'store' => 'permission:articles.create',
+            'edit' => 'permission:articles.update',
+            'update' => 'permission:articles.update',
+            'destroy' => 'permission:articles.delete',
+        ]);
+
+    Route::resource('roles', RoleController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:roles.view',
+            'create' => 'permission:roles.create',
+            'store' => 'permission:roles.create',
+            'edit' => 'permission:roles.update',
+            'update' => 'permission:roles.update',
+            'destroy' => 'permission:roles.delete',
+        ]);
+});

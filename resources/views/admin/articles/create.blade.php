@@ -13,9 +13,13 @@
             @include('admin.articles._form', ['article' => null])
 
             <div class="pt-6 d-flex flex-wrap align-items-center gap-2">
-                <button type="submit" name="save_action" value="publish" class="btn btn-primary">Simpan</button>
-                <a href="{{ route('admin.articles.index') }}" class="btn btn-label-secondary">Batal</a>
-                <button type="submit" name="save_action" value="draft" class="btn btn-secondary">Simpan Draft</button>
+                @can('articles.create')
+                    <button type="submit" name="save_action" value="publish" class="btn btn-primary">Simpan</button>
+                    <button type="submit" name="save_action" value="draft" class="btn btn-secondary">Simpan Draft</button>
+                @endcan
+                @can('articles.view')
+                    <a href="{{ route('admin.articles.index') }}" class="btn btn-label-secondary">Batal</a>
+                @endcan
             </div>
         </form>
     </div>

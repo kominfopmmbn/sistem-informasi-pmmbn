@@ -18,11 +18,15 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        $this->call(RoleSeeder::class);
+        $this->call(PermissionSeeder::class);
+
+        $admin = User::factory()->create([
             'name' => 'Admin PMMBN',
             'email' => 'admin@pmmbn.com',
             'password' => Hash::make('admin123'),
         ]);
+        $admin->assignRole('Administrator');
 
         $this->call(CategorySeeder::class);
         // $this->call(TagSeeder::class);

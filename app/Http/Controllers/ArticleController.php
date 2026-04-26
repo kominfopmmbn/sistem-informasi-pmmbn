@@ -27,6 +27,10 @@ class ArticleController extends Controller
         $articles = Article::query()
             ->with(['category', 'tags']);
 
+        if (! $request->user()->can('articles.other')) {
+            $articles->where('created_by', $request->user()->id);
+        }
+
         if ($q !== '') {
             $like = '%'.addcslashes($q, '%_\\').'%';
             $articles->where('title', 'like', $like);
@@ -90,6 +94,8 @@ class ArticleController extends Controller
 
     public function edit(Article $article): View
     {
+        $this->authorize('update', $article);
+
         $article->load(['tags']);
         $categories = Category::query()->orderBy('title')->get();
         $tags = Tag::query()->orderBy('title')->get();
@@ -99,6 +105,8 @@ class ArticleController extends Controller
 
     public function update(UpdateArticleRequest $request, Article $article): RedirectResponse
     {
+        $this->authorize('update', $article);
+
         $data = $request->safe()->except(['tags', 'cover_photo', 'remove_cover', 'save_action']);
         $data['is_draft'] = $request->string('save_action')->toString() === 'draft';
         $data['slug'] = $this->uniqueSlugFromTitle($request->string('title')->toString(), $article->getKey());
@@ -130,6 +138,8 @@ class ArticleController extends Controller
 
     public function destroy(Article $article): RedirectResponse
     {
+        $this->authorize('delete', $article);
+
         if ($article->cover_photo_path) {
             Storage::disk('public')->delete($article->cover_photo_path);
         }

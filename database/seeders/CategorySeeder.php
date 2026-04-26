@@ -33,7 +33,7 @@ class CategorySeeder extends Seeder
                 [
                     'title' => $row['title'],
                     'slug' => $row['slug'],
-                    'created_at' => DB::raw('COALESCE(created_at, now())'),
+                    'created_at' => now(),
                     'updated_at' => now(),
                 ]
             );

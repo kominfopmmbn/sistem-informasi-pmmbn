@@ -10,7 +10,11 @@ class UpdateArticleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $article = $this->route('article');
+
+        return $article === null
+            ? false
+            : $this->user()->can('update', $article);
     }
 
     public function rules(): array

@@ -5,9 +5,11 @@
 @section('content')
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
         <h4 class="fw-bold mb-0 py-3">Berita & Opini</h4>
-        <a href="{{ route('admin.articles.create') }}" class="btn btn-primary">
-            <i class="icon-base bx bx-plus me-1"></i> Tambah artikel
-        </a>
+        @can('articles.create')
+            <a href="{{ route('admin.articles.create') }}" class="btn btn-primary">
+                <i class="icon-base bx bx-plus me-1"></i> Tambah artikel
+            </a>
+        @endcan
     </div>
 
     @if (session('success'))
@@ -96,23 +98,27 @@
                             <td>{{ $article->created_at->translatedFormat('d M Y, H:i') }}</td>
                             <td>{{ $article->createdBy?->name ?? '-' }}</td>
                             <td class="text-end">
-                                <a href="{{ route('admin.articles.edit', $article) }}"
-                                    class="btn btn-sm btn-icon btn-text-secondary" title="Edit">
-                                    <i class="icon-base bx bx-edit-alt"></i>
-                                </a>
-                                <form action="{{ route('admin.articles.destroy', $article) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('Hapus artikel ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-icon btn-text-danger" title="Hapus">
-                                        <i class="icon-base bx bx-trash"></i>
-                                    </button>
-                                </form>
+                                @can('update', $article)
+                                    <a href="{{ route('admin.articles.edit', $article) }}"
+                                        class="btn btn-sm btn-icon btn-text-secondary" title="Edit">
+                                        <i class="icon-base bx bx-edit-alt"></i>
+                                    </a>
+                                @endcan
+                                @can('delete', $article)
+                                    <form action="{{ route('admin.articles.destroy', $article) }}" method="POST" class="d-inline"
+                                        onsubmit="return confirm('Hapus artikel ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-icon btn-text-danger" title="Hapus">
+                                            <i class="icon-base bx bx-trash"></i>
+                                        </button>
+                                    </form>
+                                @endcan
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-5">
+                            <td colspan="7" class="text-center text-muted py-5">
                                 @if (!empty($hasActiveFilters))
                                     Tidak ada artikel yang cocok dengan filter.
                                 @else
