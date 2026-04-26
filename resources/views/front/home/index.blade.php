@@ -1,5 +1,7 @@
 @extends('front.layouts.app')
 
+@section('title', 'Beranda')
+
 @section('content')
     @include('front.home.hero')
     @include('front.home.about')
