@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -30,6 +31,21 @@ class Article extends Model
             'archived_at' => 'datetime',
             'is_draft' => 'boolean',
         ];
+    }
+
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('is_draft', false)->where('published_at', '<=', now());
+    }
+
+    public function scopeOpini(Builder $query): Builder
+    {
+        return $query->where('category_id', Category::OPINI);
+    }
+
+    public function scopeBerita(Builder $query): Builder
+    {
+        return $query->where('category_id', Category::BERITA);
     }
 
     public function category(): BelongsTo

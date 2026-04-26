@@ -4,13 +4,8 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('admin.layouts.app');
-});
-
 Route::group([
     'middleware' => 'auth',
-    'prefix' => 'dashboard',
     'as' => 'dashboard.',
 ], function (): void {
     Route::get('/', function () {

@@ -13,6 +13,9 @@ class Category extends Model
 {
     use SoftDeletes, Userstamps;
 
+    CONST BERITA = 1;
+    CONST OPINI = 2;
+
     public function articles(): HasMany
     {
         return $this->hasMany(Article::class);
