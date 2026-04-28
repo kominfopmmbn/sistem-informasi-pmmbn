@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrgRegionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -69,5 +70,16 @@ Route::middleware(['auth'])->group(function (): void {
             'edit' => 'permission:roles.update',
             'update' => 'permission:roles.update',
             'destroy' => 'permission:roles.delete',
+        ]);
+
+    Route::resource('org-regions', OrgRegionController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:org_regions.view',
+            'create' => 'permission:org_regions.create',
+            'store' => 'permission:org_regions.create',
+            'edit' => 'permission:org_regions.update',
+            'update' => 'permission:org_regions.update',
+            'destroy' => 'permission:org_regions.delete',
         ]);
 });
