@@ -20,15 +20,23 @@ class ArticleController extends Controller
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:255'],
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'archive_status' => ['nullable', 'in:active,archived'],
         ]);
 
         $q = isset($filters['q']) ? trim($filters['q']) : '';
+        $archiveStatus = $filters['archive_status'] ?? 'active';
 
         $articles = Article::query()
             ->with(['category', 'tags']);
 
         if (! $request->user()->can('articles.other')) {
             $articles->where('created_by', $request->user()->id);
+        }
+
+        if ($archiveStatus === 'archived') {
+            $articles->whereNotNull('archived_at');
+        } else {
+            $articles->whereNull('archived_at');
         }
 
         if ($q !== '') {
@@ -49,9 +57,10 @@ class ArticleController extends Controller
         $filterState = [
             'q' => $q,
             'category_id' => $filters['category_id'] ?? null,
+            'archive_status' => $archiveStatus,
         ];
 
-        $hasActiveFilters = $q !== '' || ! empty($filters['category_id']);
+        $hasActiveFilters = $q !== '' || ! empty($filters['category_id']) || $archiveStatus === 'archived';
 
         return view('admin.articles.index', compact(
             'articles',
@@ -149,6 +158,61 @@ class ArticleController extends Controller
         return redirect()
             ->route('admin.articles.index')
             ->with('success', 'Artikel berhasil dihapus.');
+    }
+
+    public function archive(Request $request, Article $article): RedirectResponse
+    {
+        $this->authorize('update', $article);
+
+        $article->update([
+            'archived_at' => now(),
+            'archived_by' => $request->user()->id,
+        ]);
+
+        return redirect()
+            ->route('admin.articles.index', $this->indexQueryForRedirect($request))
+            ->with('success', 'Artikel diarsipkan.');
+    }
+
+    public function unarchive(Request $request, Article $article): RedirectResponse
+    {
+        $this->authorize('update', $article);
+
+        $article->update([
+            'archived_at' => null,
+            'archived_by' => null,
+        ]);
+
+        return redirect()
+            ->route('admin.articles.index', $this->indexQueryForRedirect($request))
+            ->with('success', 'Artikel dikembalikan dari arsip.');
+    }
+
+    /**
+     * Query string untuk redirect ke index setelah arsip/unarchive (pertahankan filter).
+     *
+     * @return array<string, string>
+     */
+    private function indexQueryForRedirect(Request $request): array
+    {
+        $out = [];
+
+        $q = trim((string) $request->input('q', ''));
+        if ($q !== '') {
+            $out['q'] = $q;
+        }
+
+        $categoryId = $request->input('category_id');
+        if ($categoryId !== null && $categoryId !== '') {
+            $out['category_id'] = (string) $categoryId;
+        }
+
+        $status = $request->input('archive_status', 'active');
+        if ($status === 'archived') {
+            $out['archive_status'] = 'archived';
+        }
+
+        return $out;
     }
 
     /**

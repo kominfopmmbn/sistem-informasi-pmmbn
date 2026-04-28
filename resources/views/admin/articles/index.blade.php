@@ -29,12 +29,12 @@
     <form method="get" action="{{ route('admin.articles.index') }}" class="card mb-4">
         <div class="card-body">
             <div class="row g-3 align-items-end">
-                <div class="col-12 col-md-5">
+                <div class="col-12 col-md-3">
                     <label class="form-label" for="filter_q">Judul</label>
                     <input type="search" name="q" id="filter_q" class="form-control" placeholder="Cari judul…"
                         value="{{ $filterState['q'] }}">
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
                     <label class="form-label" for="filter_category_id">Kategori</label>
                     <div class="select2-primary">
                         <div class="position-relative w-100">
@@ -43,13 +43,25 @@
                                 <option value="">Semua kategori</option>
                                 @foreach ($categories as $cat)
                                     <option value="{{ $cat->id }}" @selected((string) ($filterState['category_id'] ?? '') === (string) $cat->id)>
-                                        {{ $cat->title }}</option>
+                                        {{ $cat->title }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-3 d-flex flex-wrap gap-2">
+                <div class="col-12 col-md-3">
+                    <label class="form-label" for="filter_archive_status">Status</label>
+                    <div class="select2-primary">
+                        <div class="position-relative w-100">
+                            <select name="archive_status" id="filter_archive_status" class="form-select select2">
+                                <option value="active" @selected(($filterState['archive_status'] ?? 'active') === 'active')>Aktif</option>
+                                <option value="archived" @selected(($filterState['archive_status'] ?? 'active') === 'archived')>Arsip</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 d-flex flex-wrap justify-content-end gap-2">
                     <button type="submit" class="btn btn-primary">Terapkan</button>
                     <a href="{{ route('admin.articles.index') }}" class="btn btn-label-secondary">Reset</a>
                 </div>
@@ -94,6 +106,10 @@
                                 @else
                                     <span class="text-body-secondary">—</span>
                                 @endif
+                                @if ($article->archived_at)
+                                    <div class="small text-body-secondary mt-1">Diarsipkan:
+                                        {{ $article->archived_at->translatedFormat('d M Y, H:i') }}</div>
+                                @endif
                             </td>
                             <td>{{ $article->created_at->translatedFormat('d M Y, H:i') }}</td>
                             <td>{{ $article->createdBy?->name ?? '-' }}</td>
@@ -103,6 +119,46 @@
                                         class="btn btn-sm btn-icon btn-text-secondary" title="Edit">
                                         <i class="icon-base bx bx-edit-alt"></i>
                                     </a>
+                                    @if ($article->archived_at)
+                                        <form action="{{ route('admin.articles.unarchive', $article) }}" method="POST"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Kembalikan artikel ini dari arsip?');">
+                                            @csrf
+                                            @method('PATCH')
+                                            @if (($filterState['q'] ?? '') !== '')
+                                                <input type="hidden" name="q" value="{{ $filterState['q'] }}">
+                                            @endif
+                                            @if (!empty($filterState['category_id']))
+                                                <input type="hidden" name="category_id"
+                                                    value="{{ $filterState['category_id'] }}">
+                                            @endif
+                                            <input type="hidden" name="archive_status"
+                                                value="{{ $filterState['archive_status'] ?? 'active' }}">
+                                            <button type="submit" class="btn btn-sm btn-icon btn-text-secondary"
+                                                title="Batal arsip">
+                                                <i class="icon-base bx bx-revision"></i>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <form action="{{ route('admin.articles.archive', $article) }}" method="POST"
+                                            class="d-inline" onsubmit="return confirm('Arsipkan artikel ini?');">
+                                            @csrf
+                                            @method('PATCH')
+                                            @if (($filterState['q'] ?? '') !== '')
+                                                <input type="hidden" name="q" value="{{ $filterState['q'] }}">
+                                            @endif
+                                            @if (!empty($filterState['category_id']))
+                                                <input type="hidden" name="category_id"
+                                                    value="{{ $filterState['category_id'] }}">
+                                            @endif
+                                            <input type="hidden" name="archive_status"
+                                                value="{{ $filterState['archive_status'] ?? 'active' }}">
+                                            <button type="submit" class="btn btn-sm btn-icon btn-text-secondary"
+                                                title="Arsipkan">
+                                                <i class="icon-base bx bx-archive"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 @endcan
                                 @can('delete', $article)
                                     <form action="{{ route('admin.articles.destroy', $article) }}" method="POST" class="d-inline"
@@ -153,6 +209,14 @@
                     placeholder: 'Semua kategori',
                     allowClear: true,
                     dropdownParent: $cat.parent(),
+                    width: '100%'
+                });
+            }
+            const $archiveStatus = $('#filter_archive_status');
+            if ($archiveStatus.length && typeof $.fn.select2 !== 'undefined') {
+                $archiveStatus.select2({
+                    placeholder: 'Semua status',
+                    dropdownParent: $archiveStatus.parent(),
                     width: '100%'
                 });
             }

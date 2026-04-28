@@ -104,6 +104,132 @@ class ArticleCrudTest extends TestCase
         $this->assertSame(1, $r->viewData('articles')->total());
     }
 
+    public function test_index_respects_archive_status_filter(): void
+    {
+        $this->actingAsUser();
+
+        $cat = Category::query()->create(['title' => 'Berita', 'slug' => 'berita-arch']);
+
+        $active = Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Masih Aktif',
+            'slug' => 'masih-aktif',
+            'content' => '<p>x</p>',
+            'published_at' => now(),
+            'is_draft' => false,
+        ]);
+
+        $archived = Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Sudah Arsip',
+            'slug' => 'sudah-arsip',
+            'content' => '<p>x</p>',
+            'published_at' => now(),
+            'is_draft' => false,
+            'archived_at' => now(),
+        ]);
+
+        $r = $this->get(route('admin.articles.index'))->assertOk();
+        $this->assertSame(1, $r->viewData('articles')->total());
+        $this->assertTrue($r->viewData('articles')->first()->is($active));
+
+        $r = $this->get(route('admin.articles.index', ['archive_status' => 'active']))->assertOk();
+        $this->assertSame(1, $r->viewData('articles')->total());
+        $this->assertTrue($r->viewData('articles')->first()->is($active));
+
+        $r = $this->get(route('admin.articles.index', ['archive_status' => 'archived']))->assertOk();
+        $this->assertSame(1, $r->viewData('articles')->total());
+        $this->assertTrue($r->viewData('articles')->first()->is($archived));
+    }
+
+    public function test_archive_and_unarchive_persist_and_redirect_with_flash(): void
+    {
+        $this->actingAsUser();
+        /** @var User $admin */
+        $admin = auth()->user();
+
+        $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-arch-flip']);
+        $article = Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Flip',
+            'slug' => 'flip',
+            'content' => '<p>x</p>',
+            'published_at' => now(),
+            'is_draft' => false,
+        ]);
+
+        $this->from(route('admin.articles.index', ['archive_status' => 'archived', 'q' => 'lip']))
+            ->patch(route('admin.articles.archive', $article), [
+                'archive_status' => 'active',
+                'q' => 'lip',
+            ])
+            ->assertRedirect(route('admin.articles.index', ['q' => 'lip']))
+            ->assertSessionHas('success', 'Artikel diarsipkan.');
+
+        $article->refresh();
+        $this->assertNotNull($article->archived_at);
+        $this->assertSame((int) $admin->id, (int) $article->archived_by);
+
+        $this->from(route('admin.articles.index', ['archive_status' => 'archived']))
+            ->patch(route('admin.articles.unarchive', $article), [
+                'archive_status' => 'archived',
+            ])
+            ->assertRedirect(route('admin.articles.index', ['archive_status' => 'archived']))
+            ->assertSessionHas('success', 'Artikel dikembalikan dari arsip.');
+
+        $article->refresh();
+        $this->assertNull($article->archived_at);
+        $this->assertNull($article->archived_by);
+    }
+
+    public function test_archive_forbidden_without_update_on_others_article(): void
+    {
+        /** @var User $author */
+        $author = User::factory()->create();
+        $author->givePermissionTo($this->articleEditorPermissions());
+        $other = User::factory()->create();
+        $this->actingAs($author);
+
+        $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-arch-forbid']);
+        $theirs = Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Bukan Saya',
+            'slug' => 'bukan-saya-arch',
+            'content' => '<p></p>',
+            'published_at' => now(),
+            'is_draft' => false,
+        ]);
+        $theirs->forceFill(['created_by' => $other->id])->save();
+
+        $this->patch(route('admin.articles.archive', $theirs))->assertForbidden();
+    }
+
+    public function test_published_scope_excludes_archived_articles(): void
+    {
+        $cat = Category::query()->create(['title' => 'B', 'slug' => 'b-pub-arch']);
+
+        Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Live',
+            'slug' => 'live',
+            'content' => '<p>x</p>',
+            'published_at' => now()->subDay(),
+            'is_draft' => false,
+        ]);
+
+        Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Hidden',
+            'slug' => 'hidden',
+            'content' => '<p>x</p>',
+            'published_at' => now()->subDay(),
+            'is_draft' => false,
+            'archived_at' => now(),
+        ]);
+
+        $this->assertSame(1, Article::query()->published()->count());
+    }
+
     public function test_create_renders(): void
     {
         $this->actingAsUser();

@@ -19,6 +19,8 @@ use Mattiverse\Userstamps\Traits\Userstamps;
     'cover_photo_path',
     'published_at',
     'is_draft',
+    'archived_at',
+    'archived_by',
 ])]
 class Article extends Model
 {
@@ -35,7 +37,10 @@ class Article extends Model
 
     public function scopePublished(Builder $query): Builder
     {
-        return $query->where('is_draft', false)->where('published_at', '<=', now());
+        return $query
+            ->where('is_draft', false)
+            ->where('published_at', '<=', now())
+            ->whereNull('archived_at');
     }
 
     public function scopeOpini(Builder $query): Builder

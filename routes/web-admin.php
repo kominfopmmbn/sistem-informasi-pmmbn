@@ -41,6 +41,14 @@ Route::middleware(['auth'])->group(function (): void {
             'destroy' => 'permission:users.delete',
         ]);
 
+    Route::prefix('articles/{article}')
+        ->middleware('permission:articles.update')
+        ->as('articles.')
+        ->group(function (): void {
+            Route::patch('archive', [ArticleController::class, 'archive'])->name('archive');
+            Route::patch('unarchive', [ArticleController::class, 'unarchive'])->name('unarchive');
+        });
+
     Route::resource('articles', ArticleController::class)
         ->except(['show'])
         ->middleware([
