@@ -34,25 +34,27 @@
             </li>
         @endcan
 
-        <!-- Authentication -->
-        <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Authentication">Authentication</span>
-        </li>
-        @can('users.view')
-            <li class="menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.users.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-user"></i>
-                    <div>Users</div>
-                </a>
+        @canany(['users.view', 'roles.view'])
+            <!-- Authentication -->
+            <li class="menu-header small">
+                <span class="menu-header-text" data-i18n="Authentication">Authentication</span>
             </li>
-        @endcan
-        @can('roles.view')
-            <li class="menu-item {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.roles.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-check-shield"></i>
-                    <div>Peran</div>
-                </a>
-            </li>
-        @endcan
+            @can('users.view')
+                <li class="menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.users.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-user"></i>
+                        <div>Users</div>
+                    </a>
+                </li>
+            @endcan
+            @can('roles.view')
+                <li class="menu-item {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.roles.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-check-shield"></i>
+                        <div>Peran</div>
+                    </a>
+                </li>
+            @endcan
+        @endcanany
     </ul>
 </aside>
