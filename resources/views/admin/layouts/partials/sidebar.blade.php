@@ -35,9 +35,9 @@
         @endcan
 
         @canany(['users.view', 'roles.view'])
-            <!-- Authentication -->
+            <!-- Authorization -->
             <li class="menu-header small">
-                <span class="menu-header-text" data-i18n="Authentication">Authentication</span>
+                <span class="menu-header-text" data-i18n="Authorization">Authorization</span>
             </li>
             @can('users.view')
                 <li class="menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
