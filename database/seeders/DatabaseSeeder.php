@@ -6,6 +6,10 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Laravolt\Indonesia\Seeds\CitiesSeeder;
+use Laravolt\Indonesia\Seeds\DistrictsSeeder;
+use Laravolt\Indonesia\Seeds\ProvincesSeeder;
+use Laravolt\Indonesia\Seeds\VillagesSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,8 +22,15 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $this->call(RoleSeeder::class);
-        $this->call(PermissionSeeder::class);
+        $this->call([
+            RoleSeeder::class,
+            PermissionSeeder::class,
+            CategorySeeder::class,
+            ProvincesSeeder::class,
+            CitiesSeeder::class,
+            DistrictsSeeder::class,
+            VillagesSeeder::class,
+        ]);
 
         $admin = User::factory()->create([
             'name' => 'Admin PMMBN',
@@ -28,7 +39,6 @@ class DatabaseSeeder extends Seeder
         ]);
         $admin->assignRole('Administrator');
 
-        $this->call(CategorySeeder::class);
         // $this->call(TagSeeder::class);
         // $this->call(ArticleSeeder::class);
     }

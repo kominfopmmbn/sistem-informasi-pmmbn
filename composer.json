@@ -9,6 +9,7 @@
         "php": "^8.3",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
+        "laravolt/indonesia": "^0.41.0",
         "spatie/laravel-permission": "^7.3",
         "wildside/userstamps": "^4.0"
     },
