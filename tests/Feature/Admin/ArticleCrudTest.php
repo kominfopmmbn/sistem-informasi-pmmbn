@@ -11,6 +11,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -146,7 +147,7 @@ class ArticleCrudTest extends TestCase
     {
         $this->actingAsUser();
         /** @var User $admin */
-        $admin = auth()->user();
+        $admin = Auth::user();
 
         $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-arch-flip']);
         $article = Article::query()->create([
