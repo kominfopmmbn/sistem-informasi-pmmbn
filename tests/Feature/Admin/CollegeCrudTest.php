@@ -83,8 +83,8 @@ class CollegeCrudTest extends TestCase
 
         College::query()->create([
             'name' => 'Universitas Tes',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ]);
 
         $this->get(route('admin.colleges.index'))->assertOk()
@@ -100,8 +100,8 @@ class CollegeCrudTest extends TestCase
 
         College::query()->create([
             'name' => 'Universitas FilterXYZ',
-            'province_id' => $province->getKey(),
-            'city_id' => $city->getKey(),
+            'province_code' => $province->code,
+            'city_code' => $city->code,
         ]);
 
         $otherProvince = Province::query()->where('id', '!=', $province->getKey())->orderBy('id')->firstOrFail();
@@ -119,25 +119,25 @@ class CollegeCrudTest extends TestCase
             ->assertOk()
             ->assertDontSee('Universitas FilterXYZ', false);
 
-        $this->get(route('admin.colleges.index', ['province_id' => $otherProvince->getKey()]))
+        $this->get(route('admin.colleges.index', ['province_code' => $otherProvince->code]))
             ->assertOk()
             ->assertDontSee('Universitas FilterXYZ', false);
 
-        $this->get(route('admin.colleges.index', ['province_id' => $province->getKey()]))
+        $this->get(route('admin.colleges.index', ['province_code' => $province->code]))
             ->assertOk()
             ->assertSee('Universitas FilterXYZ', false);
 
         if ($cityOtherInSameProvince !== null) {
             $this->get(route('admin.colleges.index', [
-                'province_id' => $province->getKey(),
-                'city_id' => $cityOtherInSameProvince->getKey(),
+                'province_code' => $province->code,
+                'city_code' => $cityOtherInSameProvince->code,
             ]))->assertOk()
                 ->assertDontSee('Universitas FilterXYZ', false);
         }
 
         $this->get(route('admin.colleges.index', [
-            'province_id' => $province->getKey(),
-            'city_id' => $city->getKey(),
+            'province_code' => $province->code,
+            'city_code' => $city->code,
         ]))->assertOk()
             ->assertSee('Universitas FilterXYZ', false);
     }
@@ -156,15 +156,15 @@ class CollegeCrudTest extends TestCase
 
         $this->post(route('admin.colleges.store'), [
             'name' => 'Universitas Contoh',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ])->assertRedirect(route('admin.colleges.index'))
             ->assertSessionHas('success');
 
         $this->assertDatabaseHas('colleges', [
             'name' => 'Universitas Contoh',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ]);
     }
 
@@ -174,9 +174,9 @@ class CollegeCrudTest extends TestCase
 
         $this->post(route('admin.colleges.store'), [
             'name' => '',
-            'province_id' => '',
-            'city_id' => '',
-        ])->assertSessionHasErrors(['name', 'province_id', 'city_id']);
+            'province_code' => '',
+            'city_code' => '',
+        ])->assertSessionHasErrors(['name', 'province_code', 'city_code']);
     }
 
     public function test_store_rejects_duplicate_name(): void
@@ -186,14 +186,14 @@ class CollegeCrudTest extends TestCase
 
         College::query()->create([
             'name' => 'Sudah Ada',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ]);
 
         $this->post(route('admin.colleges.store'), [
             'name' => 'Sudah Ada',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ])->assertSessionHasErrors(['name']);
     }
 
@@ -209,9 +209,9 @@ class CollegeCrudTest extends TestCase
 
         $this->post(route('admin.colleges.store'), [
             'name' => 'Salah Provinsi',
-            'province_id' => $p1->getKey(),
-            'city_id' => $cityInP2->getKey(),
-        ])->assertSessionHasErrors(['city_id']);
+            'province_code' => $p1->code,
+            'city_code' => $cityInP2->code,
+        ])->assertSessionHasErrors(['city_code']);
     }
 
     public function test_edit_renders(): void
@@ -220,8 +220,8 @@ class CollegeCrudTest extends TestCase
         $loc = $this->sampleProvinceAndCity();
         $college = College::query()->create([
             'name' => 'Edit Tes',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ]);
 
         $this->get(route('admin.colleges.edit', $college))->assertOk()
@@ -234,14 +234,14 @@ class CollegeCrudTest extends TestCase
         $loc = $this->sampleProvinceAndCity();
         $college = College::query()->create([
             'name' => 'Lama',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ]);
 
         $this->put(route('admin.colleges.update', $college), [
             'name' => 'Baru',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ])->assertRedirect(route('admin.colleges.index'))
             ->assertSessionHas('success');
 
@@ -256,20 +256,20 @@ class CollegeCrudTest extends TestCase
 
         College::query()->create([
             'name' => 'Pertama',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ]);
 
         $second = College::query()->create([
             'name' => 'Kedua',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ]);
 
         $this->put(route('admin.colleges.update', $second), [
             'name' => 'Pertama',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ])->assertSessionHasErrors(['name']);
     }
 
@@ -279,8 +279,8 @@ class CollegeCrudTest extends TestCase
         $loc = $this->sampleProvinceAndCity();
         $college = College::query()->create([
             'name' => 'Hapus Saya',
-            'province_id' => $loc['province']->getKey(),
-            'city_id' => $loc['city']->getKey(),
+            'province_code' => $loc['province']->code,
+            'city_code' => $loc['city']->code,
         ]);
 
         $this->delete(route('admin.colleges.destroy', $college))

@@ -74,5 +74,43 @@
                 </li>
             @endcan
         @endcanany
+
+        @canany(['provinces.view', 'cities.view', 'districts.view', 'villages.view'])
+            <li class="menu-header small">
+                <span class="menu-header-text" data-i18n="Data Wilayah">Data Wilayah</span>
+            </li>
+            @can('provinces.view')
+                <li class="menu-item {{ request()->routeIs('admin.provinces.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.provinces.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-map-alt"></i>
+                        <div>Provinsi</div>
+                    </a>
+                </li>
+            @endcan
+            @can('cities.view')
+                <li class="menu-item {{ request()->routeIs('admin.cities.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.cities.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-buildings"></i>
+                        <div>Kota / kabupaten</div>
+                    </a>
+                </li>
+            @endcan
+            @can('districts.view')
+                <li class="menu-item {{ request()->routeIs('admin.districts.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.districts.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-git-repo-forked"></i>
+                        <div>Kecamatan</div>
+                    </a>
+                </li>
+            @endcan
+            @can('villages.view')
+                <li class="menu-item {{ request()->routeIs('admin.villages.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.villages.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-map-pin"></i>
+                        <div>Desa / kelurahan</div>
+                    </a>
+                </li>
+            @endcan
+        @endcanany
     </ul>
 </aside>

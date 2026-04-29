@@ -2,10 +2,14 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\CollegeController;
+use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\OrgRegionController;
+use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VillageController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -93,5 +97,49 @@ Route::middleware(['auth'])->group(function (): void {
             'edit' => 'permission:colleges.update',
             'update' => 'permission:colleges.update',
             'destroy' => 'permission:colleges.delete',
+        ]);
+
+    Route::resource('provinces', ProvinceController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:provinces.view',
+            'create' => 'permission:provinces.create',
+            'store' => 'permission:provinces.create',
+            'edit' => 'permission:provinces.update',
+            'update' => 'permission:provinces.update',
+            'destroy' => 'permission:provinces.delete',
+        ]);
+
+    Route::resource('cities', CityController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:cities.view',
+            'create' => 'permission:cities.create',
+            'store' => 'permission:cities.create',
+            'edit' => 'permission:cities.update',
+            'update' => 'permission:cities.update',
+            'destroy' => 'permission:cities.delete',
+        ]);
+
+    Route::resource('districts', DistrictController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:districts.view',
+            'create' => 'permission:districts.create',
+            'store' => 'permission:districts.create',
+            'edit' => 'permission:districts.update',
+            'update' => 'permission:districts.update',
+            'destroy' => 'permission:districts.delete',
+        ]);
+
+    Route::resource('villages', VillageController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:villages.view',
+            'create' => 'permission:villages.create',
+            'store' => 'permission:villages.create',
+            'edit' => 'permission:villages.update',
+            'update' => 'permission:villages.update',
+            'destroy' => 'permission:villages.delete',
         ]);
 });

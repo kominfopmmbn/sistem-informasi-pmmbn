@@ -4,8 +4,8 @@
 'use strict';
 
 $(function () {
-  const $province = $('#filter_province_id');
-  const $city = $('#filter_city_id');
+  const $province = $('#filter_province_code');
+  const $city = $('#filter_city_code');
   const $form = $('#colleges-index-filter-form');
 
   if (!$province.length || !$city.length || typeof $.fn.select2 === 'undefined') {
@@ -60,14 +60,17 @@ $(function () {
         delay: 250,
         data: function (params) {
           return {
-            province_id: $province.val(),
-            term: params.term,
+            province_code: $province.val(),
+            q: params.term,
             page: params.page || 1
           };
         },
         processResults: function (data) {
+          const rows = (data.results || []).map(function (item) {
+            return { id: item.code, text: item.text };
+          });
           return {
-            results: data.results || [],
+            results: rows,
             pagination: { more: !!(data.pagination && data.pagination.more) }
           };
         }

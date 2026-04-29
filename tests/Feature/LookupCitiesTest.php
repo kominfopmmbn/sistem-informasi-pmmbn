@@ -9,7 +9,7 @@ use Laravolt\Indonesia\Seeds\CitiesSeeder;
 use Laravolt\Indonesia\Seeds\ProvincesSeeder;
 use Tests\TestCase;
 
-class IndonesiaLookupCitiesTest extends TestCase
+class LookupCitiesTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -36,8 +36,8 @@ class IndonesiaLookupCitiesTest extends TestCase
     {
         ['province' => $province, 'city' => $city] = $this->sampleProvinceAndCity();
 
-        $response = $this->getJson(route('indonesia.select.cities', [
-            'province_id' => $province->id,
+        $response = $this->getJson(route('select.cities', [
+            'province_code' => $province->code,
         ]));
 
         $response->assertOk();
@@ -53,12 +53,12 @@ class IndonesiaLookupCitiesTest extends TestCase
         $this->assertIsBool($response->json('pagination.more'));
     }
 
-    public function test_select_cities_accepts_q_as_search_alias(): void
+    public function test_select_cities_filters_by_q(): void
     {
         ['province' => $province, 'city' => $city] = $this->sampleProvinceAndCity();
 
-        $response = $this->getJson(route('indonesia.select.cities', [
-            'province_id' => $province->id,
+        $response = $this->getJson(route('select.cities', [
+            'province_code' => $province->code,
             'q' => mb_substr($city->name, 0, 3),
         ]));
 
@@ -67,35 +67,34 @@ class IndonesiaLookupCitiesTest extends TestCase
         $this->assertContains($city->id, $ids);
     }
 
-    public function test_select_cities_requires_province_id(): void
+    public function test_select_cities_requires_province_code(): void
     {
-        $response = $this->getJson(route('indonesia.select.cities'));
+        $response = $this->getJson(route('select.cities'));
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['province_id']);
+        $response->assertJsonValidationErrors(['province_code']);
     }
 
-    public function test_select_cities_rejects_unknown_province_id(): void
+    public function test_select_cities_rejects_unknown_province_code(): void
     {
-        $response = $this->getJson(route('indonesia.select.cities', [
-            'province_id' => 999_999,
+        $response = $this->getJson(route('select.cities', [
+            'province_code' => 'ZZ',
         ]));
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['province_id']);
+        $response->assertJsonValidationErrors(['province_code']);
     }
 
-    public function test_select_cities_filters_by_term(): void
+    public function test_select_cities_rejects_invalid_q(): void
     {
-        ['province' => $province, 'city' => $city] = $this->sampleProvinceAndCity();
+        ['province' => $province] = $this->sampleProvinceAndCity();
 
-        $response = $this->getJson(route('indonesia.select.cities', [
-            'province_id' => $province->id,
-            'term' => mb_substr($city->name, 0, 3),
+        $response = $this->getJson(route('select.cities', [
+            'province_code' => $province->code,
+            'q' => str_repeat('a', 101),
         ]));
 
-        $response->assertOk();
-        $ids = collect($response->json('results'))->pluck('id')->all();
-        $this->assertContains($city->id, $ids);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['q']);
     }
 }

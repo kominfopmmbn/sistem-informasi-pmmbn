@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('colleges', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('province_id');
-            $table->unsignedBigInteger('city_id');
+            $table->char('province_code', 2);
+            $table->char('city_code', 4);
             $table->timestamps();
         });
     }

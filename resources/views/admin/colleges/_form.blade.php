@@ -1,12 +1,12 @@
 @php
     /** @var \Illuminate\Support\Collection<int, \Laravolt\Indonesia\Models\Province> $provinces */
-    $provinceId = old('province_id', isset($college) ? $college->province_id : '');
-    $cityId = old('city_id', isset($college) ? $college->city_id : '');
+    $provinceCode = old('province_code', isset($college) ? $college->province_code : '');
+    $cityCode = old('city_code', isset($college) ? $college->city_code : '');
     $cityName = '';
     if (isset($college) && $college->relationLoaded('city') && $college->city !== null) {
         $cityName = $college->city->name;
-    } elseif ($cityId !== null && $cityId !== '') {
-        $cityRow = \Laravolt\Indonesia\Models\City::query()->find($cityId);
+    } elseif ($cityCode !== null && $cityCode !== '') {
+        $cityRow = \Laravolt\Indonesia\Models\City::query()->where('code', $cityCode)->first();
         $cityName = $cityRow?->name ?? '';
     }
 @endphp
@@ -23,35 +23,35 @@
         @enderror
     </div>
     <div class="col-12 col-md-6">
-        <label class="form-label" for="college_province_id">Provinsi</label>
-        <div class="select2-primary @error('province_id') is-invalid @enderror">
+        <label class="form-label" for="college_province_code">Provinsi</label>
+        <div class="select2-primary @error('province_code') is-invalid @enderror">
             <div class="position-relative w-100">
-                <select name="province_id" id="college_province_id"
-                    class="select2 form-select @error('province_id') is-invalid @enderror" required
+                <select name="province_code" id="college_province_code"
+                    class="select2 form-select @error('province_code') is-invalid @enderror" required
                     data-placeholder="Pilih provinsi">
                     <option value=""></option>
                     @foreach ($provinces as $province)
-                        <option value="{{ $province->getKey() }}" @selected((string) $provinceId === (string) $province->getKey())>
+                        <option value="{{ $province->code }}" @selected((string) $provinceCode === (string) $province->code)>
                             {{ $province->name }}</option>
                     @endforeach
                 </select>
             </div>
         </div>
-        @error('province_id')
+        @error('province_code')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
     </div>
     <div class="col-12 col-md-6">
-        <label class="form-label" for="college_city_id">Kota / Kabupaten</label>
-        <div class="select2-primary @error('city_id') is-invalid @enderror">
+        <label class="form-label" for="college_city_code">Kota / Kabupaten</label>
+        <div class="select2-primary @error('city_code') is-invalid @enderror">
             <div class="position-relative w-100">
-                <select name="city_id" id="college_city_id"
-                    class="select2 form-select @error('city_id') is-invalid @enderror"
-                    data-search-url="{{ route('indonesia.select.cities') }}"
-                    data-placeholder="Pilih kota/kabupaten" @if ($cityId !== null && $cityId !== '') data-initial-id="{{ $cityId }}" data-initial-name="{{ $cityName }}" @endif
-                    @if (! filled($provinceId)) disabled @endif required>
-                    @if ($cityId !== null && $cityId !== '')
-                        <option value="{{ $cityId }}" selected>{{ $cityName }}</option>
+                <select name="city_code" id="college_city_code"
+                    class="select2 form-select @error('city_code') is-invalid @enderror"
+                    data-search-url="{{ route('select.cities') }}"
+                    data-placeholder="Pilih kota/kabupaten" @if ($cityCode !== null && $cityCode !== '') data-initial-code="{{ $cityCode }}" data-initial-name="{{ $cityName }}" @endif
+                    @if (! filled($provinceCode)) disabled @endif required>
+                    @if ($cityCode !== null && $cityCode !== '')
+                        <option value="{{ $cityCode }}" selected>{{ $cityName }}</option>
                     @else
                         <option value=""></option>
                     @endif
@@ -59,10 +59,10 @@
             </div>
         </div>
         <p id="college_city_hint"
-            class="form-text text-body-secondary mb-0 @if (filled($provinceId)) d-none @endif">
+            class="form-text text-body-secondary mb-0 @if (filled($provinceCode)) d-none @endif">
             Pilih provinsi terlebih dahulu untuk memilih kota/kabupaten.
         </p>
-        @error('city_id')
+        @error('city_code')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
     </div>

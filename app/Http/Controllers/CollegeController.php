@@ -17,24 +17,23 @@ class CollegeController extends Controller
     {
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:255'],
-            'province_id' => ['nullable', 'integer', 'exists:indonesia_provinces,id'],
-            'city_id' => ['nullable', 'integer'],
+            'province_code' => ['nullable', 'string', 'size:2', 'exists:provinces,code'],
+            'city_code' => ['nullable', 'string', 'size:4', 'exists:cities,code'],
         ]);
 
         $q = isset($filters['q']) ? trim($filters['q']) : '';
-        $provinceId = isset($filters['province_id']) ? (int) $filters['province_id'] : null;
-        $cityId = isset($filters['city_id']) ? (int) $filters['city_id'] : null;
+        $provinceCode = isset($filters['province_code']) ? (string) $filters['province_code'] : null;
+        $cityCode = isset($filters['city_code']) ? (string) $filters['city_code'] : null;
 
-        if ($provinceId === null) {
-            $cityId = null;
-        } elseif ($cityId !== null) {
-            $province = Province::query()->find($provinceId);
+        if ($provinceCode === null) {
+            $cityCode = null;
+        } elseif ($cityCode !== null) {
             $cityMatches = City::query()
-                ->whereKey($cityId)
-                ->where('province_code', $province->code)
+                ->where('code', $cityCode)
+                ->where('province_code', $provinceCode)
                 ->exists();
             if (! $cityMatches) {
-                $cityId = null;
+                $cityCode = null;
             }
         }
 
@@ -47,12 +46,12 @@ class CollegeController extends Controller
             $query->where('name', 'like', $like);
         }
 
-        if ($provinceId !== null) {
-            $query->where('province_id', $provinceId);
+        if ($provinceCode !== null) {
+            $query->where('province_code', $provinceCode);
         }
 
-        if ($cityId !== null) {
-            $query->where('city_id', $cityId);
+        if ($cityCode !== null) {
+            $query->where('city_code', $cityCode);
         }
 
         $colleges = $query->paginate(15)->withQueryString();
@@ -60,14 +59,14 @@ class CollegeController extends Controller
         $provinces = Province::query()->orderBy('name')->get();
 
         $filterCityName = '';
-        if ($cityId !== null) {
-            $filterCityName = City::query()->find($cityId)?->name ?? '';
+        if ($cityCode !== null) {
+            $filterCityName = City::query()->where('code', $cityCode)->value('name') ?? '';
         }
 
         $filterState = [
             'q' => $q,
-            'province_id' => $provinceId,
-            'city_id' => $cityId,
+            'province_code' => $provinceCode,
+            'city_code' => $cityCode,
         ];
 
         return view('admin.colleges.index', compact(

@@ -1,26 +1,15 @@
 /**
- * Admin college form: provinsi (Select2) + kota (Select2 + AJAX per provinsi).
+ * Filter index kecamatan: provinsi (kode) + kota (AJAX by province_code).
  */
 'use strict';
 
 $(function () {
-  const $province = $('#college_province_code');
-  const $city = $('#college_city_code');
-  const $form = $('#college-form');
-  const $cityHint = $('#college_city_hint');
-
-  function updateCityHint() {
-    if ($cityHint.length) {
-      $cityHint.toggleClass('d-none', !!$province.val());
-    }
-  }
-
-  if (!$province.length || !$city.length || typeof $.fn.select2 === 'undefined') {
-    return;
-  }
-
+  const $province = $('#filter_province_code');
+  const $city = $('#filter_city_code');
+  const $form = $('#districts-index-filter-form');
   const searchUrl = $city.data('search-url');
-  if (!searchUrl) {
+
+  if (!$province.length || !$city.length || typeof $.fn.select2 === 'undefined' || !searchUrl) {
     return;
   }
 
@@ -28,8 +17,8 @@ $(function () {
   $city.wrap('<div class="position-relative"></div>');
 
   $province.select2({
-    placeholder: $province.data('placeholder') || 'Pilih provinsi',
-    allowClear: false,
+    placeholder: $province.data('placeholder') || 'Semua provinsi',
+    allowClear: true,
     dropdownParent: $province.parent(),
     width: '100%'
   });
@@ -46,7 +35,6 @@ $(function () {
     if (!hasProvince) {
       $city.val(null);
     }
-    updateCityHint();
   }
 
   function initCitySelect2() {
@@ -57,7 +45,7 @@ $(function () {
     }
 
     $city.select2({
-      placeholder: $city.data('placeholder') || 'Pilih kota/kabupaten',
+      placeholder: 'Semua kota/kabupaten',
       allowClear: true,
       dropdownParent: $city.parent(),
       width: '100%',
@@ -104,6 +92,4 @@ $(function () {
   if ($province.val()) {
     initCitySelect2();
   }
-
-  updateCityHint();
 });

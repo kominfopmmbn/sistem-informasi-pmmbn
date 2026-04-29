@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Perguruan tinggi')
+@section('title', 'Desa / kelurahan')
 
 @section('content')
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
-        <h4 class="fw-bold mb-0 py-3">Perguruan Tinggi</h4>
-        @can('colleges.create')
-            <a href="{{ route('admin.colleges.create') }}" class="btn btn-primary">
-                <i class="icon-base bx bx-plus me-1"></i> Tambah perguruan tinggi
+        <h4 class="fw-bold mb-0 py-3">Desa / kelurahan</h4>
+        @can('villages.create')
+            <a href="{{ route('admin.villages.create') }}" class="btn btn-primary">
+                <i class="icon-base bx bx-plus me-1"></i> Tambah desa/kelurahan
             </a>
         @endcan
     </div>
@@ -26,7 +26,8 @@
         </div>
     @endif
 
-    <form method="get" action="{{ route('admin.colleges.index') }}" id="colleges-index-filter-form" class="card mb-4">
+    <form method="get" action="{{ route('admin.villages.index') }}" id="villages-index-filter-form"
+        class="card mb-4">
         <div class="card-body">
             <div class="row g-3 align-items-end">
                 <div class="col-12 col-md-3">
@@ -42,7 +43,8 @@
                                 data-placeholder="Semua provinsi">
                                 <option value=""></option>
                                 @foreach ($provinces as $province)
-                                    <option value="{{ $province->code }}" @selected($filterState['province_code'] !== null && (string) $filterState['province_code'] === (string) $province->code)>
+                                    <option value="{{ $province->code }}"
+                                        @selected($filterState['province_code'] !== null && (string) $filterState['province_code'] === (string) $province->code)>
                                         {{ $province->name }}</option>
                                 @endforeach
                             </select>
@@ -50,26 +52,43 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-3">
-                    <label class="form-label" for="filter_city_code">Kota / Kabupaten</label>
+                    <label class="form-label" for="filter_city_code">Kota / kabupaten</label>
                     <div class="select2-primary">
                         <div class="position-relative w-100">
                             <select name="city_code" id="filter_city_code" class="select2 form-select"
                                 data-search-url="{{ route('select.cities') }}"
                                 data-placeholder="Semua kota/kabupaten"
-                                @if ($filterState['city_code'] !== null && $filterState['city_code'] !== '') data-initial-code="{{ $filterState['city_code'] }}" data-initial-name="{{ $filterCityName }}" @endif
                                 @if ($filterState['province_code'] === null) disabled @endif>
                                 @if ($filterState['city_code'] !== null && $filterState['city_code'] !== '')
                                     <option value="{{ $filterState['city_code'] }}" selected>{{ $filterCityName }}</option>
                                 @else
-                                    <option value="">Pilih provinsi terlebih dahulu untuk memfilter kota/kabupaten.</option>
+                                    <option value=""></option>
                                 @endif
                             </select>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-3 d-flex flex-wrap justify-content-end gap-2">
+                <div class="col-12 col-md-3">
+                    <label class="form-label" for="filter_district_code">Kecamatan</label>
+                    <div class="select2-primary">
+                        <div class="position-relative w-100">
+                            <select name="district_code" id="filter_district_code" class="select2 form-select"
+                                data-search-url="{{ route('select.districts') }}"
+                                data-placeholder="Semua kecamatan"
+                                @if ($filterState['city_code'] === null || $filterState['city_code'] === '') disabled @endif>
+                                @if ($filterState['district_code'] !== null && $filterState['district_code'] !== '')
+                                    <option value="{{ $filterState['district_code'] }}" selected>{{ $filterDistrictName }}
+                                    </option>
+                                @else
+                                    <option value=""></option>
+                                @endif
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 d-flex flex-wrap justify-content-end gap-2">
                     <button type="submit" class="btn btn-primary">Terapkan</button>
-                    <a href="{{ route('admin.colleges.index') }}" class="btn btn-label-secondary">Reset</a>
+                    <a href="{{ route('admin.villages.index') }}" class="btn btn-label-secondary">Reset</a>
                 </div>
             </div>
         </div>
@@ -81,29 +100,33 @@
                 <thead>
                     <tr>
                         <th>No</th>
+                        <th>Kode</th>
                         <th>Nama</th>
-                        <th>Provinsi</th>
+                        <th>Kecamatan</th>
                         <th>Kota</th>
+                        <th>Provinsi</th>
                         <th class="text-end">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-                    @forelse ($colleges as $item)
+                    @forelse ($villages as $item)
                         <tr>
-                            <td>{{ $colleges->firstItem() + $loop->index }}</td>
+                            <td>{{ $villages->firstItem() + $loop->index }}</td>
+                            <td><code class="text-body">{{ $item->code }}</code></td>
                             <td><span class="fw-medium">{{ $item->name }}</span></td>
-                            <td>{{ $item->province?->name ?? '—' }}</td>
-                            <td>{{ $item->city?->name ?? '—' }}</td>
+                            <td>{{ $item->district?->name_with_code ?? '—' }}</td>
+                            <td>{{ $item->district?->city?->name_with_code ?? '—' }}</td>
+                            <td>{{ $item->district?->city?->province?->name_with_code ?? '—' }}</td>
                             <td class="text-end">
-                                @can('colleges.update')
-                                    <a href="{{ route('admin.colleges.edit', $item) }}"
+                                @can('villages.update')
+                                    <a href="{{ route('admin.villages.edit', $item) }}"
                                         class="btn btn-sm btn-icon btn-text-secondary" title="Edit">
                                         <i class="icon-base bx bx-edit-alt"></i>
                                     </a>
                                 @endcan
-                                @can('colleges.delete')
-                                    <form action="{{ route('admin.colleges.destroy', $item) }}" method="POST"
-                                        class="d-inline" onsubmit="return confirm('Hapus perguruan tinggi ini?');">
+                                @can('villages.delete')
+                                    <form action="{{ route('admin.villages.destroy', $item) }}" method="POST"
+                                        class="d-inline" onsubmit="return confirm('Hapus desa/kelurahan ini?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-icon btn-text-danger" title="Hapus">
@@ -115,17 +138,15 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-5">
-                                Belum ada perguruan tinggi.
-                            </td>
+                            <td colspan="7" class="text-center text-muted py-5">Tidak ada data desa/kelurahan.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        @if ($colleges->hasPages())
+        @if ($villages->hasPages())
             <div class="card-footer py-3 border-top">
-                {{ $colleges->links() }}
+                {{ $villages->links() }}
             </div>
         @endif
     </div>
@@ -137,5 +158,5 @@
 
 @push('scripts')
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
-    <script src="{{ asset('assets/js/admin-colleges-index.js') }}"></script>
+    <script src="{{ asset('assets/js/admin-regions-villages-index.js') }}"></script>
 @endpush
