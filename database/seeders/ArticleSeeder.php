@@ -30,7 +30,7 @@ class ArticleSeeder extends Seeder
         $allTagSlugs = $tagIds->keys()->all();
         $maxTags = min(3, count($allTagSlugs));
 
-        for ($i = 0; $i < 8; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $title = rtrim(fake()->sentence(fake()->numberBetween(4, 8)), '.');
             $slug = Str::slug($title).'-'.$i;
             $categoryId = (int) $categories[fake()->randomElement($categorySlugs)];

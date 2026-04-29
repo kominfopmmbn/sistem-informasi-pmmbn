@@ -20,8 +20,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         $this->call([
             RoleSeeder::class,
             PermissionSeeder::class,
@@ -39,7 +37,8 @@ class DatabaseSeeder extends Seeder
         ]);
         $admin->assignRole('Administrator');
 
-        // $this->call(TagSeeder::class);
-        // $this->call(ArticleSeeder::class);
+        $this->call(TagSeeder::class);
+        $this->call(ArticleSeeder::class);
+        User::factory(30)->create();
     }
 }
