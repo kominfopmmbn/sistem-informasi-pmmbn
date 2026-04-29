@@ -36,6 +36,8 @@
                 @php
                     $groupLabel = match ($group) {
                         'articles' => 'Artikel & opini',
+                        'org_regions' => 'Wilayah organisasi',
+                        'colleges' => 'Perguruan tinggi',
                         'users' => 'Users',
                         'roles' => 'Peran',
                         default => $group,

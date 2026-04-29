@@ -43,6 +43,15 @@
             </li>
         @endcan
 
+        @can('colleges.view')
+            <li class="menu-item {{ request()->routeIs('admin.colleges.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.colleges.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-building-house"></i>
+                    <div>Perguruan Tinggi</div>
+                </a>
+            </li>
+        @endcan
+
         @canany(['users.view', 'roles.view'])
             <!-- Authorization -->
             <li class="menu-header small">

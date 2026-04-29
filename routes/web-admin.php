@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CollegeController;
 use App\Http\Controllers\OrgRegionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -81,5 +82,16 @@ Route::middleware(['auth'])->group(function (): void {
             'edit' => 'permission:org_regions.update',
             'update' => 'permission:org_regions.update',
             'destroy' => 'permission:org_regions.delete',
+        ]);
+
+    Route::resource('colleges', CollegeController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:colleges.view',
+            'create' => 'permission:colleges.create',
+            'store' => 'permission:colleges.create',
+            'edit' => 'permission:colleges.update',
+            'update' => 'permission:colleges.update',
+            'destroy' => 'permission:colleges.delete',
         ]);
 });

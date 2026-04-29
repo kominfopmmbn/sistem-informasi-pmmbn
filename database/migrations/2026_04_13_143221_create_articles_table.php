@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained('categories');
+            $table->unsignedBigInteger('category_id');
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('subtitle')->nullable();
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->timestamp('archived_at')->nullable();
             $table->userstamps();
             $table->userstampSoftDeletes();
-            $table->foreignId('archived_by')->nullable();
+            $table->unsignedBigInteger('archived_by')->nullable();
         });
     }
 

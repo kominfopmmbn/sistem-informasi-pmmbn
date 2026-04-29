@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -49,6 +50,9 @@ class ArticleSeeder extends Seeder
                 ->map(fn (string $tagSlug) => (int) $tagIds[$tagSlug])
                 ->all();
 
+            $archivedAt = fake()->boolean(40) ? fake()->dateTimeBetween('-90 days', 'now') : null;
+            $archivedBy = $archivedAt ? User::query()->inRandomOrder()->first()->id : null;
+
             $article = Article::updateOrCreate(
                 ['slug' => $slug],
                 [
@@ -58,6 +62,8 @@ class ArticleSeeder extends Seeder
                     'content' => $content,
                     'is_draft' => $isDraft,
                     'published_at' => $publishedAt,
+                    'archived_at' => $archivedAt,
+                    'archived_by' => $archivedBy,
                 ]
             );
             $article->tags()->sync($syncTagIds);
