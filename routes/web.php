@@ -19,3 +19,7 @@ Route::get('/', [HomePageController::class, 'index'])->name('home.index');
 Route::get('/about/profil-organisasi', function() {
     return view('front.about.profil-organisasi');
 })->name('about.profil-organisasi');
+
+Route::get('/about/member-activation', function() {
+    return view('front.about.member-activation');
+})->name('about.member-activation');
