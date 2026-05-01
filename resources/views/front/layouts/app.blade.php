@@ -3,7 +3,7 @@
 
 @include('front.layouts.partials.head')
 
-<body>
+<body class="{{ $bodyClass ?? '' }}">
 
     @include('front.layouts.partials.navbar')
 

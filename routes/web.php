@@ -4,7 +4,6 @@ use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\LookupController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomePageController::class, 'index'])->name('home.index');
 
 Route::prefix('select')
     ->name('select.')
@@ -14,3 +13,9 @@ Route::prefix('select')
         Route::get('districts', [LookupController::class, 'districts'])->name('districts');
         Route::get('villages', [LookupController::class, 'villages'])->name('villages');
     });
+
+
+Route::get('/', [HomePageController::class, 'index'])->name('home.index');
+Route::get('/about/profil-organisasi', function() {
+    return view('front.about.profil-organisasi');
+})->name('about.profil-organisasi');

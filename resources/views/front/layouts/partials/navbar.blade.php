@@ -13,17 +13,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-lg-center fw-medium">
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('home.index') ? 'active' : '' }} text-brand" aria-current="page"
-                        href="#">Beranda</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('home.index') ? 'active text-brand' : '' }}" aria-current="page"
+                        href="{{ route('home.index') }}">Beranda</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="tentangDropdown" role="button"
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('about.*') ? 'active text-brand' : '' }}" href="#" id="tentangDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Tentang
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="tentangDropdown">
-                        <li><a class="dropdown-item" href="tentang.html">Sejarah</a></li>
-                        <li><a class="dropdown-item" href="#">Struktural</a></li>
-                        <li><a class="dropdown-item" href="#">AD/ART</a></li>
+                        <li><a class="dropdown-item" href="{{ route('about.profil-organisasi') }}">Profil Organisasi</a></li>
                         <li><a class="dropdown-item" href="#">KTA</a></li>
                     </ul>
                 </li>

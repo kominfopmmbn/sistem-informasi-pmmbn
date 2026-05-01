@@ -815,7 +815,7 @@ footer .bi:hover {
     background-size: cover;
     height: 400px;
     border-radius: 20px;
-    margin: 20px;
+    margin-top: 20px;
     overflow: hidden;
     display: flex;
     align-items: center;
