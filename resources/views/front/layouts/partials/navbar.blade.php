@@ -30,12 +30,12 @@
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Artikel
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="artikelDropdown">
-                        <li><a class="dropdown-item" href="news.html">Berita</a></li>
-                        <li><a class="dropdown-item" href="news.html">Opini</a></li>
+                    <ul class="dropdown-menu {{ request()->routeIs('article.*') ? 'active text-brand' : '' }}" aria-labelledby="artikelDropdown">
+                        <li><a class="dropdown-item" href="{{ route('article.index') }}">Berita</a></li>
+                        <li><a class="dropdown-item" href="{{ route('article.index') }}">Opini</a></li>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="#">Program Unggulan</a></li>
+                {{-- <li class="nav-item"><a class="nav-link" href="#">Program Unggulan</a></li> --}}
                 <li class="nav-item {{ request()->routeIs('download.index') ? 'active text-brand' : '' }}"><a class="nav-link" href="{{ route('download.index') }}">Download</a></li>
             </ul>
         </div>

@@ -27,3 +27,11 @@ Route::get('/about/member-activation', function() {
 Route::get('/download', function() {
     return view('front.download.index');
 })->name('download.index');
+
+Route::get('/article', function() {
+    return view('front.article.index');
+})->name('article.index');
+
+Route::get('/article/{slug}', function($slug) {
+    return view('front.article.show', compact('slug'));
+})->name('article.show');
