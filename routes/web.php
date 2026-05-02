@@ -23,3 +23,7 @@ Route::get('/about/profil-organisasi', function() {
 Route::get('/about/member-activation', function() {
     return view('front.about.member-activation');
 })->name('about.member-activation');
+
+Route::get('/download', function() {
+    return view('front.download.index');
+})->name('download.index');
