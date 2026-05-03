@@ -11,9 +11,10 @@
                     serta dinamika pergerakan mahasiswa di berbagai wilayah.
                 </p>
             </div>
-            <a href="{{ route('article.index') }}"
+            <a href="{{ route('article.index', ['categorySlug' => 'berita']) }}"
                 class="btn btn-outline-brand d-none d-md-inline-flex align-items-center news-heading-cta">
-                Lihat Semua <i class="bi bi-arrow-right ms-1"></i>
+                Lihat Semua
+                <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
 
@@ -42,8 +43,8 @@
         </div>
         <div class="text-center">
             <button type="button" class="btn btn-brand px-5"
-                onclick="window.location.href='{{ route('article.index') }}'">Selengkapnya <i
-                    class="bi bi-arrow-right ms-1"></i></button>
+                onclick="window.location.href='{{ route('article.index', ['categorySlug' => 'berita']) }}'">Selengkapnya
+                <i class="bi bi-arrow-right ms-1"></i></button>
         </div>
     </div>
 </section>

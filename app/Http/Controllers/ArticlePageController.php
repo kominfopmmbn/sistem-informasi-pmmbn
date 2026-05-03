@@ -28,8 +28,22 @@ class ArticlePageController extends Controller
 
     public function show(string $slug)
     {
-        $article = Article::published()->where('slug', $slug)->firstOrFail();
+        $article = Article::published()
+            ->where('slug', $slug)
+            ->with([
+                'media' => ArticleGrid::coverMediaConstraint(),
+                'category',
+            ])
+            ->firstOrFail();
 
-        return view('front.article.show', compact('article'));
+        $relatedArticles = Article::published()
+            ->where('category_id', $article->category_id)
+            ->where('id', '!=', $article->id)
+            ->with(['media' => ArticleGrid::coverMediaConstraint()])
+            ->orderBy('published_at', 'desc')
+            ->limit(4)
+            ->get();
+
+        return view('front.article.show', compact('article', 'relatedArticles'));
     }
 }
