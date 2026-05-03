@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticlePageController;
 use App\Http\Controllers\DownloadPageController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\LookupController;
@@ -25,10 +26,12 @@ Route::get('/about/member-activation', function () {
 
 Route::get('/download', [DownloadPageController::class, 'index'])->name('download.index');
 
-Route::get('/article', function () {
-    return view('front.article.index');
-})->name('article.index');
+Route::get('/article', [ArticlePageController::class, 'index'])->name('article.index');
 
-Route::get('/article/{slug}', function ($slug) {
-    return view('front.article.show', compact('slug'));
-})->name('article.show');
+Route::prefix('article')
+    ->name('article.')
+    ->group(function (): void {
+        Route::get('/detail/{slug}', [ArticlePageController::class, 'show'])->name('show');
+        Route::get('/{categorySlug}', [ArticlePageController::class, 'index'])->name('index');
+        Route::get('/', [ArticlePageController::class, 'index'])->name('all');
+    });

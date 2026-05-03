@@ -31,8 +31,8 @@
                         Artikel
                     </a>
                     <ul class="dropdown-menu {{ request()->routeIs('article.*') ? 'active text-brand' : '' }}" aria-labelledby="artikelDropdown">
-                        <li><a class="dropdown-item" href="{{ route('article.index') }}">Berita</a></li>
-                        <li><a class="dropdown-item" href="{{ route('article.index') }}">Opini</a></li>
+                        <li><a class="dropdown-item" href="{{ route('article.index', ['categorySlug' => 'berita']) }}">Berita</a></li>
+                        <li><a class="dropdown-item" href="{{ route('article.index', ['categorySlug' => 'opini']) }}">Opini</a></li>
                     </ul>
                 </li>
                 {{-- <li class="nav-item"><a class="nav-link" href="#">Program Unggulan</a></li> --}}

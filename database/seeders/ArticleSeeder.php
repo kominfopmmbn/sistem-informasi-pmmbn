@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 class ArticleSeeder extends Seeder
@@ -51,8 +52,8 @@ class ArticleSeeder extends Seeder
                 ->all();
 
             $archivedAt = fake()->boolean(40) ? fake()->dateTimeBetween('-90 days', 'now') : null;
-            $archivedBy = $archivedAt ? User::query()->inRandomOrder()->first()->id : null;
-
+            $createdBy = User::query()->inRandomOrder('')->first()->id;
+            $archivedBy = $archivedAt ? $createdBy : null;
             $article = Article::updateOrCreate(
                 ['slug' => $slug],
                 [
@@ -64,8 +65,15 @@ class ArticleSeeder extends Seeder
                     'published_at' => $publishedAt,
                     'archived_at' => $archivedAt,
                     'archived_by' => $archivedBy,
+                    'created_by' => $createdBy,
                 ]
             );
+
+            if(!$isDraft && !$archivedAt) {
+                $cover = UploadedFile::fake()->image('cover-'.$i.'.jpg', 640, 480);
+                $article->addMedia($cover)->toMediaCollection(Article::COVER_COLLECTION);
+            }
+
             $article->tags()->sync($syncTagIds);
         }
     }

@@ -325,11 +325,11 @@ body {
     color: #fff;
 }
 
-#newsCardGrid {
+#newsCardGrids {
     transition: opacity 0.2s ease;
 }
 
-#newsCardGrid.is-switching {
+#newsCardGrids.is-switching {
     opacity: 0.65;
 }
 
@@ -1103,6 +1103,21 @@ footer .bi:hover {
 
 .page-news .search-wrapper input {
     padding-left: 40px;
+}
+
+.page-news .news-card {
+    border-radius: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.page-news .news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.page-news .news-img-wrapper img {
+    height: 180px;
 }
 
 .page-news .article-card {

@@ -11,7 +11,7 @@
                     serta dinamika pergerakan mahasiswa di berbagai wilayah.
                 </p>
             </div>
-            <a href="#"
+            <a href="{{ route('article.index') }}"
                 class="btn btn-outline-brand d-none d-md-inline-flex align-items-center news-heading-cta">
                 Lihat Semua <i class="bi bi-arrow-right ms-1"></i>
             </a>
@@ -19,18 +19,30 @@
 
         <ul class="nav nav-pills news-filter mb-4" role="tablist" aria-label="Filter berita dan opini">
             <li class="nav-item">
-                <a class="nav-link active rounded-pill px-4" href="#" data-news-tab="berita"
+                <a id="tab-home-berita" class="nav-link active rounded-pill px-4" href="#" data-news-tab="berita"
                     role="button" aria-pressed="true">Berita</a>
             </li>
             <li class="nav-item ms-2">
-                <a class="nav-link rounded-pill px-4" href="#" data-news-tab="opini" role="button"
-                    aria-pressed="false">Opini</a>
+                <a id="tab-home-opini" class="nav-link rounded-pill px-4" href="#" data-news-tab="opini"
+                    role="button" aria-pressed="false">Opini</a>
             </li>
         </ul>
 
-        <div class="row g-4 mb-5" id="newsCardGrid"></div>
+        <div id="newsCardGrids">
+            <div class="row g-4 mb-5" id="newsCardGridBerita" role="tabpanel" aria-labelledby="tab-home-berita">
+                @foreach ($news as $article)
+                    @include('front.components.article-card', ['article' => $article])
+                @endforeach
+            </div>
+            <div class="row g-4 mb-5 d-none" id="newsCardGridOpini" role="tabpanel" aria-labelledby="tab-home-opini">
+                @foreach ($opinions as $article)
+                    @include('front.components.article-card', ['article' => $article])
+                @endforeach
+            </div>
+        </div>
         <div class="text-center">
-            <button class="btn btn-brand px-5" onclick="window.location.href='news.html'">Selengkapnya <i
+            <button type="button" class="btn btn-brand px-5"
+                onclick="window.location.href='{{ route('article.index') }}'">Selengkapnya <i
                     class="bi bi-arrow-right ms-1"></i></button>
         </div>
     </div>

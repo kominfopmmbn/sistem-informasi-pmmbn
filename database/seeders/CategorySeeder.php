@@ -18,12 +18,14 @@ class CategorySeeder extends Seeder
             [
                 'id' => Category::BERITA,
                 'title' => 'Berita',
-                'slug' => Str::slug('Berita')
+                'slug' => Str::slug('Berita'),
+                'description' => 'Menyajikan berita, pembaruan, dan perkembangan terbaru seputar dunia digital, desain, dan teknologi yang relevan untuk dibaca hari ini.',
             ],
             [
                 'id' => Category::OPINI,
                 'title' => 'Opini',
-                'slug' => Str::slug('Opini')
+                'slug' => Str::slug('Opini'),
+                'description' => 'Kolom pandangan dan analisis reflektif tentang isu moderasi beragama, kebangsaan, serta peran mahasiswa dalam pembangunan bermartabat.',
             ],
         ];
 
@@ -33,6 +35,7 @@ class CategorySeeder extends Seeder
                 [
                     'title' => $row['title'],
                     'slug' => $row['slug'],
+                    'description' => $row['description'],
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]

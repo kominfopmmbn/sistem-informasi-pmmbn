@@ -13,5 +13,5 @@
 @endsection
 
 @push('scripts')
-    @include('front.home.home-inline-scripts', compact('news', 'opinions'))
+    @include('front.home.home-inline-scripts')
 @endpush
