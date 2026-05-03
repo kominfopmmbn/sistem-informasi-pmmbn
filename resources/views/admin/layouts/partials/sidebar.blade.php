@@ -34,6 +34,15 @@
             </li>
         @endcan
 
+        @can('documents.view')
+            <li class="menu-item {{ request()->routeIs('admin.documents.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.documents.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-file"></i>
+                    <div>Dokumen</div>
+                </a>
+            </li>
+        @endcan
+
         @can('org_regions.view')
             <li class="menu-item {{ request()->routeIs('admin.org-regions.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.org-regions.index') }}" class="menu-link">

@@ -7,9 +7,9 @@ use App\Http\Requests\UpdateArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -52,7 +52,7 @@ class ArticleController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        $categories = Category::query()->orderBy('title')->get();
+        $categories = Category::query()->orderBy('title', 'asc')->get();
 
         $filterState = [
             'q' => $q,
@@ -72,8 +72,8 @@ class ArticleController extends Controller
 
     public function create(): View
     {
-        $categories = Category::query()->orderBy('title')->get();
-        $tags = Tag::query()->orderBy('title')->get();
+        $categories = Category::query()->orderBy('title', 'asc')->get();
+        $tags = Tag::query()->orderBy('title', 'asc')->get();
 
         return view('admin.articles.create', compact('categories', 'tags'));
     }
@@ -84,11 +84,11 @@ class ArticleController extends Controller
         $data['is_draft'] = $request->string('save_action')->toString() === 'draft';
         $data['slug'] = $this->uniqueSlugFromTitle($request->string('title')->toString());
 
-        if ($request->hasFile('cover_photo')) {
-            $data['cover_photo_path'] = $request->file('cover_photo')->store('articles', 'public');
-        }
-
         $article = Article::create($data);
+
+        if ($request->hasFile('cover_photo')) {
+            $article->addMediaFromRequest('cover_photo')->toMediaCollection(Article::COVER_COLLECTION);
+        }
 
         $article->tags()->sync($this->resolveTagIdsFromRequest($request));
 
@@ -105,9 +105,12 @@ class ArticleController extends Controller
     {
         $this->authorize('update', $article);
 
-        $article->load(['tags']);
-        $categories = Category::query()->orderBy('title')->get();
-        $tags = Tag::query()->orderBy('title')->get();
+        $article->load([
+            'tags',
+            'media' => fn ($mq) => $mq->where('collection_name', Article::COVER_COLLECTION),
+        ]);
+        $categories = Category::query()->orderBy('title', 'asc')->get();
+        $tags = Tag::query()->orderBy('title', 'asc')->get();
 
         return view('admin.articles.edit', compact('article', 'categories', 'tags'));
     }
@@ -120,19 +123,13 @@ class ArticleController extends Controller
         $data['is_draft'] = $request->string('save_action')->toString() === 'draft';
         $data['slug'] = $this->uniqueSlugFromTitle($request->string('title')->toString(), $article->getKey());
 
-        if ($request->boolean('remove_cover') && $article->cover_photo_path) {
-            Storage::disk('public')->delete($article->cover_photo_path);
-            $data['cover_photo_path'] = null;
-        }
+        $article->update($data);
 
         if ($request->hasFile('cover_photo')) {
-            if ($article->cover_photo_path) {
-                Storage::disk('public')->delete($article->cover_photo_path);
-            }
-            $data['cover_photo_path'] = $request->file('cover_photo')->store('articles', 'public');
+            $article->addMediaFromRequest('cover_photo')->toMediaCollection(Article::COVER_COLLECTION);
+        } elseif ($request->boolean('remove_cover')) {
+            $article->clearMediaCollection(Article::COVER_COLLECTION);
         }
-
-        $article->update($data);
 
         $article->tags()->sync($this->resolveTagIdsFromRequest($request));
 
@@ -145,13 +142,13 @@ class ArticleController extends Controller
             ->with('success', $success);
     }
 
+    /**
+     * @param Model $article
+     * @return RedirectResponse
+     */
     public function destroy(Article $article): RedirectResponse
     {
         $this->authorize('delete', $article);
-
-        if ($article->cover_photo_path) {
-            Storage::disk('public')->delete($article->cover_photo_path);
-        }
 
         $article->delete();
 

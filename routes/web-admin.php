@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CollegeController;
 use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\OrgRegionController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RoleController;
@@ -64,6 +65,17 @@ Route::middleware(['auth'])->group(function (): void {
             'edit' => 'permission:articles.update',
             'update' => 'permission:articles.update',
             'destroy' => 'permission:articles.delete',
+        ]);
+
+    Route::resource('documents', DocumentController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:documents.view',
+            'create' => 'permission:documents.create',
+            'store' => 'permission:documents.create',
+            'edit' => 'permission:documents.update',
+            'update' => 'permission:documents.update',
+            'destroy' => 'permission:documents.delete',
         ]);
 
     Route::resource('roles', RoleController::class)

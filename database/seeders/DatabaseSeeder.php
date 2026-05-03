@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(TagSeeder::class);
         $this->call(ArticleSeeder::class);
+        $this->call(DocumentSeeder::class);
         User::factory(30)->create();
     }
 }

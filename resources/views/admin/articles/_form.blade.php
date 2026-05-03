@@ -72,12 +72,12 @@
             <span class="note needsclick d-block small text-body-secondary mt-2">Format gambar, maks. 5 MB</span>
         </div>
     </div>
-    @if ($article?->cover_photo_path)
+    @if ($article?->hasMedia(\App\Models\Article::COVER_COLLECTION))
         <div class="mt-4 border rounded p-3 bg-lighter">
             <p class="small text-body-secondary mb-2">Sampul saat ini</p>
             <div class="row g-3 align-items-center">
                 <div class="col-auto">
-                    <img src="{{ asset('storage/' . $article->cover_photo_path) }}" alt=""
+                    <img src="{{ $article->getFirstMediaUrl(\App\Models\Article::COVER_COLLECTION) }}" alt=""
                         class="rounded" style="max-height: 120px; max-width: 200px; object-fit: cover;">
                 </div>
                 <div class="col">

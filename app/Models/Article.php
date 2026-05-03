@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Mattiverse\Userstamps\Traits\Userstamps;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 #[Fillable([
     'category_id',
@@ -16,15 +18,19 @@ use Mattiverse\Userstamps\Traits\Userstamps;
     'slug',
     'subtitle',
     'content',
-    'cover_photo_path',
     'published_at',
     'is_draft',
     'archived_at',
     'archived_by',
 ])]
-class Article extends Model
+class Article extends Model implements HasMedia
 {
-    use SoftDeletes, Userstamps;
+    use InteractsWithMedia;
+    use SoftDeletes;
+    use Userstamps;
+
+    /** Koleksi single-file untuk sampul artikel (landing & detail). */
+    public const COVER_COLLECTION = 'cover';
 
     protected function casts(): array
     {
@@ -33,6 +39,11 @@ class Article extends Model
             'archived_at' => 'datetime',
             'is_draft' => 'boolean',
         ];
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection(self::COVER_COLLECTION)->singleFile();
     }
 
     public function scopePublished(Builder $query): Builder

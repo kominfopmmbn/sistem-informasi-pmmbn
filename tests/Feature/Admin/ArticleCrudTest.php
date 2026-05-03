@@ -268,8 +268,10 @@ class ArticleCrudTest extends TestCase
         ]);
 
         $article = Article::query()->where('slug', 'judul-publikasi')->firstOrFail();
-        $this->assertNotNull($article->cover_photo_path);
-        $this->assertTrue(Storage::disk('public')->exists($article->cover_photo_path));
+        $this->assertTrue($article->hasMedia(Article::COVER_COLLECTION));
+        $cover = $article->getFirstMedia(Article::COVER_COLLECTION);
+        $this->assertNotNull($cover);
+        $this->assertTrue(Storage::disk($cover->disk)->exists($cover->getPathRelativeToRoot()));
         $this->assertCount(2, $article->tags);
         $this->assertTrue($article->tags->contains('title', 'Satu'));
         $this->assertTrue($article->tags->contains('title', 'Tag Baru Dari Teks'));
@@ -393,17 +395,19 @@ class ArticleCrudTest extends TestCase
         $this->actingAsUser();
         $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-7']);
         $old = UploadedFile::fake()->image('old.jpg', 10, 10);
-        $oldPath = $old->store('articles', 'public');
         $article = Article::query()->create([
             'category_id' => $cat->id,
             'title' => 'Dengan Sampul',
             'slug' => 'dengan-sampul',
             'content' => '<p>x</p>',
-            'cover_photo_path' => $oldPath,
             'published_at' => now(),
             'is_draft' => false,
         ]);
-        $this->assertTrue(Storage::disk('public')->exists($oldPath));
+        $article->addMedia($old)->toMediaCollection(Article::COVER_COLLECTION);
+        $oldMedia = $article->getFirstMedia(Article::COVER_COLLECTION);
+        $this->assertNotNull($oldMedia);
+        $oldRelativePath = $oldMedia->getPathRelativeToRoot();
+        $this->assertTrue(Storage::disk('public')->exists($oldRelativePath));
 
         $new = UploadedFile::fake()->image('new.png', 20, 20);
         $this->put(route('admin.articles.update', $article), [
@@ -416,9 +420,11 @@ class ArticleCrudTest extends TestCase
         ])->assertRedirect(route('admin.articles.index'));
 
         $article->refresh();
-        $this->assertNotSame($oldPath, $article->cover_photo_path);
-        $this->assertFalse(Storage::disk('public')->exists($oldPath));
-        $this->assertTrue(Storage::disk('public')->exists($article->cover_photo_path));
+        $this->assertDatabaseMissing('media', ['id' => $oldMedia->id]);
+        $this->assertFalse(Storage::disk('public')->exists($oldRelativePath));
+        $newMedia = $article->getFirstMedia(Article::COVER_COLLECTION);
+        $this->assertNotNull($newMedia);
+        $this->assertTrue(Storage::disk('public')->exists($newMedia->getPathRelativeToRoot()));
     }
 
     public function test_update_with_remove_cover_clears_path_and_deletes_file(): void
@@ -427,17 +433,19 @@ class ArticleCrudTest extends TestCase
         $this->actingAsUser();
         $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-8']);
         $file = UploadedFile::fake()->image('c.jpg', 5, 5);
-        $path = $file->store('articles', 'public');
         $article = Article::query()->create([
             'category_id' => $cat->id,
             'title' => 'Hapus Sampul',
             'slug' => 'hapus-sampul',
             'content' => '<p>k</p>',
-            'cover_photo_path' => $path,
             'published_at' => now(),
             'is_draft' => false,
         ]);
-        $this->assertTrue(Storage::disk('public')->exists($path));
+        $article->addMedia($file)->toMediaCollection(Article::COVER_COLLECTION);
+        $media = $article->getFirstMedia(Article::COVER_COLLECTION);
+        $this->assertNotNull($media);
+        $relative = $media->getPathRelativeToRoot();
+        $this->assertTrue(Storage::disk('public')->exists($relative));
 
         $this->put(route('admin.articles.update', $article), [
             'save_action' => 'publish',
@@ -449,8 +457,9 @@ class ArticleCrudTest extends TestCase
         ])->assertRedirect(route('admin.articles.index'));
 
         $article->refresh();
-        $this->assertNull($article->cover_photo_path);
-        $this->assertFalse(Storage::disk('public')->exists($path));
+        $this->assertFalse($article->hasMedia(Article::COVER_COLLECTION));
+        $this->assertDatabaseMissing('media', ['id' => $media->id]);
+        $this->assertFalse(Storage::disk('public')->exists($relative));
     }
 
     public function test_destroy_soft_deletes_article(): void
@@ -479,20 +488,23 @@ class ArticleCrudTest extends TestCase
         $this->actingAsUser();
         $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-10']);
         $file = UploadedFile::fake()->image('d.jpg', 4, 4);
-        $path = $file->store('articles', 'public');
         $article = Article::query()->create([
             'category_id' => $cat->id,
             'title' => 'X',
             'slug' => 'x-del',
             'content' => '<p>x</p>',
-            'cover_photo_path' => $path,
             'published_at' => now(),
             'is_draft' => false,
         ]);
+        $article->addMedia($file)->toMediaCollection(Article::COVER_COLLECTION);
+        $cover = $article->getFirstMedia(Article::COVER_COLLECTION);
+        $this->assertNotNull($cover);
+        $relative = $cover->getPathRelativeToRoot();
 
         $this->delete(route('admin.articles.destroy', $article))->assertRedirect();
 
-        $this->assertFalse(Storage::disk('public')->exists($path));
+        $this->assertFalse(Storage::disk('public')->exists($relative));
+        $this->assertDatabaseMissing('media', ['id' => $cover->id]);
         $this->assertSoftDeleted('articles', ['id' => $article->id]);
     }
 

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCityRequest;
 use App\Http\Requests\UpdateCityRequest;
 use App\Models\City;
 use App\Models\Province;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -24,7 +25,7 @@ class CityController extends Controller
 
         $query = City::query()
             ->with('province')
-            ->orderBy('name');
+            ->orderBy('name', 'asc');
 
         if ($q !== '') {
             $like = '%'.addcslashes($q, '%_\\').'%';
@@ -37,7 +38,7 @@ class CityController extends Controller
 
         $cities = $query->paginate(15)->withQueryString();
 
-        $provinces = Province::query()->orderBy('name')->get();
+        $provinces = Province::query()->orderBy('name', 'asc')->get();
 
         $filterState = [
             'q' => $q,
@@ -49,7 +50,7 @@ class CityController extends Controller
 
     public function create(): View
     {
-        $provinces = Province::query()->orderBy('name')->get();
+        $provinces = Province::query()->orderBy('name', 'asc')->get();
 
         return view('admin.regions.cities.create', compact('provinces'));
     }
@@ -65,7 +66,7 @@ class CityController extends Controller
 
     public function edit(City $city): View
     {
-        $provinces = Province::query()->orderBy('name')->get();
+        $provinces = Province::query()->orderBy('name', 'asc')->get();
 
         return view('admin.regions.cities.edit', [
             'city' => $city,
@@ -82,6 +83,10 @@ class CityController extends Controller
             ->with('success', 'Kota/kabupaten berhasil diperbarui.');
     }
 
+    /**
+     * @param Model $city
+     * @return RedirectResponse
+     */
     public function destroy(City $city): RedirectResponse
     {
         if ($city->districts()->exists()) {
