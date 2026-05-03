@@ -52,6 +52,15 @@
             </li>
         @endcan
 
+        @can('members.view')
+            <li class="menu-item {{ request()->routeIs('admin.members.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.members.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-group"></i>
+                    <div>Anggota</div>
+                </a>
+            </li>
+        @endcan
+
         @can('colleges.view')
             <li class="menu-item {{ request()->routeIs('admin.colleges.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.colleges.index') }}" class="menu-link">

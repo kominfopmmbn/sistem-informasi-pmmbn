@@ -6,6 +6,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\CollegeController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OrgRegionController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RoleController;
@@ -99,6 +100,21 @@ Route::middleware(['auth'])->group(function (): void {
             'update' => 'permission:org_regions.update',
             'destroy' => 'permission:org_regions.delete',
         ]);
+
+    Route::resource('members', MemberController::class)
+        ->except(['show'])
+        ->middleware([
+            'index' => 'permission:members.view',
+            'create' => 'permission:members.create',
+            'store' => 'permission:members.create',
+            'edit' => 'permission:members.update',
+            'update' => 'permission:members.update',
+            'destroy' => 'permission:members.delete',
+        ]);
+
+    Route::delete('members/{member}/media/{media}', [MemberController::class, 'destroySupportingMedia'])
+        ->middleware('permission:members.update')
+        ->name('members.supporting-media.destroy');
 
     Route::resource('colleges', CollegeController::class)
         ->except(['show'])
