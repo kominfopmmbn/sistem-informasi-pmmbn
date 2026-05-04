@@ -36,7 +36,7 @@
                     </ul>
                 </li>
                 {{-- <li class="nav-item"><a class="nav-link" href="#">Program Unggulan</a></li> --}}
-                <li class="nav-item {{ request()->routeIs('download.index') ? 'active text-brand' : '' }}"><a class="nav-link" href="{{ route('download.index') }}">Download</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('download.index') ? 'active text-brand' : '' }}" href="{{ route('download.index') }}">Download</a></li>
             </ul>
         </div>
     </div>
