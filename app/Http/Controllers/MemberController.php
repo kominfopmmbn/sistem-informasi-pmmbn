@@ -86,7 +86,7 @@ class MemberController extends Controller
 
     public function destroy(Member $member): RedirectResponse
     {
-        $member->delete();
+        $member->deleteOrFail();
 
         return redirect()
             ->route('admin.members.index')
