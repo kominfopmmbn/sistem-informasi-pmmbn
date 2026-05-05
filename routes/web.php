@@ -17,12 +17,18 @@ Route::prefix('select')
     });
 
 Route::get('/', [HomePageController::class, 'index'])->name('home.index');
-Route::get('/about/profil-organisasi', function () {
-    return view('front.about.profil-organisasi');
-})->name('about.profil-organisasi');
 
-Route::get('/about/member-activation', [MemberActivationPageController::class, 'index'])
-    ->name('about.member-activation');
+Route::prefix('about')
+    ->name('about.')
+    ->group(function (): void {
+        Route::get('/profil-organisasi', function () {
+            return view('front.about.profil-organisasi');
+        })->name('profil-organisasi');
+        Route::get('/member-activation', [MemberActivationPageController::class, 'index'])
+            ->name('member-activation');
+        Route::post('/member-activation', [MemberActivationPageController::class, 'store'])
+            ->name('member-activation.store');
+    });
 
 Route::get('/download', [DownloadPageController::class, 'index'])->name('download.index');
 

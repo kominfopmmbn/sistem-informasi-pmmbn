@@ -12,7 +12,8 @@
         "laravolt/indonesia": "^0.41.0",
         "spatie/laravel-medialibrary": "^11.22",
         "spatie/laravel-permission": "^7.3",
-        "wildside/userstamps": "^4.0"
+        "wildside/userstamps": "^4.0",
+        "yajra/laravel-datatables-oracle": "^13.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

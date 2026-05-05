@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMemberActivationRequest;
 use App\Models\City;
 use App\Models\Member;
+use App\Models\MemberActivation;
 use App\Models\OrgRegion;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\View;
@@ -55,5 +59,15 @@ class MemberActivationPageController extends Controller
             'supportingAcceptedDropzone',
             'supportingDocsHasError',
         ));
+    }
+
+    public function store(StoreMemberActivationRequest $request): RedirectResponse
+    {
+        $memberActivation = MemberActivation::query()->create($request->validatedPersistable());
+        MemberController::attachSupportingDocumentsFromRequest($request, $memberActivation);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Pendaftaran berhasil. Silakan tunggu konfirmasi dari pihak kami.');
     }
 }

@@ -21,15 +21,24 @@
 
     <div class="container my-5 pt-4">
         <div class="row justify-content-center">
+            {{-- show success message --}}
+            @if (session('success'))
+                <div class="col-12">
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                </div>
+            @endif
             <div class="col-lg-8 col-md-10">
-                <form id="member-form" method="post" enctype="multipart/form-data" action="{{ url()->current() }}">
+                <form id="member-form" method="post" enctype="multipart/form-data"
+                    action="{{ route('about.member-activation.store') }}">
                     @csrf
                     <div class="row g-4">
                         <div class="col-md-6">
                             <label class="form-label" for="member_nim">NIM</label>
                             <input type="text" name="nim" id="member_nim"
                                 class="form-control form-control-custom @error('nim') is-invalid @enderror"
-                                value="{{ old('nim') }}" maxlength="255" autocomplete="off">
+                                value="{{ old('nim', '') }}" maxlength="255" autocomplete="off">
                             @error('nim')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -91,7 +100,7 @@
                                         data-search-url="{{ route('select.cities') }}"
                                         data-placeholder="Pilih kota/kabupaten"
                                         @if ($placeCode !== null && $placeCode !== '') data-initial-code="{{ $placeCode }}" data-initial-name="{{ $placeName }}" @endif
-                                        @if (! filled(old('province_code'))) disabled @endif>
+                                        @if (!filled(old('province_code'))) disabled @endif>
                                         @if ($placeCode !== null && $placeCode !== '')
                                             <option value="{{ $placeCode }}" selected>{{ $placeName }}</option>
                                         @else
@@ -180,8 +189,8 @@
                                     data-accepted-files="{{ $supportingAcceptedDropzone }}">
                                     <div class="dz-message needsclick text-center py-4 px-3">
                                         Seret berkas ke sini atau klik untuk memilih
-                                        <span
-                                            class="note needsclick d-block small text-secondary mt-2">PDF, Office, gambar,
+                                        <span class="note needsclick d-block small text-secondary mt-2">PDF, Office,
+                                            gambar,
                                             ZIP, atau teks — hingga {{ $maxNewSupportingFiles }} berkas per pengiriman
                                             (maks. {{ $supportingMaxFileMb }} MB per berkas).</span>
                                     </div>
@@ -191,7 +200,7 @@
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
                             @foreach ($errors->keys() as $_errKey)
-                                @continue(! str_starts_with($_errKey, 'supporting_documents.'))
+                                @continue(!str_starts_with($_errKey, 'supporting_documents.'))
                                 @foreach ($errors->get($_errKey) as $message)
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @endforeach
@@ -200,7 +209,7 @@
                     </div>
                     <div class="mt-4">
                         <button type="submit" class="btn btn-custom d-inline-flex align-items-center">
-                            Daftar <i class="fa-solid fa-paper-plane ms-2"></i>
+                            Daftar
                         </button>
                     </div>
                 </form>

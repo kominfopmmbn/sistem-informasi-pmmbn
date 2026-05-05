@@ -7,14 +7,16 @@ use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
 use App\Models\MemberActivation;
 use App\Models\OrgRegion;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\View\View;
 use Laravolt\Indonesia\Models\Province;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Yajra\DataTables\Facades\DataTables;
 
-class MemberController extends Controller
+class MemberActivationController extends Controller
 {
     public function index(Request $request): View
     {
@@ -24,7 +26,7 @@ class MemberController extends Controller
 
         $q = isset($filters['q']) ? trim((string) $filters['q']) : '';
 
-        $query = Member::query()
+        $query = MemberActivation::query()
             ->with(['orgRegion', 'placeOfBirthCity'])
             ->latest('updated_at');
 
@@ -41,30 +43,13 @@ class MemberController extends Controller
 
         $filterState = ['q' => $q];
 
-        return view('admin.members.index', compact('members', 'filterState'));
+        return view('admin.member-activations.index', compact('members', 'filterState'));
     }
 
-    public function create(): View
+    /** Parameter harus selaras dengan `{member_activation}` di definisi rute (implicit binding). */
+    public function edit(MemberActivation $member_activation): View
     {
-        $provinces = Province::query()->orderBy('name', 'asc')->get();
-        $orgRegions = OrgRegion::query()->orderBy('name', 'asc')->get();
-
-        return view('admin.members.create', compact('provinces', 'orgRegions'));
-    }
-
-    public function store(StoreMemberRequest $request): RedirectResponse
-    {
-        $member = Member::query()->create($request->validatedPersistable());
-        $this->attachSupportingDocumentsFromRequest($request, $member);
-
-        return redirect()
-            ->route('admin.members.index')
-            ->with('success', 'Anggota berhasil ditambahkan.');
-    }
-
-    public function edit(Member $member): View
-    {
-        $member->load([
+        $member_activation->load([
             'placeOfBirthCity',
             'orgRegion',
             'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
@@ -72,32 +57,36 @@ class MemberController extends Controller
         $provinces = Province::query()->orderBy('name', 'asc')->get();
         $orgRegions = OrgRegion::query()->orderBy('name', 'asc')->get();
 
-        return view('admin.members.edit', compact('member', 'provinces', 'orgRegions'));
+        return view('admin.member-activations.edit', [
+            'member' => $member_activation,
+            'provinces' => $provinces,
+            'orgRegions' => $orgRegions,
+        ]);
     }
 
-    public function update(UpdateMemberRequest $request, Member $member): RedirectResponse
+    public function update(UpdateMemberRequest $request, MemberActivation $member_activation): RedirectResponse
     {
-        $member->update($request->validatedPersistable());
-        $this->attachSupportingDocumentsFromRequest($request, $member);
+        $member_activation->update($request->validatedPersistable());
+        $this->attachSupportingDocumentsFromRequest($request, $member_activation);
 
         return redirect()
-            ->route('admin.members.index')
-            ->with('success', 'Anggota berhasil diperbarui.');
+            ->back()
+            ->with('success', 'Aktivasi Anggota berhasil diperbarui.');
     }
 
-    public function destroy(Member $member): RedirectResponse
+    public function destroy(MemberActivation $member_activation): RedirectResponse
     {
-        $member->deleteOrFail();
+        $member_activation->delete();
 
         return redirect()
-            ->route('admin.members.index')
-            ->with('success', 'Anggota berhasil dihapus.');
+            ->route('admin.member-activations.index')
+            ->with('success', 'Aktivasi Anggota berhasil dihapus.');
     }
 
     /** Hapus satu lampiran koleksi pendukung (hanya milik anggota ini). */
-    public function destroySupportingMedia(Member $member, Media $media): RedirectResponse
+    public function destroySupportingMedia(MemberActivation $member_activation, Media $media): RedirectResponse
     {
-        $owned = $member->media()
+        $owned = $member_activation->media()
             ->whereKey($media->getKey())
             ->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION)
             ->first();
@@ -107,7 +96,7 @@ class MemberController extends Controller
         $media->delete();
 
         return redirect()
-            ->route('admin.members.edit', $member)
+            ->route('admin.member-activations.edit', ['member_activation' => $member_activation])
             ->with('success', 'Dokumen pendukung berhasil dihapus.');
     }
 
@@ -125,5 +114,19 @@ class MemberController extends Controller
                 $member->addMedia($file)->toMediaCollection(Member::SUPPORTING_DOCUMENTS_COLLECTION);
             }
         }
+    }
+
+    public function getSuggestionMember(MemberActivation $member_activation, Request $request)
+    {
+        $members = Member::query()
+        // if search null
+        ->when(!$request->input('search.value'), function ($query) use ($member_activation) {
+            $query->where('nim', $member_activation->nim);
+            $query->orWhere('email', $member_activation->email);
+        });
+
+        return DataTables::of($members)
+            ->addIndexColumn()
+            ->make(true);
     }
 }

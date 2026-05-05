@@ -6,6 +6,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\CollegeController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\MemberActivationController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OrgRegionController;
 use App\Http\Controllers\ProvinceController;
@@ -111,6 +112,28 @@ Route::middleware(['auth'])->group(function (): void {
             'update' => 'permission:members.update',
             'destroy' => 'permission:members.delete',
         ]);
+    Route::prefix('member-activations/{member_activation}')
+        ->middleware('permission:member-activations.update')
+        ->as('member-activations.')
+        ->group(function (): void {
+            Route::get('suggestion-member', [MemberActivationController::class, 'getSuggestionMember'])->name('suggestion-member');
+        });
+    Route::resource('member-activations', MemberActivationController::class)
+        ->except([
+            'show',
+            'create',
+            'store',
+        ])
+        ->middleware([
+            'index' => 'permission:member-activations.view',
+            'edit' => 'permission:member-activations.update',
+            'update' => 'permission:member-activations.update',
+            'destroy' => 'permission:member-activations.delete',
+        ]);
+
+    Route::delete('member-activations/{member_activation}/media/{media}', [MemberActivationController::class, 'destroySupportingMedia'])
+        ->middleware('permission:member-activations.update')
+        ->name('member-activations.supporting-media.destroy');
 
     Route::delete('members/{member}/media/{media}', [MemberController::class, 'destroySupportingMedia'])
         ->middleware('permission:members.update')

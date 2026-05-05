@@ -61,7 +61,7 @@
             </li>
         @endcan
 
-        @can('members.view')
+        @canany(['members.view', 'member-activations.view'])
             <li class="menu-header small">
                 <span class="menu-header-text" data-i18n="Anggota">Anggota</span>
             </li>
@@ -71,7 +71,15 @@
                     <div>Master Anggota</div>
                 </a>
             </li>
-        @endcan
+            @can('member-activations.view')
+                <li class="menu-item {{ request()->routeIs('admin.member-activations.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.member-activations.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-user-plus"></i>
+                        <div>Aktivasi Anggota</div>
+                    </a>
+                </li>
+            @endcan
+        @endcanany
 
         @canany(['users.view', 'roles.view'])
             <!-- Authorization -->
