@@ -1436,8 +1436,7 @@ footer .bi:hover {
     padding: 20px;
 }
 
-.page-card-member .form-control-custom,
-.page-card-member .form-select-custom {
+.page-card-member .form-control-custom {
     border-radius: 50px;
     padding: 12px 25px;
     border: 1px solid #ddd;
@@ -1445,8 +1444,23 @@ footer .bi:hover {
     color: #666;
 }
 
-.page-card-member .form-control-custom:focus,
-.page-card-member .form-select-custom:focus {
+.select2-primary > div > div{
+    border-radius: 50px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+select.form-select.form-select-custom {
+    border: 0;
+}
+
+.select2-dropdown {
+    background-color: #fff !important;
+}
+
+.page-card-member .form-control-custom:focus {
     box-shadow: none;
     border-color: var(--page-brand-color);
 }

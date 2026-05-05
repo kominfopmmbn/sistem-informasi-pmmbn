@@ -52,20 +52,23 @@
             </li>
         @endcan
 
-        @can('members.view')
-            <li class="menu-item {{ request()->routeIs('admin.members.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.members.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-group"></i>
-                    <div>Anggota</div>
-                </a>
-            </li>
-        @endcan
-
         @can('colleges.view')
             <li class="menu-item {{ request()->routeIs('admin.colleges.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.colleges.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-building-house"></i>
                     <div>Perguruan Tinggi</div>
+                </a>
+            </li>
+        @endcan
+
+        @can('members.view')
+            <li class="menu-header small">
+                <span class="menu-header-text" data-i18n="Anggota">Anggota</span>
+            </li>
+            <li class="menu-item {{ request()->routeIs('admin.members.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.members.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-group"></i>
+                    <div>Master Anggota</div>
                 </a>
             </li>
         @endcan

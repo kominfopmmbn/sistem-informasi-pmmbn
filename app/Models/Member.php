@@ -42,6 +42,47 @@ class Member extends Model implements HasMedia
         return 'pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip,jpg,jpeg,png,gif,webp';
     }
 
+    /** Nilai `accepted-files` Dropzone: ekstensi dengan titik, dipisahkan koma (turunan dari `supportingDocumentMimeList()`). */
+    public static function supportingDocumentDropzoneAcceptedFiles(): string
+    {
+        return collect(explode(',', self::supportingDocumentMimeList()))
+            ->map(fn (string $ext) => '.'.trim($ext))
+            ->implode(',');
+    }
+
+    /** Gabungan ekstensi + MIME untuk atribut `accept` pada input file (turunan dari `supportingDocumentMimeList()`). */
+    public static function supportingDocumentFileInputAccept(): string
+    {
+        $mimes = collect(explode(',', self::supportingDocumentMimeList()))
+            ->map(fn (string $ext) => self::mimeTypeForSupportingDocumentExtension(trim($ext)))
+            ->filter()
+            ->unique()
+            ->values()
+            ->implode(',');
+
+        return self::supportingDocumentDropzoneAcceptedFiles().','.$mimes;
+    }
+
+    private static function mimeTypeForSupportingDocumentExtension(string $ext): ?string
+    {
+        return match ($ext) {
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'txt' => 'text/plain',
+            'zip' => 'application/zip',
+            'jpg', 'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp',
+            default => null,
+        };
+    }
+
     /** Aturan validasi per item `supporting_documents.*` (selain nullable di level array). */
     public static function supportingDocumentItemRules(): array
     {

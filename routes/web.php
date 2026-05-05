@@ -4,6 +4,7 @@ use App\Http\Controllers\ArticlePageController;
 use App\Http\Controllers\DownloadPageController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\LookupController;
+use App\Http\Controllers\MemberActivationPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('select')
@@ -20,9 +21,8 @@ Route::get('/about/profil-organisasi', function () {
     return view('front.about.profil-organisasi');
 })->name('about.profil-organisasi');
 
-Route::get('/about/member-activation', function () {
-    return view('front.about.member-activation');
-})->name('about.member-activation');
+Route::get('/about/member-activation', [MemberActivationPageController::class, 'index'])
+    ->name('about.member-activation');
 
 Route::get('/download', [DownloadPageController::class, 'index'])->name('download.index');
 
