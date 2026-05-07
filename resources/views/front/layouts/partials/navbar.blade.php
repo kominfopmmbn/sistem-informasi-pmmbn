@@ -13,30 +13,38 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-lg-center fw-medium">
-                <li class="nav-item"><a class="nav-link {{ request()->routeIs('home.index') ? 'active text-brand' : '' }}" aria-current="page"
-                        href="{{ route('home.index') }}">Beranda</a></li>
+                <li class="nav-item"><a
+                        class="nav-link {{ request()->routeIs('home.index') ? 'active text-brand' : '' }}"
+                        aria-current="page" href="{{ route('home.index') }}">Beranda</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->routeIs('about.*') ? 'active text-brand' : '' }}" href="#" id="tentangDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('about.*') ? 'active text-brand' : '' }}"
+                        href="#" id="tentangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Tentang
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="tentangDropdown">
-                        <li><a class="dropdown-item" href="{{ route('about.profil-organisasi') }}">Profil Organisasi</a></li>
+                        <li><a class="dropdown-item" href="{{ route('about.profil-organisasi') }}">Profil Organisasi</a>
+                        </li>
                         <li><a class="dropdown-item" href="{{ route('about.member-activation') }}">KTA</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="artikelDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('article.*') ? 'active text-brand' : '' }}"
+                        href="#" id="artikelDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Artikel
                     </a>
-                    <ul class="dropdown-menu {{ request()->routeIs('article.*') ? 'active text-brand' : '' }}" aria-labelledby="artikelDropdown">
-                        <li><a class="dropdown-item" href="{{ route('article.index', ['categorySlug' => 'berita']) }}">Berita</a></li>
-                        <li><a class="dropdown-item" href="{{ route('article.index', ['categorySlug' => 'opini']) }}">Opini</a></li>
+                    <ul class="dropdown-menu {{ request()->routeIs('article.*') ? 'active text-brand' : '' }}"
+                        aria-labelledby="artikelDropdown">
+                        <li><a class="dropdown-item"
+                                href="{{ route('article.index', ['categorySlug' => 'berita']) }}">Berita</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{ route('article.index', ['categorySlug' => 'opini']) }}">Opini</a></li>
                     </ul>
                 </li>
                 {{-- <li class="nav-item"><a class="nav-link" href="#">Program Unggulan</a></li> --}}
-                <li class="nav-item {{ request()->routeIs('download.index') ? 'active text-brand' : '' }}"><a class="nav-link" href="{{ route('download.index') }}">Download</a></li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('download.index') ? 'active text-brand' : '' }}"
+                        href="{{ route('download.index') }}">Download</a>
+                </li>
             </ul>
         </div>
     </div>
