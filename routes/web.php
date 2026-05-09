@@ -24,10 +24,18 @@ Route::prefix('about')
         Route::get('/profil-organisasi', function () {
             return view('front.about.profil-organisasi');
         })->name('profil-organisasi');
-        Route::get('/member-activation', [MemberActivationPageController::class, 'index'])
-            ->name('member-activation');
-        Route::post('/member-activation', [MemberActivationPageController::class, 'store'])
-            ->name('member-activation.store');
+        Route::prefix('member-activation')
+            ->name('member-activation.')
+            ->group(function (): void {
+                Route::get('/', [MemberActivationPageController::class, 'index'])
+                    ->name('index');
+                Route::post('/', [MemberActivationPageController::class, 'store'])
+                    ->name('store');
+                Route::post('/send-verification-email', [MemberActivationPageController::class, 'sendVerificationEmail'])
+                    ->name('send-verification-email');
+                Route::post('/verify-email', [MemberActivationPageController::class, 'verifyEmail'])
+                    ->name('verify-email');
+            });
     });
 
 Route::get('/download', [DownloadPageController::class, 'index'])->name('download.index');

@@ -37,8 +37,8 @@
                         <div class="col-md-6">
                             <label class="form-label" for="member_nim">NIM</label>
                             <input type="text" name="nim" id="member_nim"
-                                class="form-control form-control-custom @error('nim') is-invalid @enderror"
-                                value="{{ old('nim', '') }}" maxlength="255" autocomplete="off">
+                                class="form-control form-control-custom @error('nim') is-invalid border-danger @enderror"
+                                required value="{{ old('nim', '') }}" maxlength="255">
                             @error('nim')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -46,17 +46,19 @@
                         <div class="col-md-6">
                             <label class="form-label" for="member_email">Email</label>
                             <input type="email" name="email" id="member_email"
-                                class="form-control form-control-custom @error('email') is-invalid @enderror"
-                                value="{{ old('email') }}" maxlength="255" autocomplete="email">
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                class="form-control form-control-custom @error('email') is-invalid border-danger @enderror"
+                                required value="{{ old('email') }}" maxlength="255">
+                            <div class="invalid-feedback">
+                                @error('email')
+                                    {{ $message }}
+                                @enderror
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label" for="member_full_name">Nama lengkap</label>
                             <input type="text" name="full_name" id="member_full_name"
-                                class="form-control form-control-custom @error('full_name') is-invalid @enderror"
-                                value="{{ old('full_name') }}" maxlength="255" autocomplete="name">
+                                class="form-control form-control-custom @error('full_name') is-invalid border-danger @enderror"
+                                required value="{{ old('full_name') }}" maxlength="255">
                             @error('full_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -64,8 +66,8 @@
                         <div class="col-md-6">
                             <label class="form-label" for="member_nickname">Nama panggilan</label>
                             <input type="text" name="nickname" id="member_nickname"
-                                class="form-control form-control-custom @error('nickname') is-invalid @enderror"
-                                value="{{ old('nickname') }}" maxlength="255" autocomplete="nickname">
+                                class="form-control form-control-custom @error('nickname') is-invalid border-danger @enderror"
+                                required value="{{ old('nickname') }}" maxlength="255">
                             @error('nickname')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -73,11 +75,12 @@
 
                         <div class="col-md-6">
                             <label class="form-label" for="member_province_code">Provinsi tempat lahir</label>
-                            <div class="select2-primary @error('province_code') is-invalid @enderror">
+                            <div class="select2-primary @error('province_code') is-invalid border-danger @enderror"
+                                required>
                                 <div class="position-relative w-100">
                                     <select name="province_code" id="member_province_code"
-                                        class="select2 form-select form-control-custom @error('province_code') is-invalid @enderror"
-                                        data-placeholder="Pilih provinsi">
+                                        class="select2 form-select form-control-custom @error('province_code') is-invalid border-danger @enderror"
+                                        required data-placeholder="Pilih provinsi">
                                         <option value=""></option>
                                         @foreach ($provinces as $province)
                                             <option value="{{ $province->code }}" @selected((string) old('province_code') === (string) $province->code)>
@@ -93,10 +96,11 @@
                         <div class="col-md-6">
                             <label class="form-label" for="member_place_of_birth_code">Kota / kabupaten tempat
                                 lahir</label>
-                            <div class="select2-primary @error('place_of_birth_code') is-invalid @enderror">
+                            <div class="select2-primary @error('place_of_birth_code') is-invalid border-danger @enderror"
+                                required>
                                 <div class="position-relative w-100">
                                     <select name="place_of_birth_code" id="member_place_of_birth_code"
-                                        class="select2 form-select form-select-custom @error('place_of_birth_code') is-invalid @enderror"
+                                        class="select2 form-select form-select-custom @error('place_of_birth_code') is-invalid border-danger @enderror"
                                         data-search-url="{{ route('select.cities') }}"
                                         data-placeholder="Pilih kota/kabupaten"
                                         @if ($placeCode !== null && $placeCode !== '') data-initial-code="{{ $placeCode }}" data-initial-name="{{ $placeName }}" @endif
@@ -121,19 +125,19 @@
                         <div class="col-md-6">
                             <label class="form-label" for="member_date_of_birth">Tanggal lahir</label>
                             <input type="date" name="date_of_birth" id="member_date_of_birth"
-                                class="form-control form-control-custom @error('date_of_birth') is-invalid @enderror"
-                                value="{{ old('date_of_birth') }}">
+                                class="form-control form-control-custom @error('date_of_birth') is-invalid border-danger @enderror"
+                                required value="{{ old('date_of_birth') }}">
                             @error('date_of_birth')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6">
                             <label class="form-label" for="member_gender_id">Jenis kelamin</label>
-                            <div class="select2-primary @error('gender_id') is-invalid @enderror">
+                            <div class="select2-primary @error('gender_id') is-invalid border-danger @enderror" required>
                                 <div class="position-relative w-100">
                                     <select name="gender_id" id="member_gender_id"
-                                        class="select2 form-select form-select-custom @error('gender_id') is-invalid @enderror"
-                                        data-placeholder="Pilih">
+                                        class="select2 form-select form-select-custom @error('gender_id') is-invalid border-danger @enderror"
+                                        required data-placeholder="Pilih">
                                         <option value=""></option>
                                         @foreach (Gender::cases() as $g)
                                             <option value="{{ $g->value }}" @selected((string) old('gender_id') === (string) $g->value)>
@@ -149,10 +153,10 @@
 
                         <div class="col-md-6">
                             <label class="form-label" for="member_org_region_id">Wilayah organisasi</label>
-                            <div class="select2-primary @error('org_region_id') is-invalid @enderror">
+                            <div class="select2-primary @error('org_region_id') is-invalid border-danger @enderror">
                                 <div class="position-relative w-100">
                                     <select name="org_region_id" id="member_org_region_id"
-                                        class="select2 form-select form-select-custom @error('org_region_id') is-invalid @enderror"
+                                        class="select2 form-select form-select-custom @error('org_region_id') is-invalid border-danger @enderror"
                                         data-placeholder="Pilih (opsional)">
                                         <option value=""></option>
                                         @foreach ($orgRegions as $region)
@@ -170,8 +174,8 @@
                         <div class="col-md-6">
                             <label class="form-label" for="member_phone_number">Nomor telepon</label>
                             <input type="text" name="phone_number" id="member_phone_number"
-                                class="form-control form-control-custom @error('phone_number') is-invalid @enderror"
-                                value="{{ old('phone_number') }}" maxlength="255" autocomplete="tel">
+                                class="form-control form-control-custom @error('phone_number') is-invalid border-danger @enderror"
+                                required value="{{ old('phone_number') }}" maxlength="255">
                             @error('phone_number')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -208,7 +212,7 @@
                         </div>
                     </div>
                     <div class="mt-4">
-                        <button type="submit" class="btn btn-custom d-inline-flex align-items-center">
+                        <button type="submit" class="btn btn-custom d-inline-flex align-items-center" id="btn-register">
                             Daftar
                         </button>
                     </div>
@@ -216,6 +220,7 @@
             </div>
         </div>
     </div>
+    @include('front.about.member-activation-verification-email-modal')
 @endsection
 
 @push('styles')
@@ -228,4 +233,148 @@
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/dropzone/dropzone.js') }}"></script>
     <script src="{{ asset('assets/js/admin-member-form.js') }}"></script>
+    <script>
+        let isVerfiedEmail = false;
+        $(document).ready(function() {
+            $('#member-form').submit(function(event) {
+                event.preventDefault();
+                // Jika sudah verified, langsung submit form ke server
+                if (isVerfiedEmail) {
+                    this.submit(); // ✅ Native DOM submit, bypass jQuery event
+                    return;
+                }
+
+                const memberForm = document.getElementById('member-form'); // ✅ DOM element
+                if (!memberForm.checkValidity()) { // ✅ Check if form is valid
+                    memberForm.reportValidity();
+                    return;
+                }
+
+                // send verification email otp
+                sendOtpVerificationEmail({
+                    beforeSend: function() {
+                        $('#btn-register').prop('disabled', true);
+                        $('#btn-register').html(
+                            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...'
+                        );
+                    },
+                    success: function(response) {
+                        $('#email-for-verification').text($('#member_email').val());
+                        $('#member-activation-verification-email-modal').modal('show');
+                    },
+                    error: function(xhr, status, error) {
+                        $('#member_email').addClass('is-invalid border-danger');
+                        $('#member_email').next('.invalid-feedback').text(
+                            xhr.responseJSON?.message ?? xhr.responseText ?? 'Gagal mengirim email verifikasi'
+                        );
+                    },
+                    complete: function() {
+                        $('#btn-register').prop('disabled', false);
+                        $('#btn-register').html('Daftar');
+                    }
+                })
+            });
+
+            $('#member-activation-verification-email-modal').on('show.bs.modal', function() {
+                $('#otp').val('').removeClass('is-invalid border-danger');
+                $('#otp').next('.invalid-feedback').text('');
+                startTimerResendOtp();
+            });
+
+            $('#resend-otp').click(function() {
+                sendOtpVerificationEmail({
+                    beforeSend: function() {
+                        $('#resend-otp').prop('disabled', true).addClass('disabled');
+                        $('#resend-otp').html(
+                            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...'
+                        );
+                    },
+                    success: function(response) {
+                        startTimerResendOtp();
+                    },
+                    error: function(xhr, status, error) {
+                        $('#otp').addClass('is-invalid border-danger');
+                        $('#otp').next('.invalid-feedback').text(
+                            xhr.responseJSON?.message ?? xhr.responseText ?? 'Gagal mengirim ulang OTP'
+                        );
+                    },
+                    complete: function() {
+                        $('#resend-otp').prop('disabled', false).removeClass('disabled');
+                        $('#resend-otp').html(
+                            'Kirim ulang OTP <span class="time-remaining"></span>');
+                    }
+                });
+            });
+
+            $('#member-activation-verification-email-form').submit(function(event) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: {
+                        email: $('#member_email').val(),
+                        otp: $('#otp').val(),
+                        _token: "{{ csrf_token() }}",
+                    },
+                    beforeSend: function() {
+                        $('#btn-verify').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Verifying...');
+                    },
+                    success: function(response) {
+                        $('#member-activation-verification-email-modal').modal('hide');
+                        isVerfiedEmail = true;
+                        $('#member-form').submit();
+                    },
+                    error: function(xhr, status, error) {
+                        $('#otp').addClass('is-invalid border-danger');
+                        $('#otp').next('.invalid-feedback').text(
+                            xhr.responseJSON?.message ?? 'Terjadi kesalahan saat verifikasi email'
+                        );
+                    },
+                    complete: function() {
+                        $('#btn-verify').prop('disabled', false).html('Verifikasi');
+                    }
+                });
+            });
+        });
+
+        const sendOtpVerificationEmail = ({
+            beforeSend = null,
+            success = null,
+            error = null,
+            complete = null
+        } = {}) => {
+            $.ajax({
+                url: "{{ route('about.member-activation.send-verification-email') }}",
+                type: 'POST',
+                data: {
+                    email: $('#member_email').val(),
+                    _token: "{{ csrf_token() }}",
+                },
+                beforeSend: beforeSend,
+                success: success,
+                error: error,
+                complete: complete,
+            });
+        }
+
+        const formatTime = (time) => {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        const startTimerResendOtp = () => {
+            let timeRemaining = 120;
+            const interval = setInterval(function() {
+                timeRemaining--;
+                $('.time-remaining').text(formatTime(timeRemaining));
+                if (timeRemaining <= 0) {
+                    clearInterval(interval);
+                    $('#resend-otp').prop('disabled', false).removeClass('disabled');
+                    $('.time-remaining').text('');
+                }
+            }, 1000);
+        }
+    </script>
 @endpush

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Gender;
 use App\Models\Member;
+use App\Models\MemberActivationEmailOtpVerification;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
@@ -25,7 +26,20 @@ class StoreMemberActivationRequest extends FormRequest
             'nim' => ['required', 'string', 'max:255', 'unique:member_activations,nim'],
             'full_name' => ['required', 'string', 'max:255'],
             'nickname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email:rfc', 'max:255', 'unique:member_activations,email'],
+            'email' => [
+                'required',
+                'email:rfc',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $memberActivationEmailOtpVerification = MemberActivationEmailOtpVerification::query()
+                        ->where('email', $value)
+                        ->whereNotNull('verified_at')
+                        ->first();
+                    if (! $memberActivationEmailOtpVerification) {
+                        $fail('Email belum diverifikasi. Silakan lakukan verifikasi email terlebih dahulu.');
+                    }
+                },
+            ],
             'province_code' => ['required', 'string', 'size:2', 'exists:provinces,code', 'required_with:place_of_birth_code'],
             'place_of_birth_code' => [
                 'required',

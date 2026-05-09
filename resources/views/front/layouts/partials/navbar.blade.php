@@ -22,7 +22,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="tentangDropdown">
                         <li><a class="dropdown-item" href="{{ route('about.profil-organisasi') }}">Profil Organisasi</a></li>
-                        <li><a class="dropdown-item" href="{{ route('about.member-activation') }}">KTA</a></li>
+                        <li><a class="dropdown-item" href="{{ route('about.member-activation.index') }}">KTA</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
