@@ -30,6 +30,14 @@
                 </div>
             @endif
             <div class="col-lg-8 col-md-10">
+                @foreach ($memberActivation->media()->where('collection_name', \App\Models\Member::SUPPORTING_DOCUMENTS_COLLECTION)->get() as $m)
+                    <form id="member-supporting-delete-{{ $m->getKey() }}"
+                        action="{{ route('admin.member-activations.supporting-media.destroy', ['member_activation' => $memberActivation, 'media' => $m]) }}"
+                        method="POST" class="d-none" aria-hidden="true">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                @endforeach
                 <form id="member-form" method="post" enctype="multipart/form-data"
                     action="{{ route('about.member-activation.store') }}">
                     @csrf
@@ -38,7 +46,7 @@
                             <label class="form-label" for="member_nim">NIM</label>
                             <input type="text" name="nim" id="member_nim"
                                 class="form-control form-control-custom @error('nim') is-invalid border-danger @enderror"
-                                required value="{{ old('nim', '') }}" maxlength="255">
+                                required value="{{ old('nim', $memberActivation?->nim ?? '') }}" maxlength="255">
                             @error('nim')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -47,7 +55,7 @@
                             <label class="form-label" for="member_email">Email</label>
                             <input type="email" name="email" id="member_email"
                                 class="form-control form-control-custom @error('email') is-invalid border-danger @enderror"
-                                required value="{{ old('email') }}" maxlength="255">
+                                required value="{{ old('email', $memberActivation?->email ?? '') }}" maxlength="255">
                             <div class="invalid-feedback">
                                 @error('email')
                                     {{ $message }}
@@ -58,7 +66,8 @@
                             <label class="form-label" for="member_full_name">Nama lengkap</label>
                             <input type="text" name="full_name" id="member_full_name"
                                 class="form-control form-control-custom @error('full_name') is-invalid border-danger @enderror"
-                                required value="{{ old('full_name') }}" maxlength="255">
+                                required value="{{ old('full_name', $memberActivation?->full_name ?? '') }}"
+                                maxlength="255">
                             @error('full_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -67,7 +76,7 @@
                             <label class="form-label" for="member_nickname">Nama panggilan</label>
                             <input type="text" name="nickname" id="member_nickname"
                                 class="form-control form-control-custom @error('nickname') is-invalid border-danger @enderror"
-                                required value="{{ old('nickname') }}" maxlength="255">
+                                required value="{{ old('nickname', $memberActivation?->nickname ?? '') }}" maxlength="255">
                             @error('nickname')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -83,7 +92,7 @@
                                         required data-placeholder="Pilih provinsi">
                                         <option value=""></option>
                                         @foreach ($provinces as $province)
-                                            <option value="{{ $province->code }}" @selected((string) old('province_code') === (string) $province->code)>
+                                            <option value="{{ $province->code }}" @selected((string) old('province_code', $memberActivation?->placeOfBirthCity?->province?->code ?? '') === (string) $province->code)>
                                                 {{ $province->name }}</option>
                                         @endforeach
                                     </select>
@@ -104,7 +113,7 @@
                                         data-search-url="{{ route('select.cities') }}"
                                         data-placeholder="Pilih kota/kabupaten"
                                         @if ($placeCode !== null && $placeCode !== '') data-initial-code="{{ $placeCode }}" data-initial-name="{{ $placeName }}" @endif
-                                        @if (!filled(old('province_code'))) disabled @endif>
+                                        @if (!filled(old('province_code', $memberActivation?->placeOfBirthCity?->province?->code ?? ''))) disabled @endif>
                                         @if ($placeCode !== null && $placeCode !== '')
                                             <option value="{{ $placeCode }}" selected>{{ $placeName }}</option>
                                         @else
@@ -114,7 +123,7 @@
                                 </div>
                             </div>
                             <p id="member_city_hint"
-                                class="form-text small text-secondary mb-0 @if (filled(old('province_code'))) d-none @endif">
+                                class="form-text small text-secondary mb-0 @if (filled(old('province_code', $memberActivation?->placeOfBirthCity?->province?->code ?? ''))) d-none @endif">
                                 Pilih provinsi terlebih dahulu untuk memilih kota/kabupaten.
                             </p>
                             @error('place_of_birth_code')
@@ -126,7 +135,7 @@
                             <label class="form-label" for="member_date_of_birth">Tanggal lahir</label>
                             <input type="date" name="date_of_birth" id="member_date_of_birth"
                                 class="form-control form-control-custom @error('date_of_birth') is-invalid border-danger @enderror"
-                                required value="{{ old('date_of_birth') }}">
+                                required value="{{ old('date_of_birth', $memberActivation?->date_of_birth->format('Y-m-d') ?? '') }}">
                             @error('date_of_birth')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -140,7 +149,7 @@
                                         required data-placeholder="Pilih">
                                         <option value=""></option>
                                         @foreach (Gender::cases() as $g)
-                                            <option value="{{ $g->value }}" @selected((string) old('gender_id') === (string) $g->value)>
+                                            <option value="{{ $g->value }}" @selected((string) old('gender_id', $memberActivation?->gender_id?->value ?? '') === (string) $g->value)>
                                                 {{ $g->label() }}</option>
                                         @endforeach
                                     </select>
@@ -160,7 +169,7 @@
                                         data-placeholder="Pilih (opsional)">
                                         <option value=""></option>
                                         @foreach ($orgRegions as $region)
-                                            <option value="{{ $region->id }}" @selected((string) old('org_region_id') === (string) $region->id)>
+                                            <option value="{{ $region->id }}" @selected((string) old('org_region_id', $memberActivation?->org_region_id ?? '') === (string) $region->id)>
                                                 {{ $region->name }}</option>
                                         @endforeach
                                     </select>
@@ -175,7 +184,8 @@
                             <label class="form-label" for="member_phone_number">Nomor telepon</label>
                             <input type="text" name="phone_number" id="member_phone_number"
                                 class="form-control form-control-custom @error('phone_number') is-invalid border-danger @enderror"
-                                required value="{{ old('phone_number') }}" maxlength="255">
+                                required value="{{ old('phone_number', $memberActivation?->phone_number ?? '') }}"
+                                maxlength="255">
                             @error('phone_number')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -209,6 +219,28 @@
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @endforeach
                             @endforeach
+                            @php
+                                $supportingMedia = $memberActivation->media()->where('collection_name', \App\Models\Member::SUPPORTING_DOCUMENTS_COLLECTION)->get();
+                            @endphp
+                            @if ($supportingMedia->isNotEmpty())
+                                <ul class="list-unstyled mb-0 mt-2">
+                                    @foreach ($supportingMedia as $m)
+                                        <li class="d-flex flex-wrap align-items-center gap-2 py-2">
+                                            <a href="{{ $m->getUrl() }}" target="_blank" rel="noopener noreferrer"
+                                                class="text-break">{{ $m->file_name }}</a>
+                                            {{-- @can('members.update') --}}
+                                                <button type="submit" form="member-supporting-delete-{{ $m->getKey() }}"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Hapus dokumen ini?');">
+                                                    Hapus
+                                                </button>
+                                            {{-- @endcan --}}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="form-text text-body-secondary mb-0 mt-2">Belum ada dokumen pendukung.</p>
+                            @endif
                         </div>
                     </div>
                     <div class="mt-4">
@@ -265,7 +297,8 @@
                     error: function(xhr, status, error) {
                         $('#member_email').addClass('is-invalid border-danger');
                         $('#member_email').next('.invalid-feedback').text(
-                            xhr.responseJSON?.message ?? xhr.responseText ?? 'Gagal mengirim email verifikasi'
+                            xhr.responseJSON?.message ?? xhr.responseText ??
+                            'Gagal mengirim email verifikasi'
                         );
                     },
                     complete: function() {
@@ -295,7 +328,8 @@
                     error: function(xhr, status, error) {
                         $('#otp').addClass('is-invalid border-danger');
                         $('#otp').next('.invalid-feedback').text(
-                            xhr.responseJSON?.message ?? xhr.responseText ?? 'Gagal mengirim ulang OTP'
+                            xhr.responseJSON?.message ?? xhr.responseText ??
+                            'Gagal mengirim ulang OTP'
                         );
                     },
                     complete: function() {
@@ -318,7 +352,9 @@
                         _token: "{{ csrf_token() }}",
                     },
                     beforeSend: function() {
-                        $('#btn-verify').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Verifying...');
+                        $('#btn-verify').prop('disabled', true).html(
+                            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Verifying...'
+                            );
                     },
                     success: function(response) {
                         $('#member-activation-verification-email-modal').modal('hide');
@@ -328,7 +364,8 @@
                     error: function(xhr, status, error) {
                         $('#otp').addClass('is-invalid border-danger');
                         $('#otp').next('.invalid-feedback').text(
-                            xhr.responseJSON?.message ?? 'Terjadi kesalahan saat verifikasi email'
+                            xhr.responseJSON?.message ??
+                            'Terjadi kesalahan saat verifikasi email'
                         );
                     },
                     complete: function() {

@@ -117,6 +117,8 @@ Route::middleware(['auth'])->group(function (): void {
         ->as('member-activations.')
         ->group(function (): void {
             Route::get('suggestion-member', [MemberActivationController::class, 'getSuggestionMember'])->name('suggestion-member');
+            Route::patch('accept', [MemberActivationController::class, 'accept'])->name('accept');
+            Route::patch('reject', [MemberActivationController::class, 'reject'])->name('reject');
         });
     Route::resource('member-activations', MemberActivationController::class)
         ->except([

@@ -23,7 +23,7 @@ class StoreMemberActivationRequest extends FormRequest
         $provinceCode = $this->input('province_code');
 
         return [
-            'nim' => ['required', 'string', 'max:255', 'unique:member_activations,nim'],
+            'nim' => ['required', 'string', 'max:255'],
             'full_name' => ['required', 'string', 'max:255'],
             'nickname' => ['required', 'string', 'max:255'],
             'email' => [

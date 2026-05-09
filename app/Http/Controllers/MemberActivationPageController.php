@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\MemberActivationStatus;
 use App\Http\Requests\StoreMemberActivationRequest;
 use App\Models\City;
 use App\Models\Member;
@@ -9,11 +10,12 @@ use App\Models\MemberActivation;
 use App\Models\MemberActivationEmailOtpVerification;
 use App\Models\OrgRegion;
 use App\Notifications\MemberActivationEmailVerification;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\View;
@@ -23,10 +25,24 @@ class MemberActivationPageController extends Controller
 {
     public function index(Request $request): View
     {
+        try {
+            $memberActivationId = decrypt($request->input('member_activation_id'));
+        } catch (DecryptException $e) {
+            abort(Response::HTTP_NOT_FOUND, 'ID aktivasi anggota tidak valid.');
+        }
+
+        $memberActivation = MemberActivation::query()->with([
+            'placeOfBirthCity.province',
+            'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
+        ])->find($memberActivationId);
+        if (! $memberActivation || ! $memberActivation->currentStatus?->isRejected()) {
+            abort(Response::HTTP_NOT_FOUND, 'Aktivasi anggota tidak ditemukan.');
+        }
+
         $provinces = Province::query()->orderBy('name', 'asc')->get();
         $orgRegions = OrgRegion::query()->orderBy('name', 'asc')->get();
 
-        $placeCode = old('place_of_birth_code', '');
+        $placeCode = old('place_of_birth_code', $memberActivation?->place_of_birth_code ?? '');
         $placeName = '';
         if ($placeCode !== '') {
             $placeRow = City::query()->where('code', $placeCode)->first();
@@ -63,19 +79,27 @@ class MemberActivationPageController extends Controller
             'supportingAccept',
             'supportingAcceptedDropzone',
             'supportingDocsHasError',
+            'memberActivation',
         ));
     }
 
     public function store(StoreMemberActivationRequest $request): RedirectResponse
     {
+        DB::beginTransaction();
+
         $memberActivation = MemberActivation::query()->updateOrCreate(
             ['email' => $request->email],
             $request->validatedPersistable()
         );
         MemberController::attachSupportingDocumentsFromRequest($request, $memberActivation);
 
+        $memberActivation->memberActivationStatusLogs()->create([
+            'status_id' => MemberActivationStatus::PENDING->value,
+        ]);
+
+        DB::commit();
         return redirect()
-            ->back()
+            ->route('about.member-activation.index')
             ->with('success', 'Pendaftaran berhasil. Silakan tunggu konfirmasi dari pihak kami.');
     }
 

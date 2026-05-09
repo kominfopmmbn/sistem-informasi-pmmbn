@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Notifications\Notifiable;
 
 #[Fillable([
     'nim',
@@ -30,6 +31,7 @@ class MemberActivation extends Model implements HasMedia
     use InteractsWithMedia;
     use SoftDeletes;
     use Userstamps;
+    use Notifiable;
 
     /**
      * Nama koleksi sama seperti Member agar aturan ukuran/mime (validasi & Dropzone) tetap satu referensi.
@@ -50,16 +52,6 @@ class MemberActivation extends Model implements HasMedia
         ];
     }
 
-    protected static function booting(): void
-    {
-        parent::boot();
-        self::created(function (MemberActivation $memberActivation) {
-            $memberActivation->memberActivationStatusLogs()->create([
-                'status_id' => MemberActivationStatus::PENDING->value,
-            ]);
-        });
-    }
-
     public function placeOfBirthCity(): BelongsTo
     {
         return $this->belongsTo(City::class, 'place_of_birth_code', 'code');
@@ -77,6 +69,11 @@ class MemberActivation extends Model implements HasMedia
 
     public function currentStatus(): HasOne
     {
-        return $this->memberActivationStatusLogs()->orderBy('id', 'desc')->first();
+        return $this->hasOne(MemberActivationStatusLog::class)->orderBy('id', 'desc');
+    }
+
+    public function member(): HasOne
+    {
+        return $this->hasOne(Member::class);
     }
 }

@@ -21,6 +21,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
     'gender_id',
     'org_region_id',
     'phone_number',
+    'is_created_from_member_activation',
+    'member_activation_id',
 ])]
 class Member extends Model implements HasMedia
 {

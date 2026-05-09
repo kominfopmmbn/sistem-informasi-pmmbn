@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('member_activation_id'); // relasi ke table member_activations
             $table->smallInteger('status_id')->default(MemberActivationStatus::PENDING->value);
-            $table->text('reason')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
             $table->userstamps();
         });

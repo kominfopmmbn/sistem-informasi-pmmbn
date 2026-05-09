@@ -16,4 +16,13 @@ enum MemberActivationStatus: int
             self::REJECTED => 'Ditolak',
         };
     }
+
+    public function badgeClass(): string
+    {
+        return match ($this) {
+            self::PENDING => 'badge bg-label-warning',
+            self::VERIFIED => 'badge bg-label-success',
+            self::REJECTED => 'badge bg-label-danger',
+        };
+    }
 }

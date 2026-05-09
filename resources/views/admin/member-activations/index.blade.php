@@ -34,6 +34,7 @@
                         <th>Email</th>
                         <th>Jenis kelamin</th>
                         <th>Wilayah org.</th>
+                        <th>Status</th>
                         <th class="text-end">Aksi</th>
                     </tr>
                 </thead>
@@ -52,6 +53,18 @@
                             <td>{{ $item->email ?: '—' }}</td>
                             <td>{{ $item->gender_id?->label() ?? '—' }}</td>
                             <td>{{ $item->orgRegion?->name ?? '—' }}</td>
+                            <td>
+                                <div class="d-flex flex-column gap-2">
+                                    {!! $item->currentStatus?->status_badge ?? '—' !!}
+                                    @if ($item->currentStatus?->isAccepted())
+                                        <a href="{{ route('admin.members.edit', ['member' => $item->member]) }}"
+                                            class="btn btn-sm p-0m-0" title="Lihat Anggota">
+                                            Master Anggota
+                                            <i class="icon-base bx bx-edit-alt"></i>
+                                        </a>
+                                    @endif
+                                </div>
+                            </td>
                             <td class="text-end">
                                 @can('members.update')
                                     <a href="{{ route('admin.member-activations.edit', ['member_activation' => $item]) }}"

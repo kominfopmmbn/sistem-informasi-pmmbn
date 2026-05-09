@@ -4,7 +4,10 @@
 
     /** @var \Illuminate\Support\Collection<int, \Laravolt\Indonesia\Models\Province> $provinces */
     /** @var \Illuminate\Support\Collection<int, \App\Models\OrgRegion> $orgRegions */
-    $provinceCode = old('province_code', isset($member) && $member->placeOfBirthCity ? $member->placeOfBirthCity->province_code : '');
+    $provinceCode = old(
+        'province_code',
+        isset($member) && $member->placeOfBirthCity ? $member->placeOfBirthCity->province_code : '',
+    );
     $placeCode = old('place_of_birth_code', isset($member) ? $member->place_of_birth_code : '');
     $placeName = '';
     if (isset($member) && $member->relationLoaded('placeOfBirthCity') && $member->placeOfBirthCity !== null) {
@@ -14,10 +17,8 @@
         $placeName = $placeRow?->name ?? '';
     }
     $genderOld = old('gender_id', isset($member) && $member->gender_id !== null ? $member->gender_id->value : '');
-    $orgRegionOld = old('org_region_id', isset($member) ? ($member->org_region_id ?? '') : '');
-    $existingSupportingCount = isset($member)
-        ? $member->getMedia(Member::SUPPORTING_DOCUMENTS_COLLECTION)->count()
-        : 0;
+    $orgRegionOld = old('org_region_id', isset($member) ? $member->org_region_id ?? '' : '');
+    $existingSupportingCount = isset($member) ? $member->getMedia(Member::SUPPORTING_DOCUMENTS_COLLECTION)->count() : 0;
     $maxNewSupportingFiles = max(
         0,
         min(
@@ -29,15 +30,14 @@
     $supportingAccept = Member::supportingDocumentFileInputAccept();
     $supportingAcceptedDropzone = Member::supportingDocumentDropzoneAcceptedFiles();
     $supportingDocsHasError =
-        $errors->has('supporting_documents')
-        || collect($errors->keys())->contains(fn ($key) => str_starts_with((string) $key, 'supporting_documents.'));
+        $errors->has('supporting_documents') ||
+        collect($errors->keys())->contains(fn($key) => str_starts_with((string) $key, 'supporting_documents.'));
 @endphp
 
 <div class="row g-6">
     <div class="col-12 col-md-6">
         <label class="form-label" for="member_nim">NIM</label>
-        <input type="text" name="nim" id="member_nim"
-            class="form-control @error('nim') is-invalid @enderror"
+        <input type="text" name="nim" id="member_nim" class="form-control @error('nim') is-invalid @enderror"
             value="{{ old('nim', isset($member) ? $member->nim : '') }}" maxlength="255" autocomplete="off">
         @error('nim')
             <div class="invalid-feedback">{{ $message }}</div>
@@ -45,8 +45,7 @@
     </div>
     <div class="col-12 col-md-6">
         <label class="form-label" for="member_email">Email</label>
-        <input type="email" name="email" id="member_email"
-            class="form-control @error('email') is-invalid @enderror"
+        <input type="email" name="email" id="member_email" class="form-control @error('email') is-invalid @enderror"
             value="{{ old('email', isset($member) ? $member->email : '') }}" maxlength="255" autocomplete="email">
         @error('email')
             <div class="invalid-feedback">{{ $message }}</div>
@@ -66,7 +65,8 @@
         <label class="form-label" for="member_nickname">Nama panggilan</label>
         <input type="text" name="nickname" id="member_nickname"
             class="form-control @error('nickname') is-invalid @enderror"
-            value="{{ old('nickname', isset($member) ? $member->nickname : '') }}" maxlength="255" autocomplete="nickname">
+            value="{{ old('nickname', isset($member) ? $member->nickname : '') }}" maxlength="255"
+            autocomplete="nickname">
         @error('nickname')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -97,10 +97,9 @@
             <div class="position-relative w-100">
                 <select name="place_of_birth_code" id="member_place_of_birth_code"
                     class="select2 form-select @error('place_of_birth_code') is-invalid @enderror"
-                    data-search-url="{{ route('select.cities') }}"
-                    data-placeholder="Pilih kota/kabupaten"
+                    data-search-url="{{ route('select.cities') }}" data-placeholder="Pilih kota/kabupaten"
                     @if ($placeCode !== null && $placeCode !== '') data-initial-code="{{ $placeCode }}" data-initial-name="{{ $placeName }}" @endif
-                    @if (! filled($provinceCode)) disabled @endif>
+                    @if (!filled($provinceCode)) disabled @endif>
                     @if ($placeCode !== null && $placeCode !== '')
                         <option value="{{ $placeCode }}" selected>{{ $placeName }}</option>
                     @else
@@ -183,18 +182,20 @@
         <input type="file" name="supporting_documents[]" id="member_supporting_documents" class="d-none" multiple
             accept="{{ $supportingAccept }}">
         @if ($maxNewSupportingFiles > 0)
-            <div id="member-supporting-dropzone"
-                class="dropzone needsclick border rounded-3{{ $supportingDocsHasError ? ' border-danger' : '' }}"
-                data-max-files="{{ $maxNewSupportingFiles }}"
-                data-max-filesize-mb="{{ $supportingMaxFileMb }}"
-                data-accepted-files="{{ $supportingAcceptedDropzone }}">
-                <div class="dz-message needsclick text-center py-6">
-                    Seret berkas ke sini atau klik untuk memilih
-                    <span class="note needsclick d-block small text-body-secondary mt-2">PDF, Office, gambar, ZIP, atau
-                        teks — hingga {{ $maxNewSupportingFiles }} berkas baru per simpan (maks.
-                        {{ $supportingMaxFileMb }} MB per berkas).</span>
+            @if ($member->currentStatus?->isPending())
+                <div id="member-supporting-dropzone"
+                    class="dropzone needsclick border rounded-3{{ $supportingDocsHasError ? ' border-danger' : '' }}"
+                    data-max-files="{{ $maxNewSupportingFiles }}" data-max-filesize-mb="{{ $supportingMaxFileMb }}"
+                    data-accepted-files="{{ $supportingAcceptedDropzone }}">
+                    <div class="dz-message needsclick text-center py-6">
+                        Seret berkas ke sini atau klik untuk memilih
+                        <span class="note needsclick d-block small text-body-secondary mt-2">PDF, Office, gambar, ZIP,
+                            atau
+                            teks — hingga {{ $maxNewSupportingFiles }} berkas baru per simpan (maks.
+                            {{ $supportingMaxFileMb }} MB per berkas).</span>
+                    </div>
                 </div>
-            </div>
+            @endif
         @else
             <div class="alert alert-secondary mb-0" role="status">
                 Kuota dokumen pendukung penuh ({{ Member::SUPPORTING_DOCUMENTS_MAX_TOTAL }} berkas). Hapus salah satu
@@ -205,15 +206,17 @@
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
         @foreach ($errors->keys() as $_errKey)
-            @continue(! str_starts_with($_errKey, 'supporting_documents.'))
+            @continue(!str_starts_with($_errKey, 'supporting_documents.'))
             @foreach ($errors->get($_errKey) as $message)
                 <div class="invalid-feedback d-block">{{ $message }}</div>
             @endforeach
         @endforeach
-        <p class="form-text text-body-secondary mb-0 mt-2">
-            Opsional. Total maks. {{ Member::SUPPORTING_DOCUMENTS_MAX_TOTAL }} berkas per anggota (termasuk yang sudah
-            ada).
-        </p>
+        @if ($member->currentStatus?->isPending())
+            <p class="form-text text-body-secondary mb-0 mt-2">
+                Opsional. Total maks. {{ Member::SUPPORTING_DOCUMENTS_MAX_TOTAL }} berkas per anggota (termasuk yang sudah
+                ada).
+            </p>
+        @endif
         @isset($member)
             @php
                 $supportingMedia = $member->getMedia(Member::SUPPORTING_DOCUMENTS_COLLECTION);
@@ -225,10 +228,8 @@
                             <a href="{{ $m->getUrl() }}" target="_blank" rel="noopener noreferrer"
                                 class="text-break">{{ $m->file_name }}</a>
                             @can('members.update')
-                                <button type="submit"
-                                    form="member-supporting-delete-{{ $m->getKey() }}"
-                                    class="btn btn-sm btn-label-danger"
-                                    onclick="return confirm('Hapus dokumen ini?');">
+                                <button type="submit" form="member-supporting-delete-{{ $m->getKey() }}"
+                                    class="btn btn-sm btn-label-danger" onclick="return confirm('Hapus dokumen ini?');">
                                     Hapus
                                 </button>
                             @endcan
