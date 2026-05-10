@@ -25,7 +25,7 @@ class MemberController extends Controller
         $q = isset($filters['q']) ? trim((string) $filters['q']) : '';
 
         $query = Member::query()
-            ->with(['orgRegion', 'placeOfBirthCity'])
+            ->with(['orgRegion', 'placeOfBirthCity', 'kta'])
             ->latest('updated_at');
 
         if ($q !== '') {
