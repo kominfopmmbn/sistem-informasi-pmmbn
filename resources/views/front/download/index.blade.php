@@ -8,12 +8,14 @@
 
 @section('content')
     <section class="container download-hero-section">
-        <div class="hero-card">
+        <div class="hero-card" data-aos="fade-down" data-aos-duration="800">
             <div class="hero-content">
-                <div class="hero-subtitle">Download</div>
-                <h1 class="hero-title">Dokumen Resmi PMMBN</h1>
-                <p class="hero-desc">Unduh berbagai dokumen resmi, panduan kegiatan, dan materi organisasi Pergerakan
-                    Mahasiswa Moderasi Beragama dan Bela Negara.</p>
+                <div class="hero-subtitle" data-aos="fade-right" data-aos-delay="200" data-aos-duration="600">Download</div>
+                <h1 class="hero-title" data-aos="fade-right" data-aos-delay="400" data-aos-duration="600">Dokumen Resmi PMMBN</h1>
+                <p class="hero-desc" data-aos="fade-right" data-aos-delay="600" data-aos-duration="600">
+                    Unduh berbagai dokumen resmi, panduan kegiatan, dan materi organisasi Pergerakan
+                    Mahasiswa Moderasi Beragama dan Bela Negara.
+                </p>
             </div>
         </div>
     </section>
@@ -27,7 +29,7 @@
                         $ext = strtoupper($media->extension ?: pathinfo($media->file_name, PATHINFO_EXTENSION) ?: 'file');
                         $iconClass = strtolower((string) $media->extension) === 'pdf' ? 'bi-file-earmark-pdf' : 'bi-file-earmark-text';
                     @endphp
-                    <article class="download-card">
+                    <article class="download-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="{{ $loop->index * 100 }}">
                         <div class="download-card-main">
                             <span class="download-file-icon"><i class="bi {{ $iconClass }}"></i></span>
                             <div class="download-meta">
@@ -38,7 +40,9 @@
                         <a href="{{ $media->getUrl() }}" class="btn-open" download="{{ $media->file_name }}">Download</a>
                     </article>
                 @empty
-                    <p class="text-center text-muted py-5 mb-0" style="grid-column: 1 / -1;">Belum ada dokumen yang dapat diunduh.</p>
+                    <p class="text-center text-muted py-5 mb-0" style="grid-column: 1 / -1;">
+                        Belum ada dokumen yang dapat diunduh.
+                    </p>
                 @endforelse
             </div>
         </section>
