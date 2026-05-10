@@ -112,6 +112,7 @@
                                         class="select2 form-select form-select-custom @error('place_of_birth_code') is-invalid border-danger @enderror"
                                         data-search-url="{{ route('select.cities') }}"
                                         data-placeholder="Pilih kota/kabupaten"
+                                        required
                                         @if ($placeCode !== null && $placeCode !== '') data-initial-code="{{ $placeCode }}" data-initial-name="{{ $placeName }}" @endif
                                         @if (!filled(old('province_code', $memberActivation?->placeOfBirthCity?->province?->code ?? ''))) disabled @endif>
                                         @if ($placeCode !== null && $placeCode !== '')

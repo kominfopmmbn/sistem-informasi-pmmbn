@@ -12,7 +12,7 @@
         <label class="form-label" for="org_region_code">Kode</label>
         <input type="text" name="code" id="org_region_code"
             class="form-control @error('code') is-invalid @enderror"
-            value="{{ old('code', isset($orgRegion) ? $orgRegion->code : '') }}" required maxlength="255" autocomplete="off">
+            value="{{ old('code', isset($orgRegion) ? $orgRegion->code : '') }}" required maxlength="2" autocomplete="off">
         @error('code')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
