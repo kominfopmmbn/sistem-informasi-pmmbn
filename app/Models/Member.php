@@ -6,6 +6,7 @@ use App\Enums\Gender;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Spatie\MediaLibrary\HasMedia;
@@ -121,5 +122,10 @@ class Member extends Model implements HasMedia
     public function orgRegion(): BelongsTo
     {
         return $this->belongsTo(OrgRegion::class);
+    }
+
+    public function kta(): HasOne
+    {
+        return $this->hasOne(Kta::class);
     }
 }

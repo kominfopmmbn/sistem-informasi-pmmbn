@@ -3,6 +3,7 @@
 use App\Http\Controllers\ArticlePageController;
 use App\Http\Controllers\DownloadPageController;
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\KtaController;
 use App\Http\Controllers\LookupController;
 use App\Http\Controllers\MemberActivationPageController;
 use Illuminate\Support\Facades\Route;
@@ -49,3 +50,5 @@ Route::prefix('article')
         Route::get('/{categorySlug}', [ArticlePageController::class, 'index'])->name('index');
         Route::get('/', [ArticlePageController::class, 'index'])->name('all');
     });
+
+Route::get('/kta/{ktaNumber}', [KtaController::class, 'show'])->name('kta.show');

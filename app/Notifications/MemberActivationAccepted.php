@@ -42,8 +42,8 @@ class MemberActivationAccepted extends Notification implements ShouldQueue
             ->subject('Aktivasi Anggota Telah Diverifikasi')
             ->greeting('Halo ' . $this->data['full_name'] . '!')
             ->line('Aktivasi Anggota Anda telah selesai diverifikasi.')
-            ->line('Anda bisa melihat kartu tanda anggota Anda melalui link dibawah ini.')
-            ->action('Kartu Tanda Anggota', 'https://google.com');
+            ->line('Anda bisa melihat kartu tanda anggota Anda melalui tombol dibawah ini.')
+            ->action('Kartu Tanda Anggota', route('kta.show', ['ktaNumber' => $this->data['kta_number']]));
     }
 
     /**

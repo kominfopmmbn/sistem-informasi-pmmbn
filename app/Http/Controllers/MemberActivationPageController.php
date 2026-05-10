@@ -25,18 +25,21 @@ class MemberActivationPageController extends Controller
 {
     public function index(Request $request): View
     {
-        try {
-            $memberActivationId = decrypt($request->input('member_activation_id'));
-        } catch (DecryptException $e) {
-            abort(Response::HTTP_NOT_FOUND, 'ID aktivasi anggota tidak valid.');
-        }
+        $memberActivation = null;
+        if ($request->filled('member_activation_id')) {
+            try {
+                $memberActivationId = decrypt($request->input('member_activation_id'));
+            } catch (DecryptException $e) {
+                abort(Response::HTTP_NOT_FOUND, 'ID aktivasi anggota tidak valid.');
+            }
 
-        $memberActivation = MemberActivation::query()->with([
-            'placeOfBirthCity.province',
-            'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
-        ])->find($memberActivationId);
-        if (! $memberActivation || ! $memberActivation->currentStatus?->isRejected()) {
-            abort(Response::HTTP_NOT_FOUND, 'Aktivasi anggota tidak ditemukan.');
+            $memberActivation = MemberActivation::query()->with([
+                'placeOfBirthCity.province',
+                'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
+            ])->find($memberActivationId);
+            if (! $memberActivation || ! $memberActivation->currentStatus?->isRejected()) {
+                abort(Response::HTTP_NOT_FOUND, 'Aktivasi anggota tidak ditemukan.');
+            }
         }
 
         $provinces = Province::query()->orderBy('name', 'asc')->get();
@@ -98,6 +101,7 @@ class MemberActivationPageController extends Controller
         ]);
 
         DB::commit();
+
         return redirect()
             ->route('about.member-activation.index')
             ->with('success', 'Pendaftaran berhasil. Silakan tunggu konfirmasi dari pihak kami.');

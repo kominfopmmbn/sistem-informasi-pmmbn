@@ -182,7 +182,7 @@ class MemberActivationController extends Controller
         }
 
         // delete media supporting documents from member activation
-        $member_activation->media()
+        $member->media()
             ->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION)
             ->delete();
 
@@ -202,11 +202,19 @@ class MemberActivationController extends Controller
             'notes' => $request->input('notes'),
         ]);
 
+        // update or create kta
+        $member->kta()->updateOrCreate([
+            'member_id' => $member->id,
+        ]);
+
+        $kta = $member->kta;
+
         Notification::send(
             $member_activation,
             new MemberActivationAccepted([
                 'email' => $member_activation->email,
                 'full_name' => $member_activation->full_name,
+                'kta_number' => $kta->number,
             ])
         );
 

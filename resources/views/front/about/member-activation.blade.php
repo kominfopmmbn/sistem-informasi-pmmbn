@@ -30,7 +30,7 @@
                 </div>
             @endif
             <div class="col-lg-8 col-md-10">
-                @foreach ($memberActivation->media()->where('collection_name', \App\Models\Member::SUPPORTING_DOCUMENTS_COLLECTION)->get() as $m)
+                @foreach ($memberActivation?->media()->where('collection_name', \App\Models\Member::SUPPORTING_DOCUMENTS_COLLECTION)->get() ?? collect() as $m)
                     <form id="member-supporting-delete-{{ $m->getKey() }}"
                         action="{{ route('admin.member-activations.supporting-media.destroy', ['member_activation' => $memberActivation, 'media' => $m]) }}"
                         method="POST" class="d-none" aria-hidden="true">
@@ -220,7 +220,7 @@
                                 @endforeach
                             @endforeach
                             @php
-                                $supportingMedia = $memberActivation->media()->where('collection_name', \App\Models\Member::SUPPORTING_DOCUMENTS_COLLECTION)->get();
+                                $supportingMedia = $memberActivation?->media()->where('collection_name', \App\Models\Member::SUPPORTING_DOCUMENTS_COLLECTION)->get() ?? collect();
                             @endphp
                             @if ($supportingMedia->isNotEmpty())
                                 <ul class="list-unstyled mb-0 mt-2">
