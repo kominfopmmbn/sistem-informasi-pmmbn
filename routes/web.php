@@ -52,3 +52,11 @@ Route::prefix('article')
     });
 
 Route::get('/kta/{ktaNumber}', [KtaController::class, 'show'])->name('kta.show');
+
+Route::get('/program-unggulan', function () {
+    return view('front.program-unggulan.index');
+})->name('program-unggulan.index');
+Route::get('/program-unggulan/show', function () {
+    return view('front.program-unggulan.show');
+})->name('program-unggulan.show');
+

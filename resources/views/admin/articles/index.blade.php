@@ -5,11 +5,11 @@
 @section('content')
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
         <h4 class="fw-bold mb-0 py-3">Berita & Opini</h4>
-        @can('articles.create')
+        {{-- @can('articles.create')
             <a href="{{ route('admin.articles.create') }}" class="btn btn-primary">
                 <i class="icon-base bx bx-plus me-1"></i> Tambah artikel
             </a>
-        @endcan
+        @endcan --}}
     </div>
 
 
