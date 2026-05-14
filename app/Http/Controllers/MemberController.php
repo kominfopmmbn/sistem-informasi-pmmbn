@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
+use App\Models\MemberActivation;
 use App\Models\OrgRegion;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class MemberController extends Controller
         $q = isset($filters['q']) ? trim((string) $filters['q']) : '';
 
         $query = Member::query()
-            ->with(['orgRegion', 'placeOfBirthCity'])
+            ->with(['orgRegion', 'placeOfBirthCity', 'kta'])
             ->latest('updated_at');
 
         if ($q !== '') {
@@ -86,7 +87,7 @@ class MemberController extends Controller
 
     public function destroy(Member $member): RedirectResponse
     {
-        $member->delete();
+        $member->deleteOrFail();
 
         return redirect()
             ->route('admin.members.index')
@@ -110,7 +111,7 @@ class MemberController extends Controller
             ->with('success', 'Dokumen pendukung berhasil dihapus.');
     }
 
-    private function attachSupportingDocumentsFromRequest(Request $request, Member $member): void
+    public static function attachSupportingDocumentsFromRequest(Request $request, Member|MemberActivation $member): void
     {
         $files = $request->file('supporting_documents');
         if ($files === null) {

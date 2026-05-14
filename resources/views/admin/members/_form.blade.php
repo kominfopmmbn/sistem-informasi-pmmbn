@@ -26,10 +26,8 @@
         ),
     );
     $supportingMaxFileMb = max(1, (int) ceil(config('media-library.max_file_size') / 1024 / 1024));
-    $supportingAccept =
-        '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-    $supportingAcceptedDropzone =
-        '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.jpg,.jpeg,.png,.gif,.webp';
+    $supportingAccept = Member::supportingDocumentFileInputAccept();
+    $supportingAcceptedDropzone = Member::supportingDocumentDropzoneAcceptedFiles();
     $supportingDocsHasError =
         $errors->has('supporting_documents')
         || collect($errors->keys())->contains(fn ($key) => str_starts_with((string) $key, 'supporting_documents.'));

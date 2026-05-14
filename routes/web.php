@@ -3,7 +3,9 @@
 use App\Http\Controllers\ArticlePageController;
 use App\Http\Controllers\DownloadPageController;
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\KtaController;
 use App\Http\Controllers\LookupController;
+use App\Http\Controllers\MemberActivationPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('select')
@@ -16,13 +18,26 @@ Route::prefix('select')
     });
 
 Route::get('/', [HomePageController::class, 'index'])->name('home.index');
-Route::get('/about/profil-organisasi', function () {
-    return view('front.about.profil-organisasi');
-})->name('about.profil-organisasi');
 
-Route::get('/about/member-activation', function () {
-    return view('front.about.member-activation');
-})->name('about.member-activation');
+Route::prefix('about')
+    ->name('about.')
+    ->group(function (): void {
+        Route::get('/profil-organisasi', function () {
+            return view('front.about.profil-organisasi');
+        })->name('profil-organisasi');
+        Route::prefix('member-activation')
+            ->name('member-activation.')
+            ->group(function (): void {
+                Route::get('/', [MemberActivationPageController::class, 'index'])
+                    ->name('index');
+                Route::post('/', [MemberActivationPageController::class, 'store'])
+                    ->name('store');
+                Route::post('/send-verification-email', [MemberActivationPageController::class, 'sendVerificationEmail'])
+                    ->name('send-verification-email');
+                Route::post('/verify-email', [MemberActivationPageController::class, 'verifyEmail'])
+                    ->name('verify-email');
+            });
+    });
 
 Route::get('/download', [DownloadPageController::class, 'index'])->name('download.index');
 
@@ -35,3 +50,5 @@ Route::prefix('article')
         Route::get('/{categorySlug}', [ArticlePageController::class, 'index'])->name('index');
         Route::get('/', [ArticlePageController::class, 'index'])->name('all');
     });
+
+Route::get('/kta/{ktaNumber}', [KtaController::class, 'show'])->name('kta.show');

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Gender;
 use App\Models\Member;
+use App\Models\MemberActivation;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
@@ -32,8 +33,8 @@ class UpdateMemberRequest extends FormRequest
 
     public function rules(): array
     {
-        /** @var Member $member */
-        $member = $this->route('member');
+        $record = $this->memberOrActivationFromRoute();
+        $table = $record instanceof MemberActivation ? 'member_activations' : 'members';
         $provinceCode = $this->input('province_code');
 
         return [
@@ -41,7 +42,7 @@ class UpdateMemberRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:255',
-                Rule::unique('members', 'nim')->ignore($member->getKey()),
+                Rule::unique($table, 'nim')->ignore($record->getKey()),
             ],
             'full_name' => ['nullable', 'string', 'max:255'],
             'nickname' => ['nullable', 'string', 'max:255'],
@@ -49,7 +50,7 @@ class UpdateMemberRequest extends FormRequest
                 'nullable',
                 'email:rfc',
                 'max:255',
-                Rule::unique('members', 'email')->ignore($member->getKey()),
+                Rule::unique($table, 'email')->ignore($record->getKey()),
             ],
             'province_code' => ['nullable', 'string', 'size:2', 'exists:provinces,code', 'required_with:place_of_birth_code'],
             'place_of_birth_code' => [
@@ -73,9 +74,8 @@ class UpdateMemberRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $v): void {
-            /** @var Member $member */
-            $member = $this->route('member');
-            $existing = $member->getMedia(Member::SUPPORTING_DOCUMENTS_COLLECTION)->count();
+            $record = $this->memberOrActivationFromRoute();
+            $existing = $record->getMedia(Member::SUPPORTING_DOCUMENTS_COLLECTION)->count();
             $uploadCount = $this->supportingDocumentsUploadCount();
             if ($existing + $uploadCount > Member::SUPPORTING_DOCUMENTS_MAX_TOTAL) {
                 $v->errors()->add(
@@ -84,6 +84,22 @@ class UpdateMemberRequest extends FormRequest
                 );
             }
         });
+    }
+
+    /** Route resource admin.members memakai `{member}`; admin.member-activations memakai `{member_activation}`. */
+    private function memberOrActivationFromRoute(): Member|MemberActivation
+    {
+        $member = $this->route('member');
+        if ($member instanceof Member) {
+            return $member;
+        }
+
+        $activation = $this->route('member_activation');
+        if ($activation instanceof MemberActivation) {
+            return $activation;
+        }
+
+        abort(500);
     }
 
     private function supportingDocumentsUploadCount(): int

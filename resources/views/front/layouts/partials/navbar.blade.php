@@ -22,9 +22,8 @@
                         Tentang
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="tentangDropdown">
-                        <li><a class="dropdown-item" href="{{ route('about.profil-organisasi') }}">Profil Organisasi</a>
-                        </li>
-                        <li><a class="dropdown-item" href="{{ route('about.member-activation') }}">KTA</a></li>
+                        <li><a class="dropdown-item" href="{{ route('about.profil-organisasi') }}">Profil Organisasi</a></li>
+                        <li><a class="dropdown-item" href="{{ route('about.member-activation.index') }}">KTA</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -41,10 +40,7 @@
                     </ul>
                 </li>
                 {{-- <li class="nav-item"><a class="nav-link" href="#">Program Unggulan</a></li> --}}
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('download.index') ? 'active text-brand' : '' }}"
-                        href="{{ route('download.index') }}">Download</a>
-                </li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('download.index') ? 'active text-brand' : '' }}" href="{{ route('download.index') }}">Download</a></li>
             </ul>
         </div>
     </div>

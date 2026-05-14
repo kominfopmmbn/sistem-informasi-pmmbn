@@ -12,19 +12,7 @@
         @endcan
     </div>
 
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
 
-    @if (session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
 
     <form method="get" action="{{ route('admin.members.index') }}" class="card mb-4">
         <div class="card-body">
@@ -53,6 +41,7 @@
                         <th>Email</th>
                         <th>Jenis kelamin</th>
                         <th>Wilayah org.</th>
+                        <th>Status</th>
                         <th class="text-end">Aksi</th>
                     </tr>
                 </thead>
@@ -71,6 +60,16 @@
                             <td>{{ $item->email ?: '—' }}</td>
                             <td>{{ $item->gender_id?->label() ?? '—' }}</td>
                             <td>{{ $item->orgRegion?->name ?? '—' }}</td>
+                            <td>
+                                @if ($item->kta)
+                                    <span class="badge bg-label-success">Sudah Verifikasi</span>
+                                    <a href="{{ route('kta.show', ['ktaNumber' => $item->kta->number]) }}" target="_blank" class="btn btn-sm btn-icon btn-text-secondary" title="Lihat KTA">
+                                        <i class="icon-base bx bx-file"></i>
+                                    </a>
+                                @else
+                                    <span class="badge bg-label-warning">Belum Verifikasi</span>
+                                @endif
+                            </td>
                             <td class="text-end">
                                 @can('members.update')
                                     <a href="{{ route('admin.members.edit', $item) }}"

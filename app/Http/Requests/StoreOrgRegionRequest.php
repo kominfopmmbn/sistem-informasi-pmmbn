@@ -15,7 +15,7 @@ class StoreOrgRegionRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', 'unique:org_regions,name'],
-            'code' => ['required', 'string', 'max:255', 'unique:org_regions,code'],
+            'code' => ['required', 'string', 'digits:2', 'unique:org_regions,code'],
         ];
     }
 }

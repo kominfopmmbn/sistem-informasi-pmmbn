@@ -52,15 +52,6 @@
             </li>
         @endcan
 
-        @can('members.view')
-            <li class="menu-item {{ request()->routeIs('admin.members.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.members.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-group"></i>
-                    <div>Anggota</div>
-                </a>
-            </li>
-        @endcan
-
         @can('colleges.view')
             <li class="menu-item {{ request()->routeIs('admin.colleges.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.colleges.index') }}" class="menu-link">
@@ -69,6 +60,26 @@
                 </a>
             </li>
         @endcan
+
+        @canany(['members.view', 'member-activations.view'])
+            <li class="menu-header small">
+                <span class="menu-header-text" data-i18n="Anggota">Anggota</span>
+            </li>
+            <li class="menu-item {{ request()->routeIs('admin.members.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.members.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-group"></i>
+                    <div>Master Anggota</div>
+                </a>
+            </li>
+            @can('member-activations.view')
+                <li class="menu-item {{ request()->routeIs('admin.member-activations.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.member-activations.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-user-plus"></i>
+                        <div>Aktivasi Anggota</div>
+                    </a>
+                </li>
+            @endcan
+        @endcanany
 
         @canany(['users.view', 'roles.view'])
             <!-- Authorization -->

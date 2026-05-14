@@ -37,6 +37,7 @@
                     $groupLabel = match ($group) {
                         'articles' => 'Artikel & opini',
                         'members' => 'Anggota',
+                        'member-activations' => 'Aktivasi anggota',
                         'org_regions' => 'Wilayah organisasi',
                         'colleges' => 'Perguruan tinggi',
                         'provinces' => 'Provinsi (data wilayah)',

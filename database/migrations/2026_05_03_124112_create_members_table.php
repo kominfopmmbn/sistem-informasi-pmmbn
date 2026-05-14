@@ -22,6 +22,8 @@ return new class extends Migration
             $table->smallInteger('gender_id')->nullable();
             $table->unsignedBigInteger('org_region_id')->nullable(); // relasi ke table org_regions
             $table->string('phone_number')->nullable();
+            $table->boolean('is_created_from_member_activation')->default(false);
+            $table->unsignedBigInteger('member_activation_id')->nullable(); // relasi ke table member_activations
             $table->timestamps();
             $table->softDeletes();
             $table->userstamps();
