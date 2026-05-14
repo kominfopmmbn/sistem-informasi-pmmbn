@@ -171,7 +171,9 @@
                         {
                             data: 'org_region.name',
                             name: 'org_region.name',
-                            defaultContent: '—'
+                            defaultContent: '—',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'phone_number',
