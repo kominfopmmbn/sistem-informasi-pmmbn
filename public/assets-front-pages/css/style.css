@@ -188,7 +188,7 @@ body {
 3. HERO SECTION
 ========================================= */
 .hero-section {
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../img/bg-hero-home.JPG') center/cover;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.695), rgba(0, 100, 150, 0.2)), url('../img/bg-hero-home.JPG') center/cover;
     height: 80vh;
     display: flex;
     align-items: center;
@@ -598,8 +598,8 @@ footer .bi:hover {
     min-height: 400px;
     display: flex;
     align-items: center;
-    background: linear-gradient(to right, rgba(150, 0, 0, 0.8), rgba(0, 100, 150, 0.2)),
-        url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.695), rgba(0, 100, 150, 0.2)),
+        url('../img/download-hero.png') center/cover no-repeat;
     color: white;
     padding: 3rem;
 }
