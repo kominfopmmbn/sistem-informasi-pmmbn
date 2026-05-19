@@ -25,7 +25,7 @@
 
                         <div class="row g-4 flex-nowrap card-slider-container" id="cardSlider">
 
-                            <div class="col-md-4 flex-shrink-0" data-aos="fade-up" data-aos-delay="100">
+                            <div class="col-md-4 shrink-0" data-aos="fade-up" data-aos-delay="100">
                                 <div class="card program-card active p-4 shadow border-0">
                                     <h4 class="fw-bold">Sekolah Moderasi</h4>
                                     <p class="mt-3 opacity-75">Program pendidikan dan kajian intensif bagi
@@ -37,7 +37,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4 flex-shrink-0" data-aos="fade-up" data-aos-delay="200">
+                            <div class="col-md-4 shrink-0" data-aos="fade-up" data-aos-delay="200">
                                 <div class="card program-card p-4 shadow-sm border-0">
                                     <h4 class="fw-bold">Kaderisasi</h4>
                                     <p class="mt-3 opacity-75">Program pembinaan karakter kebangsaan yang
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4 flex-shrink-0" data-aos="fade-up" data-aos-delay="300">
+                            <div class="col-md-4 shrink-0" data-aos="fade-up" data-aos-delay="300">
                                 <div class="card program-card p-4 shadow-sm border-0">
                                     <h4 class="fw-bold">Digital Campaign</h4>
                                     <p class="mt-3 opacity-75">Program pengembangan intelektual melalui riset,
@@ -61,7 +61,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4 flex-shrink-0" data-aos="fade-up" data-aos-delay="400">
+                            <div class="col-md-4 shrink-0" data-aos="fade-up" data-aos-delay="400">
                                 <div class="card program-card p-4 shadow-sm border-0">
                                     <h4 class="fw-bold">Program Keempat</h4>
                                     <p class="mt-3 opacity-75">Contoh program keempat yang ukurannya tetap sama dan bisa
@@ -72,7 +72,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4 flex-shrink-0" data-aos="fade-up" data-aos-delay="400">
+                            <div class="col-md-4 shrink-0" data-aos="fade-up" data-aos-delay="400">
                                 <div class="card program-card p-4 shadow-sm border-0">
                                     <h4 class="fw-bold">Program Keempat</h4>
                                     <p class="mt-3 opacity-75">Contoh program keempat yang ukurannya tetap sama dan bisa
