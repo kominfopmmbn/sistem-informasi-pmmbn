@@ -3,7 +3,7 @@
 @section('title', 'Beranda')
 
 @section('content')
-    @include('front.home.hero')
+    @include('front.home.hero', compact('heroSlides'))
     @include('front.home.about')
     @include('front.home.program-unggulan')
     @include('front.home.id-card')
