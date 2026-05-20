@@ -98,7 +98,6 @@
     </div>
 </div>
 
-</html>
 @endsection
 
 @push('styles')
