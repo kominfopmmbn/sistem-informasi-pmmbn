@@ -23,7 +23,7 @@
     <div class="row g-4">
         <div class="col-md-3">
             <div class="card custom-card">
-                <img src="https://via.placeholder.com/300x180/e0e0e0/555555?text=Gambar+Kelas" class="card-img-top"
+                <img src="https://placehold.co/300x180/e0e0e0/555555?text=Gambar+Kelas" class="card-img-top"
                     alt="Sekolah Moderasi">
                 <div class="custom-card-body flex-grow-1">
                     <div>
@@ -42,7 +42,7 @@
 
         <div class="col-md-3">
             <div class="card custom-card">
-                <img src="https://via.placeholder.com/300x180/2c3e50/ffffff?text=Branding+UI/UX" class="card-img-top"
+                <img src="https://placehold.co/300x180/2c3e50/ffffff?text=Branding+UI/UX" class="card-img-top"
                     alt="Kaderisasi">
                 <div class="custom-card-body flex-grow-1">
                     <div>
@@ -61,7 +61,7 @@
 
         <div class="col-md-3">
             <div class="card custom-card">
-                <img src="https://via.placeholder.com/300x180/8e44ad/ffffff?text=Generative+AI" class="card-img-top"
+                <img src="https://placehold.co/300x180/8e44ad/ffffff?text=Generative+AI" class="card-img-top"
                     alt="Digital Campaign">
                 <div class="custom-card-body flex-grow-1">
                     <div>
@@ -79,7 +79,7 @@
 
         <div class="col-md-3">
             <div class="card custom-card">
-                <img src="https://via.placeholder.com/300x180/000000/ffffff?text=Steve+Jobs" class="card-img-top"
+                <img src="https://placehold.co/300x180/000000/ffffff?text=Steve+Jobs" class="card-img-top"
                     alt="Forum Diskusi">
                 <div class="custom-card-body flex-grow-1">
                     <div>
