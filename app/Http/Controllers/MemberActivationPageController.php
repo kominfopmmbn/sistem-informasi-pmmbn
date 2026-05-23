@@ -34,8 +34,7 @@ class MemberActivationPageController extends Controller
 
             $memberActivation = MemberActivation::query()->with([
                 'placeOfBirthCity.province',
-                'college.city',
-                'college.province',
+                'college',
                 'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
             ])->find($memberActivationId);
             if (! $memberActivation || ! $memberActivation->currentStatus?->isRejected()) {
@@ -56,9 +55,7 @@ class MemberActivationPageController extends Controller
         $collegeLabel = '';
         if ($collegeId !== '' && $collegeId !== null) {
             if ($memberActivation?->relationLoaded('college') && $memberActivation->college !== null) {
-                $cityName = $memberActivation->college->city?->name ?? '—';
-                $provinceName = $memberActivation->college->province?->name ?? '—';
-                $collegeLabel = $memberActivation->college->name.' — '.$cityName.', '.$provinceName;
+                $collegeLabel = $memberActivation->college->name;
             }
         }
 

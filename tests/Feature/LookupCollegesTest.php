@@ -57,6 +57,8 @@ class LookupCollegesTest extends TestCase
 
         $ids = collect($response->json('results'))->pluck('id')->all();
         $this->assertContains($college->id, $ids);
+        $texts = collect($response->json('results'))->pluck('text', 'id');
+        $this->assertSame($college->name, $texts[$college->id]);
         $this->assertIsBool($response->json('pagination.more'));
     }
 

@@ -78,7 +78,6 @@ class LookupController extends Controller
         $page = max(1, (int) $request->input('page', 1));
 
         $query = College::query()
-            ->with(['city', 'province'])
             ->orderBy('name');
 
         if ($q !== null && $q !== '') {
@@ -88,15 +87,10 @@ class LookupController extends Controller
 
         $colleges = $query->paginate($perPage, ['*'], 'page', $page);
 
-        $results = $colleges->getCollection()->map(function (College $college) {
-            $cityName = $college->city?->name ?? '—';
-            $provinceName = $college->province?->name ?? '—';
-
-            return [
-                'id' => $college->getKey(),
-                'text' => $college->name.' — '.$cityName.', '.$provinceName,
-            ];
-        })->values()->all();
+        $results = $colleges->getCollection()->map(fn (College $college) => [
+            'id' => $college->getKey(),
+            'text' => $college->name,
+        ])->values()->all();
 
         return response()->json([
             'results' => $results,
