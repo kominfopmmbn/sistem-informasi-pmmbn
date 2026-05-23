@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use App\Models\College;
+use Illuminate\Support\Facades\DB;
 use Laravolt\Indonesia\Models\City;
 use Laravolt\Indonesia\Models\District;
 use Laravolt\Indonesia\Models\Village;
@@ -40,7 +41,7 @@ class LookupController extends Controller
 
         if ($q !== null && $q !== '') {
             $q = (string) $q;
-            $query->where('name', 'like', '%'.$q.'%');
+            $query->where(DB::raw('LOWER(name)'), 'like', '%'.strtolower($q).'%');
         }
 
         $cities = $query->paginate($perPage, ['*'], 'page', $page);
@@ -82,7 +83,7 @@ class LookupController extends Controller
 
         if ($q !== null && $q !== '') {
             $q = (string) $q;
-            $query->where('name', 'like', '%'.$q.'%');
+            $query->where(DB::raw('LOWER(name)'), 'like', '%'.strtolower($q).'%');
         }
 
         $colleges = $query->paginate($perPage, ['*'], 'page', $page);
