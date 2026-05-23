@@ -20,6 +20,7 @@ class StoreMemberRequest extends FormRequest
             'gender_id' => $this->filled('gender_id') ? $this->input('gender_id') : null,
             'place_of_birth_code' => $this->filled('place_of_birth_code') ? $this->input('place_of_birth_code') : null,
             'province_code' => $this->filled('province_code') ? $this->input('province_code') : null,
+            'college_id' => $this->filled('college_id') ? $this->input('college_id') : null,
             'date_of_birth' => $this->filled('date_of_birth') ? $this->input('date_of_birth') : null,
         ]);
     }
@@ -51,6 +52,7 @@ class StoreMemberRequest extends FormRequest
             'date_of_birth' => ['nullable', 'date'],
             'gender_id' => ['nullable', Rule::enum(Gender::class)],
             'phone_number' => ['nullable', 'string', 'max:255'],
+            'college_id' => ['nullable', 'integer', 'exists:colleges,id'],
             'supporting_documents' => ['nullable', 'array', 'max:'.Member::SUPPORTING_DOCUMENTS_MAX_PER_SUBMIT],
             'supporting_documents.*' => Member::supportingDocumentItemRules(),
         ];

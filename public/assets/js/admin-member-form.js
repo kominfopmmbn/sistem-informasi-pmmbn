@@ -170,4 +170,39 @@ $(function () {
       updateCityHint();
     }
   }
+
+  const $college = $('#member_college_id');
+  if ($college.length && typeof $.fn.select2 !== 'undefined') {
+    const collegeSearchUrl = $college.data('search-url');
+    if (collegeSearchUrl) {
+      $college.wrap('<div class="position-relative"></div>');
+      $college.select2({
+        placeholder: $college.data('placeholder') || 'Pilih perguruan tinggi',
+        allowClear: !$college.prop('required'),
+        dropdownParent: $college.parent(),
+        width: '100%',
+        minimumInputLength: 0,
+        ajax: {
+          url: collegeSearchUrl,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term,
+              page: params.page || 1
+            };
+          },
+          processResults: function (data) {
+            const rows = (data.results || []).map(function (item) {
+              return { id: item.id, text: item.text };
+            });
+            return {
+              results: rows,
+              pagination: { more: !!(data.pagination && data.pagination.more) }
+            };
+          }
+        }
+      });
+    }
+  }
 });

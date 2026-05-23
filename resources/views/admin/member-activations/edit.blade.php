@@ -63,8 +63,8 @@
                                 <th>Tempat Lahir</th>
                                 <th>Tanggal Lahir</th>
                                 <th>Jenis Kelamin</th>
-                                <th>Wilayah Organisasi</th>
                                 <th>Nomor Telepon</th>
+                                <th>Perguruan Tinggi</th>
                             </tr>
                         </thead>
                     </table>
@@ -128,7 +128,8 @@
                             d.query = $('input[name="query"]').val();
                         }
                     },
-                    columns: [{
+                    columns: [
+                        {
                             data: 'id',
                             name: 'id',
                             orderable: false,
@@ -157,20 +158,30 @@
                             name: 'nickname'
                         },
                         {
-                            data: 'place_of_birth_code',
-                            name: 'place_of_birth_code'
+                            data: 'place_of_birth_city.name',
+                            name: 'place_of_birth_city.name',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'date_of_birth',
                             name: 'date_of_birth'
                         },
                         {
-                            data: 'gender_id',
-                            name: 'gender_id'
+                            data: 'gender_name',
+                            name: 'gender_name',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'phone_number',
                             name: 'phone_number'
+                        },
+                        {
+                            data: 'college.name',
+                            name: 'college.name',
+                            orderable: false,
+                            searchable: false
                         },
                     ],
                     columnDefs: [{

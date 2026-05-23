@@ -13,6 +13,7 @@ Route::prefix('select')
     ->middleware('throttle:120,1')
     ->group(function (): void {
         Route::get('cities', [LookupController::class, 'cities'])->name('cities');
+        Route::get('colleges', [LookupController::class, 'colleges'])->name('colleges');
         Route::get('districts', [LookupController::class, 'districts'])->name('districts');
         Route::get('villages', [LookupController::class, 'villages'])->name('villages');
     });

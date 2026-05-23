@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravolt\Indonesia\Models\City;
 use Laravolt\Indonesia\Models\Province;
 
@@ -19,5 +20,15 @@ class College extends Model
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class, 'city_code', 'code');
+    }
+
+    public function members(): HasMany
+    {
+        return $this->hasMany(Member::class);
+    }
+
+    public function memberActivations(): HasMany
+    {
+        return $this->hasMany(MemberActivation::class);
     }
 }

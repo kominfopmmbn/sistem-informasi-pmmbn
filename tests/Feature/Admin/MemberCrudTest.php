@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use App\Enums\Gender;
+use App\Models\College;
 use App\Models\Member;
 use App\Models\User;
 use Database\Seeders\PermissionSeeder;
@@ -58,6 +59,17 @@ class MemberCrudTest extends TestCase
         return ['province' => $province, 'city' => $city];
     }
 
+    private function sampleCollege(): College
+    {
+        ['province' => $province, 'city' => $city] = $this->sampleProvinceAndCity();
+
+        return College::query()->create([
+            'name' => 'Universitas Tes Member',
+            'province_code' => $province->code,
+            'city_code' => $city->code,
+        ]);
+    }
+
     public function test_guest_is_redirected_from_members_index_to_admin_login(): void
     {
         $this->get(route('admin.members.index'))
@@ -104,6 +116,7 @@ class MemberCrudTest extends TestCase
     {
         $this->actingAsAdministrator();
         ['province' => $province, 'city' => $city] = $this->sampleProvinceAndCity();
+        $college = $this->sampleCollege();
 
         $this->post(route('admin.members.store'), [
             'nim' => 'NIM-001',
@@ -115,6 +128,7 @@ class MemberCrudTest extends TestCase
             'date_of_birth' => '1999-05-03',
             'gender_id' => Gender::MALE->value,
             'phone_number' => '081234567890',
+            'college_id' => $college->id,
         ])->assertRedirect(route('admin.members.index'))
             ->assertSessionHas('success');
 
@@ -125,6 +139,7 @@ class MemberCrudTest extends TestCase
             'place_of_birth_code' => $city->code,
             'gender_id' => Gender::MALE->value,
             'phone_number' => '081234567890',
+            'college_id' => $college->id,
         ]);
     }
 

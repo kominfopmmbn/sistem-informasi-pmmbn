@@ -24,7 +24,7 @@ class MemberController extends Controller
         $q = isset($filters['q']) ? trim((string) $filters['q']) : '';
 
         $query = Member::query()
-            ->with(['placeOfBirthCity', 'kta'])
+            ->with(['placeOfBirthCity', 'kta', 'college'])
             ->latest('updated_at');
 
         if ($q !== '') {
@@ -63,6 +63,8 @@ class MemberController extends Controller
     {
         $member->load([
             'placeOfBirthCity',
+            'college.city',
+            'college.province',
             'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
         ]);
         $provinces = Province::query()->orderBy('name', 'asc')->get();

@@ -31,7 +31,7 @@ class MemberActivationController extends Controller
         $q = isset($filters['q']) ? trim((string) $filters['q']) : '';
 
         $query = MemberActivation::query()
-            ->with(['placeOfBirthCity', 'currentStatus'])
+            ->with(['placeOfBirthCity', 'currentStatus', 'college'])
             ->latest('updated_at');
 
         if ($q !== '') {
@@ -55,6 +55,8 @@ class MemberActivationController extends Controller
     {
         $member_activation->load([
             'placeOfBirthCity',
+            'college.city',
+            'college.province',
             'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
         ]);
         $provinces = Province::query()->orderBy('name', 'asc')->get();
@@ -121,6 +123,7 @@ class MemberActivationController extends Controller
     public function getSuggestionMember(MemberActivation $member_activation, Request $request)
     {
         $members = Member::query()
+            ->with(['college', 'placeOfBirthCity'])
             ->when(! $request->input('search.value'), function ($query) use ($member_activation) {
                 $query->where('nim', $member_activation->nim);
                 $query->orWhere('email', $member_activation->email);
@@ -131,7 +134,7 @@ class MemberActivationController extends Controller
             ->editColumn('date_of_birth', function ($member) {
                 return $member->date_of_birth ? Carbon::parse($member->date_of_birth)->format('d-m-Y') : '—';
             })
-            ->editColumn('gender_id', function ($member) {
+            ->addColumn('gender_name', function ($member) {
                 return $member->gender_id?->label() ?? '—';
             })
             ->make(true);
@@ -157,6 +160,7 @@ class MemberActivationController extends Controller
                 'date_of_birth' => $member_activation->date_of_birth,
                 'gender_id' => $member_activation->gender_id,
                 'phone_number' => $member_activation->phone_number,
+                'college_id' => $member_activation->college_id,
                 'member_activation_id' => $member_activation->id,
             ]);
         } else {
@@ -169,6 +173,7 @@ class MemberActivationController extends Controller
                 'date_of_birth' => $member_activation->date_of_birth,
                 'gender_id' => $member_activation->gender_id,
                 'phone_number' => $member_activation->phone_number,
+                'college_id' => $member_activation->college_id,
                 'member_activation_id' => $member_activation->id,
                 'is_created_from_member_activation' => true,
             ]);

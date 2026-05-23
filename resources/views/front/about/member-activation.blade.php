@@ -172,6 +172,29 @@
                             @enderror
                         </div>
 
+                        <div class="col-md-6">
+                            <label class="form-label" for="member_college_id">Perguruan tinggi</label>
+                            <div class="select2-primary @error('college_id') form-control-custom is-invalid border-danger @enderror"
+                                required>
+                                <div class="position-relative w-100">
+                                    <select name="college_id" id="member_college_id"
+                                        class="select2 form-select form-select-custom @error('college_id') is-invalid border-danger @enderror"
+                                        data-search-url="{{ route('select.colleges') }}"
+                                        data-placeholder="Pilih perguruan tinggi"
+                                        required>
+                                        @if ($collegeId !== '' && $collegeId !== null)
+                                            <option value="{{ $collegeId }}" selected>{{ $collegeLabel }}</option>
+                                        @else
+                                            <option value=""></option>
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            @error('college_id')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <div class="col-12">
                             <label class="form-label">Dokumen pendukung</label>
                             <input type="file" name="supporting_documents[]" id="member_supporting_documents"
