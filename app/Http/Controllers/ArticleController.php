@@ -7,7 +7,6 @@ use App\Http\Requests\UpdateArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -142,13 +141,12 @@ class ArticleController extends Controller
             ->with('success', $success);
     }
 
-    /**
-     * @param Model $article
-     * @return RedirectResponse
-     */
     public function destroy(Article $article): RedirectResponse
     {
         $this->authorize('delete', $article);
+
+        // Hapus sampul dari disk bersama record media; soft delete artikel tidak menghapus koleksi otomatis.
+        $article->clearMediaCollection(Article::COVER_COLLECTION);
 
         $article->delete();
 
