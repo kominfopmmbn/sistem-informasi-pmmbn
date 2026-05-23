@@ -52,7 +52,6 @@ class StoreMemberActivationRequest extends FormRequest
             ],
             'date_of_birth' => ['required', 'date'],
             'gender_id' => ['required', Rule::enum(Gender::class)],
-            'org_region_id' => ['nullable', 'integer', 'exists:org_regions,id'],
             'phone_number' => ['required', 'string', 'max:255'],
             'supporting_documents' => ['nullable', 'array', 'max:'.Member::SUPPORTING_DOCUMENTS_MAX_PER_SUBMIT],
             'supporting_documents.*' => Member::supportingDocumentItemRules(),

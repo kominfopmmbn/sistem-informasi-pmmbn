@@ -40,7 +40,6 @@
                         <th>Nama</th>
                         <th>Email</th>
                         <th>Jenis kelamin</th>
-                        <th>Wilayah org.</th>
                         <th>Status</th>
                         <th class="text-end">Aksi</th>
                     </tr>
@@ -59,7 +58,6 @@
                             <td><span class="fw-medium">{{ $item->full_name ?: '—' }}</span></td>
                             <td>{{ $item->email ?: '—' }}</td>
                             <td>{{ $item->gender_id?->label() ?? '—' }}</td>
-                            <td>{{ $item->orgRegion?->name ?? '—' }}</td>
                             <td>
                                 @if ($item->kta)
                                     <span class="badge bg-label-success">Sudah Verifikasi</span>

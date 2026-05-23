@@ -6,7 +6,6 @@ use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
 use App\Models\MemberActivation;
-use App\Models\OrgRegion;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -25,7 +24,7 @@ class MemberController extends Controller
         $q = isset($filters['q']) ? trim((string) $filters['q']) : '';
 
         $query = Member::query()
-            ->with(['orgRegion', 'placeOfBirthCity', 'kta'])
+            ->with(['placeOfBirthCity', 'kta'])
             ->latest('updated_at');
 
         if ($q !== '') {
@@ -47,9 +46,7 @@ class MemberController extends Controller
     public function create(): View
     {
         $provinces = Province::query()->orderBy('name', 'asc')->get();
-        $orgRegions = OrgRegion::query()->orderBy('name', 'asc')->get();
-
-        return view('admin.members.create', compact('provinces', 'orgRegions'));
+        return view('admin.members.create', compact('provinces'));
     }
 
     public function store(StoreMemberRequest $request): RedirectResponse
@@ -66,13 +63,11 @@ class MemberController extends Controller
     {
         $member->load([
             'placeOfBirthCity',
-            'orgRegion',
             'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
         ]);
         $provinces = Province::query()->orderBy('name', 'asc')->get();
-        $orgRegions = OrgRegion::query()->orderBy('name', 'asc')->get();
 
-        return view('admin.members.edit', compact('member', 'provinces', 'orgRegions'));
+        return view('admin.members.edit', compact('member', 'provinces'));
     }
 
     public function update(UpdateMemberRequest $request, Member $member): RedirectResponse

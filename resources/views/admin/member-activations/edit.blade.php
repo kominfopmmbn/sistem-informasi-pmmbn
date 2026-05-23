@@ -169,11 +169,6 @@
                             name: 'gender_id'
                         },
                         {
-                            data: 'org_region.name',
-                            name: 'org_region.name',
-                            defaultContent: '—'
-                        },
-                        {
                             data: 'phone_number',
                             name: 'phone_number'
                         },

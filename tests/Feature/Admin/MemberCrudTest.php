@@ -4,7 +4,6 @@ namespace Tests\Feature\Admin;
 
 use App\Enums\Gender;
 use App\Models\Member;
-use App\Models\OrgRegion;
 use App\Models\User;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
@@ -105,10 +104,6 @@ class MemberCrudTest extends TestCase
     {
         $this->actingAsAdministrator();
         ['province' => $province, 'city' => $city] = $this->sampleProvinceAndCity();
-        $region = OrgRegion::query()->create([
-            'name' => 'Wilayah Member',
-            'code' => 'WM',
-        ]);
 
         $this->post(route('admin.members.store'), [
             'nim' => 'NIM-001',
@@ -119,7 +114,6 @@ class MemberCrudTest extends TestCase
             'place_of_birth_code' => $city->code,
             'date_of_birth' => '1999-05-03',
             'gender_id' => Gender::MALE->value,
-            'org_region_id' => $region->id,
             'phone_number' => '081234567890',
         ])->assertRedirect(route('admin.members.index'))
             ->assertSessionHas('success');
@@ -130,7 +124,6 @@ class MemberCrudTest extends TestCase
             'email' => 'budi@example.test',
             'place_of_birth_code' => $city->code,
             'gender_id' => Gender::MALE->value,
-            'org_region_id' => $region->id,
             'phone_number' => '081234567890',
         ]);
     }

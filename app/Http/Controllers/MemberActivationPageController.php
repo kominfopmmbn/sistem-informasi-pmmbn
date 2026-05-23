@@ -8,7 +8,6 @@ use App\Models\City;
 use App\Models\Member;
 use App\Models\MemberActivation;
 use App\Models\MemberActivationEmailOtpVerification;
-use App\Models\OrgRegion;
 use App\Notifications\MemberActivationEmailVerification;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\JsonResponse;
@@ -43,7 +42,6 @@ class MemberActivationPageController extends Controller
         }
 
         $provinces = Province::query()->orderBy('name', 'asc')->get();
-        $orgRegions = OrgRegion::query()->orderBy('name', 'asc')->get();
 
         $placeCode = old('place_of_birth_code', $memberActivation?->place_of_birth_code ?? '');
         $placeName = '';
@@ -74,7 +72,6 @@ class MemberActivationPageController extends Controller
 
         return view('front.about.member-activation', compact(
             'provinces',
-            'orgRegions',
             'placeCode',
             'placeName',
             'maxNewSupportingFiles',

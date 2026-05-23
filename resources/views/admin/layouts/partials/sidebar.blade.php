@@ -43,15 +43,6 @@
             </li>
         @endcan
 
-        @can('org_regions.view')
-            <li class="menu-item {{ request()->routeIs('admin.org-regions.*') ? 'active' : '' }}">
-                <a href="{{ route('admin.org-regions.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-map"></i>
-                    <div>Wilayah Organisasi</div>
-                </a>
-            </li>
-        @endcan
-
         @can('colleges.view')
             <li class="menu-item {{ request()->routeIs('admin.colleges.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.colleges.index') }}" class="menu-link">

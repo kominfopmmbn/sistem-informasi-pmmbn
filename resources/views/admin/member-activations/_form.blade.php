@@ -3,7 +3,6 @@
     use App\Models\Member;
 
     /** @var \Illuminate\Support\Collection<int, \Laravolt\Indonesia\Models\Province> $provinces */
-    /** @var \Illuminate\Support\Collection<int, \App\Models\OrgRegion> $orgRegions */
     $provinceCode = old(
         'province_code',
         isset($member) && $member->placeOfBirthCity ? $member->placeOfBirthCity->province_code : '',
@@ -17,7 +16,6 @@
         $placeName = $placeRow?->name ?? '';
     }
     $genderOld = old('gender_id', isset($member) && $member->gender_id !== null ? $member->gender_id->value : '');
-    $orgRegionOld = old('org_region_id', isset($member) ? $member->org_region_id ?? '' : '');
     $existingSupportingCount = isset($member) ? $member->getMedia(Member::SUPPORTING_DOCUMENTS_COLLECTION)->count() : 0;
     $maxNewSupportingFiles = max(
         0,
@@ -142,26 +140,6 @@
             </div>
         </div>
         @error('gender_id')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
-        @enderror
-    </div>
-
-    <div class="col-12 col-md-6">
-        <label class="form-label" for="member_org_region_id">Wilayah organisasi</label>
-        <div class="select2-primary @error('org_region_id') is-invalid @enderror">
-            <div class="position-relative w-100">
-                <select name="org_region_id" id="member_org_region_id"
-                    class="select2 form-select @error('org_region_id') is-invalid @enderror"
-                    data-placeholder="Pilih (opsional)">
-                    <option value=""></option>
-                    @foreach ($orgRegions as $region)
-                        <option value="{{ $region->id }}" @selected((string) $orgRegionOld === (string) $region->id)>
-                            {{ $region->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        @error('org_region_id')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
     </div>

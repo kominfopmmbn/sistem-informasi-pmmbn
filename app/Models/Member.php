@@ -20,7 +20,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
     'place_of_birth_code',
     'date_of_birth',
     'gender_id',
-    'org_region_id',
     'phone_number',
     'is_created_from_member_activation',
     'member_activation_id',
@@ -117,11 +116,6 @@ class Member extends Model implements HasMedia
     public function placeOfBirthCity(): BelongsTo
     {
         return $this->belongsTo(City::class, 'place_of_birth_code', 'code');
-    }
-
-    public function orgRegion(): BelongsTo
-    {
-        return $this->belongsTo(OrgRegion::class);
     }
 
     public function kta(): HasOne

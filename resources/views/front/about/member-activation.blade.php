@@ -162,26 +162,6 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" for="member_org_region_id">Wilayah organisasi</label>
-                            <div class="select2-primary @error('org_region_id') is-invalid border-danger @enderror">
-                                <div class="position-relative w-100">
-                                    <select name="org_region_id" id="member_org_region_id"
-                                        class="select2 form-select form-select-custom @error('org_region_id') is-invalid border-danger @enderror"
-                                        data-placeholder="Pilih (opsional)">
-                                        <option value=""></option>
-                                        @foreach ($orgRegions as $region)
-                                            <option value="{{ $region->id }}" @selected((string) old('org_region_id', $memberActivation?->org_region_id ?? '') === (string) $region->id)>
-                                                {{ $region->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            @error('org_region_id')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-6">
                             <label class="form-label" for="member_phone_number">Nomor telepon</label>
                             <input type="text" name="phone_number" id="member_phone_number"
                                 class="form-control form-control-custom @error('phone_number') is-invalid border-danger @enderror"

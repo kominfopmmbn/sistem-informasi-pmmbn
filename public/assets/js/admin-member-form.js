@@ -1,5 +1,5 @@
 /**
- * Admin member form: Dropzone dokumen pendukung (sinkron ke input file), Select2 provinsi/kota, gender & wilayah org.
+ * Admin member form: Dropzone dokumen pendukung (sinkron ke input file), Select2 provinsi/kota & gender.
  */
 'use strict';
 
@@ -25,19 +25,15 @@ $(function () {
 
   if (typeof $.fn.select2 !== 'undefined') {
     const $gender = $('#member_gender_id');
-    const $orgRegion = $('#member_org_region_id');
-    [$gender, $orgRegion].forEach(function ($el) {
-      if (!$el.length) {
-        return;
-      }
-      $el.wrap('<div class="position-relative"></div>');
-      $el.select2({
-        placeholder: $el.data('placeholder') || '—',
+    if ($gender.length) {
+      $gender.wrap('<div class="position-relative"></div>');
+      $gender.select2({
+        placeholder: $gender.data('placeholder') || '—',
         allowClear: true,
-        dropdownParent: $el.parent(),
+        dropdownParent: $gender.parent(),
         width: '100%'
       });
-    });
+    }
   }
 
   if (typeof Dropzone !== 'undefined') {

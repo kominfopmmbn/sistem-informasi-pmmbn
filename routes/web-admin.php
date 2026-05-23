@@ -8,7 +8,6 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MemberActivationController;
 use App\Http\Controllers\MemberController;
-use App\Http\Controllers\OrgRegionController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -74,13 +73,6 @@ Route::middleware(['auth'])->group(function (): void {
         ->middlewareFor(['create', 'store'], 'permission:roles.create')
         ->middlewareFor(['edit', 'update'], 'permission:roles.update')
         ->middlewareFor('destroy', 'permission:roles.delete');
-
-    Route::resource('org-regions', OrgRegionController::class)
-        ->except(['show'])
-        ->middlewareFor('index', 'permission:org_regions.view')
-        ->middlewareFor(['create', 'store'], 'permission:org_regions.create')
-        ->middlewareFor(['edit', 'update'], 'permission:org_regions.update')
-        ->middlewareFor('destroy', 'permission:org_regions.delete');
 
     Route::resource('members', MemberController::class)
         ->except(['show'])
