@@ -29,7 +29,7 @@
             <li class="menu-item {{ request()->routeIs('admin.articles.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.articles.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-news"></i>
-                    <div>Berita & Opini</div>
+                    <div>Artikel</div>
                 </a>
             </li>
         @endcan
