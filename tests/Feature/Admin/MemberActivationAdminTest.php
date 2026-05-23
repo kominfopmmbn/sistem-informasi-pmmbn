@@ -46,6 +46,8 @@ class MemberActivationAdminTest extends TestCase
             'name' => 'Universitas Aktivasi Tes',
             'province_code' => $province->code,
             'city_code' => $city->code,
+            'lat' => -6.3612,
+            'long' => 106.8268,
         ]);
 
         $activation = MemberActivation::withoutEvents(

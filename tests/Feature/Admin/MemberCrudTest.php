@@ -67,6 +67,8 @@ class MemberCrudTest extends TestCase
             'name' => 'Universitas Tes Member',
             'province_code' => $province->code,
             'city_code' => $city->code,
+            'lat' => -6.3612,
+            'long' => 106.8268,
         ]);
     }
 

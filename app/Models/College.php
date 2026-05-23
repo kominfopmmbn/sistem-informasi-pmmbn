@@ -9,9 +9,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravolt\Indonesia\Models\City;
 use Laravolt\Indonesia\Models\Province;
 
-#[Fillable(['name', 'province_code', 'city_code'])]
+#[Fillable(['name', 'province_code', 'city_code', 'lat', 'long'])]
 class College extends Model
 {
+    protected function casts(): array
+    {
+        return [
+            'lat' => 'float',
+            'long' => 'float',
+        ];
+    }
+
     public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class, 'province_code', 'code');

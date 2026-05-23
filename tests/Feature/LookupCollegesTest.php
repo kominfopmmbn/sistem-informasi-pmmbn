@@ -34,6 +34,8 @@ class LookupCollegesTest extends TestCase
             'name' => 'Universitas Lookup Tes',
             'province_code' => $province->code,
             'city_code' => $city->code,
+            'lat' => -6.3612,
+            'long' => 106.8268,
         ]);
 
         return ['province' => $province, 'city' => $city, 'college' => $college];
