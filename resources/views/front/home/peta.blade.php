@@ -91,7 +91,7 @@
 <style>
     /* Pill provinsi */
     .province-pill {
-        background: #1e40af;
+        background: #8c1c03;
         color: white;
         border: 2.5px solid white;
         border-radius: 50px;

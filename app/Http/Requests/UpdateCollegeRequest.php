@@ -35,6 +35,8 @@ class UpdateCollegeRequest extends FormRequest
                     ? Rule::exists('cities', 'code')->where('province_code', (string) $provinceCode)
                     : Rule::exists('cities', 'code')->where(static fn ($query) => $query->whereRaw('1 = 0')),
             ],
+            'lat' => ['required', 'numeric', 'between:-90,90'],
+            'long' => ['required', 'numeric', 'between:-180,180'],
         ];
     }
 }

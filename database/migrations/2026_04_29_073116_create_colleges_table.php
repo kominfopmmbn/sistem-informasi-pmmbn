@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->char('province_code', 2);
             $table->char('city_code', 4);
+            $table->decimal('lat', 10, 7);
+            $table->decimal('long', 11, 7);
             $table->timestamps();
         });
     }

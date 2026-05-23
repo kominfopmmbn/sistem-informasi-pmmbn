@@ -40,7 +40,7 @@ class Kta extends Model
 
     public function generateNumber(self $model): string
     {
-        $pwCode = $model->member?->orgRegion?->code ?? '00';
+        $pwCode = '00';
         $year = date('y');
         return $pwCode . $year . str_pad($model->order_number, 4, '0', STR_PAD_LEFT);
     }

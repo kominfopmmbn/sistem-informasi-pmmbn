@@ -7,7 +7,6 @@ use App\Enums\MemberActivationStatus;
 use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
 use App\Models\MemberActivation;
-use App\Models\OrgRegion;
 use App\Notifications\MemberActivationAccepted;
 use App\Notifications\MemberActivationRejected;
 use Illuminate\Http\RedirectResponse;
@@ -32,7 +31,7 @@ class MemberActivationController extends Controller
         $q = isset($filters['q']) ? trim((string) $filters['q']) : '';
 
         $query = MemberActivation::query()
-            ->with(['orgRegion', 'placeOfBirthCity', 'currentStatus'])
+            ->with(['placeOfBirthCity', 'currentStatus', 'college'])
             ->latest('updated_at');
 
         if ($q !== '') {
@@ -56,16 +55,15 @@ class MemberActivationController extends Controller
     {
         $member_activation->load([
             'placeOfBirthCity',
-            'orgRegion',
+            'college.city',
+            'college.province',
             'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
         ]);
         $provinces = Province::query()->orderBy('name', 'asc')->get();
-        $orgRegions = OrgRegion::query()->orderBy('name', 'asc')->get();
 
         return view('admin.member-activations.edit', [
             'member' => $member_activation,
             'provinces' => $provinces,
-            'orgRegions' => $orgRegions,
         ]);
     }
 
@@ -125,7 +123,7 @@ class MemberActivationController extends Controller
     public function getSuggestionMember(MemberActivation $member_activation, Request $request)
     {
         $members = Member::query()
-            ->with(['orgRegion'])
+            ->with(['college', 'placeOfBirthCity'])
             ->when(! $request->input('search.value'), function ($query) use ($member_activation) {
                 $query->where('nim', $member_activation->nim);
                 $query->orWhere('email', $member_activation->email);
@@ -136,7 +134,7 @@ class MemberActivationController extends Controller
             ->editColumn('date_of_birth', function ($member) {
                 return $member->date_of_birth ? Carbon::parse($member->date_of_birth)->format('d-m-Y') : '—';
             })
-            ->editColumn('gender_id', function ($member) {
+            ->addColumn('gender_name', function ($member) {
                 return $member->gender_id?->label() ?? '—';
             })
             ->make(true);
@@ -161,8 +159,8 @@ class MemberActivationController extends Controller
                 'place_of_birth_code' => $member_activation->place_of_birth_code,
                 'date_of_birth' => $member_activation->date_of_birth,
                 'gender_id' => $member_activation->gender_id,
-                'org_region_id' => $member_activation->org_region_id,
                 'phone_number' => $member_activation->phone_number,
+                'college_id' => $member_activation->college_id,
                 'member_activation_id' => $member_activation->id,
             ]);
         } else {
@@ -174,8 +172,8 @@ class MemberActivationController extends Controller
                 'place_of_birth_code' => $member_activation->place_of_birth_code,
                 'date_of_birth' => $member_activation->date_of_birth,
                 'gender_id' => $member_activation->gender_id,
-                'org_region_id' => $member_activation->org_region_id,
                 'phone_number' => $member_activation->phone_number,
+                'college_id' => $member_activation->college_id,
                 'member_activation_id' => $member_activation->id,
                 'is_created_from_member_activation' => true,
             ]);

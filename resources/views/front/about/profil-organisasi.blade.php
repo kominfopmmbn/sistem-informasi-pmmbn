@@ -82,7 +82,7 @@
     <section class="container my-5 py-5">
         <div class="row align-items-center">
             <div class="col-lg-5" data-aos="zoom-in-right" data-aos-duration="1000">
-                <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=2070&auto=format&fit=crop"
+                <img src="../../assets-front-pages/img/ketum.png"
                     class="visi-misi-img shadow" alt="Ketua/Tokoh PMMBN">
             </div>
 

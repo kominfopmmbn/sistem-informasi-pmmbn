@@ -40,6 +40,11 @@
           <h4 class="mb-1">Welcome to PMMBN! 👋</h4>
           <p class="mb-6">Please sign-in to your account and start the adventure</p>
 
+          @if (session('error'))
+            <div class="alert alert-danger">
+              {{ session('error') }}
+            </div>
+          @endif
           <form id="formAuthentication" class="mb-6" action="{{ route('admin.auth.loginPost') }}" method="POST">
             @csrf
             <div class="mb-6 form-control-validation">
@@ -50,6 +55,7 @@
                 id="email"
                 name="email"
                 placeholder="Enter your email"
+                value="{{ old('email') }}"
                 autofocus />
             </div>
             <div class="form-password-toggle form-control-validation">
@@ -68,7 +74,7 @@
             <div class="my-7">
               <div class="d-flex justify-content-between">
                 <div class="form-check mb-0">
-                  <input class="form-check-input" type="checkbox" id="remember-me" />
+                  <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me" />
                   <label class="form-check-label" for="remember-me">Remember Me</label>
                 </div>
                 <a href="auth-forgot-password-cover.html">

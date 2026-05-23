@@ -8,7 +8,6 @@ use App\Models\City;
 use App\Models\Member;
 use App\Models\MemberActivation;
 use App\Models\MemberActivationEmailOtpVerification;
-use App\Models\OrgRegion;
 use App\Notifications\MemberActivationEmailVerification;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\JsonResponse;
@@ -35,6 +34,7 @@ class MemberActivationPageController extends Controller
 
             $memberActivation = MemberActivation::query()->with([
                 'placeOfBirthCity.province',
+                'college',
                 'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
             ])->find($memberActivationId);
             if (! $memberActivation || ! $memberActivation->currentStatus?->isRejected()) {
@@ -43,13 +43,20 @@ class MemberActivationPageController extends Controller
         }
 
         $provinces = Province::query()->orderBy('name', 'asc')->get();
-        $orgRegions = OrgRegion::query()->orderBy('name', 'asc')->get();
 
         $placeCode = old('place_of_birth_code', $memberActivation?->place_of_birth_code ?? '');
         $placeName = '';
         if ($placeCode !== '') {
             $placeRow = City::query()->where('code', $placeCode)->first();
             $placeName = $placeRow?->name ?? '';
+        }
+
+        $collegeId = old('college_id', $memberActivation?->college_id ?? '');
+        $collegeLabel = '';
+        if ($collegeId !== '' && $collegeId !== null) {
+            if ($memberActivation?->relationLoaded('college') && $memberActivation->college !== null) {
+                $collegeLabel = $memberActivation->college->name;
+            }
         }
 
         $existingSupportingCount = 0;
@@ -74,9 +81,10 @@ class MemberActivationPageController extends Controller
 
         return view('front.about.member-activation', compact(
             'provinces',
-            'orgRegions',
             'placeCode',
             'placeName',
+            'collegeId',
+            'collegeLabel',
             'maxNewSupportingFiles',
             'supportingMaxFileMb',
             'supportingAccept',

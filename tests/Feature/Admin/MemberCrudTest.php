@@ -3,8 +3,8 @@
 namespace Tests\Feature\Admin;
 
 use App\Enums\Gender;
+use App\Models\College;
 use App\Models\Member;
-use App\Models\OrgRegion;
 use App\Models\User;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
@@ -59,6 +59,19 @@ class MemberCrudTest extends TestCase
         return ['province' => $province, 'city' => $city];
     }
 
+    private function sampleCollege(): College
+    {
+        ['province' => $province, 'city' => $city] = $this->sampleProvinceAndCity();
+
+        return College::query()->create([
+            'name' => 'Universitas Tes Member',
+            'province_code' => $province->code,
+            'city_code' => $city->code,
+            'lat' => -6.3612,
+            'long' => 106.8268,
+        ]);
+    }
+
     public function test_guest_is_redirected_from_members_index_to_admin_login(): void
     {
         $this->get(route('admin.members.index'))
@@ -105,10 +118,7 @@ class MemberCrudTest extends TestCase
     {
         $this->actingAsAdministrator();
         ['province' => $province, 'city' => $city] = $this->sampleProvinceAndCity();
-        $region = OrgRegion::query()->create([
-            'name' => 'Wilayah Member',
-            'code' => 'WM',
-        ]);
+        $college = $this->sampleCollege();
 
         $this->post(route('admin.members.store'), [
             'nim' => 'NIM-001',
@@ -119,8 +129,8 @@ class MemberCrudTest extends TestCase
             'place_of_birth_code' => $city->code,
             'date_of_birth' => '1999-05-03',
             'gender_id' => Gender::MALE->value,
-            'org_region_id' => $region->id,
             'phone_number' => '081234567890',
+            'college_id' => $college->id,
         ])->assertRedirect(route('admin.members.index'))
             ->assertSessionHas('success');
 
@@ -130,8 +140,8 @@ class MemberCrudTest extends TestCase
             'email' => 'budi@example.test',
             'place_of_birth_code' => $city->code,
             'gender_id' => Gender::MALE->value,
-            'org_region_id' => $region->id,
             'phone_number' => '081234567890',
+            'college_id' => $college->id,
         ]);
     }
 

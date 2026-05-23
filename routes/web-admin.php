@@ -8,7 +8,6 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MemberActivationController;
 use App\Http\Controllers\MemberController;
-use App\Http\Controllers\OrgRegionController;
 use App\Http\Controllers\ProvinceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -41,14 +40,10 @@ Route::group([
 Route::middleware(['auth'])->group(function (): void {
     Route::resource('users', UserController::class)
         ->except(['show'])
-        ->middleware([
-            'index' => 'permission:users.view',
-            'create' => 'permission:users.create',
-            'store' => 'permission:users.create',
-            'edit' => 'permission:users.update',
-            'update' => 'permission:users.update',
-            'destroy' => 'permission:users.delete',
-        ]);
+        ->middlewareFor('index', 'permission:users.view')
+        ->middlewareFor(['create', 'store'], 'permission:users.create')
+        ->middlewareFor(['edit', 'update'], 'permission:users.update')
+        ->middlewareFor('destroy', 'permission:users.delete');
 
     Route::prefix('articles/{article}')
         ->middleware('permission:articles.update')
@@ -60,58 +55,31 @@ Route::middleware(['auth'])->group(function (): void {
 
     Route::resource('articles', ArticleController::class)
         ->except(['show'])
-        ->middleware([
-            'index' => 'permission:articles.view',
-            'create' => 'permission:articles.create',
-            'store' => 'permission:articles.create',
-            'edit' => 'permission:articles.update',
-            'update' => 'permission:articles.update',
-            'destroy' => 'permission:articles.delete',
-        ]);
+        ->middlewareFor('index', 'permission:articles.view')
+        ->middlewareFor(['create', 'store'], 'permission:articles.create')
+        ->middlewareFor(['edit', 'update'], 'permission:articles.update')
+        ->middlewareFor('destroy', 'permission:articles.delete');
 
     Route::resource('documents', DocumentController::class)
         ->except(['show'])
-        ->middleware([
-            'index' => 'permission:documents.view',
-            'create' => 'permission:documents.create',
-            'store' => 'permission:documents.create',
-            'edit' => 'permission:documents.update',
-            'update' => 'permission:documents.update',
-            'destroy' => 'permission:documents.delete',
-        ]);
+        ->middlewareFor('index', 'permission:documents.view')
+        ->middlewareFor(['create', 'store'], 'permission:documents.create')
+        ->middlewareFor(['edit', 'update'], 'permission:documents.update')
+        ->middlewareFor('destroy', 'permission:documents.delete');
 
     Route::resource('roles', RoleController::class)
         ->except(['show'])
-        ->middleware([
-            'index' => 'permission:roles.view',
-            'create' => 'permission:roles.create',
-            'store' => 'permission:roles.create',
-            'edit' => 'permission:roles.update',
-            'update' => 'permission:roles.update',
-            'destroy' => 'permission:roles.delete',
-        ]);
-
-    Route::resource('org-regions', OrgRegionController::class)
-        ->except(['show'])
-        ->middleware([
-            'index' => 'permission:org_regions.view',
-            'create' => 'permission:org_regions.create',
-            'store' => 'permission:org_regions.create',
-            'edit' => 'permission:org_regions.update',
-            'update' => 'permission:org_regions.update',
-            'destroy' => 'permission:org_regions.delete',
-        ]);
+        ->middlewareFor('index', 'permission:roles.view')
+        ->middlewareFor(['create', 'store'], 'permission:roles.create')
+        ->middlewareFor(['edit', 'update'], 'permission:roles.update')
+        ->middlewareFor('destroy', 'permission:roles.delete');
 
     Route::resource('members', MemberController::class)
         ->except(['show'])
-        ->middleware([
-            'index' => 'permission:members.view',
-            'create' => 'permission:members.create',
-            'store' => 'permission:members.create',
-            'edit' => 'permission:members.update',
-            'update' => 'permission:members.update',
-            'destroy' => 'permission:members.delete',
-        ]);
+        ->middlewareFor('index', 'permission:members.view')
+        ->middlewareFor(['create', 'store'], 'permission:members.create')
+        ->middlewareFor(['edit', 'update'], 'permission:members.update')
+        ->middlewareFor('destroy', 'permission:members.delete');
     Route::prefix('member-activations/{member_activation}')
         ->middleware('permission:member-activations.update')
         ->as('member-activations.')
@@ -126,12 +94,9 @@ Route::middleware(['auth'])->group(function (): void {
             'create',
             'store',
         ])
-        ->middleware([
-            'index' => 'permission:member-activations.view',
-            'edit' => 'permission:member-activations.update',
-            'update' => 'permission:member-activations.update',
-            'destroy' => 'permission:member-activations.delete',
-        ]);
+        ->middlewareFor('index', 'permission:member-activations.view')
+        ->middlewareFor(['edit', 'update'], 'permission:member-activations.update')
+        ->middlewareFor('destroy', 'permission:member-activations.delete');
 
     Route::delete('member-activations/{member_activation}/media/{media}', [MemberActivationController::class, 'destroySupportingMedia'])
         ->middleware('permission:member-activations.update')
@@ -143,56 +108,36 @@ Route::middleware(['auth'])->group(function (): void {
 
     Route::resource('colleges', CollegeController::class)
         ->except(['show'])
-        ->middleware([
-            'index' => 'permission:colleges.view',
-            'create' => 'permission:colleges.create',
-            'store' => 'permission:colleges.create',
-            'edit' => 'permission:colleges.update',
-            'update' => 'permission:colleges.update',
-            'destroy' => 'permission:colleges.delete',
-        ]);
+        ->middlewareFor('index', 'permission:colleges.view')
+        ->middlewareFor(['create', 'store'], 'permission:colleges.create')
+        ->middlewareFor(['edit', 'update'], 'permission:colleges.update')
+        ->middlewareFor('destroy', 'permission:colleges.delete');
 
     Route::resource('provinces', ProvinceController::class)
         ->except(['show'])
-        ->middleware([
-            'index' => 'permission:provinces.view',
-            'create' => 'permission:provinces.create',
-            'store' => 'permission:provinces.create',
-            'edit' => 'permission:provinces.update',
-            'update' => 'permission:provinces.update',
-            'destroy' => 'permission:provinces.delete',
-        ]);
+        ->middlewareFor('index', 'permission:provinces.view')
+        ->middlewareFor(['create', 'store'], 'permission:provinces.create')
+        ->middlewareFor(['edit', 'update'], 'permission:provinces.update')
+        ->middlewareFor('destroy', 'permission:provinces.delete');
 
     Route::resource('cities', CityController::class)
         ->except(['show'])
-        ->middleware([
-            'index' => 'permission:cities.view',
-            'create' => 'permission:cities.create',
-            'store' => 'permission:cities.create',
-            'edit' => 'permission:cities.update',
-            'update' => 'permission:cities.update',
-            'destroy' => 'permission:cities.delete',
-        ]);
+        ->middlewareFor('index', 'permission:cities.view')
+        ->middlewareFor(['create', 'store'], 'permission:cities.create')
+        ->middlewareFor(['edit', 'update'], 'permission:cities.update')
+        ->middlewareFor('destroy', 'permission:cities.delete');
 
     Route::resource('districts', DistrictController::class)
         ->except(['show'])
-        ->middleware([
-            'index' => 'permission:districts.view',
-            'create' => 'permission:districts.create',
-            'store' => 'permission:districts.create',
-            'edit' => 'permission:districts.update',
-            'update' => 'permission:districts.update',
-            'destroy' => 'permission:districts.delete',
-        ]);
+        ->middlewareFor('index', 'permission:districts.view')
+        ->middlewareFor(['create', 'store'], 'permission:districts.create')
+        ->middlewareFor(['edit', 'update'], 'permission:districts.update')
+        ->middlewareFor('destroy', 'permission:districts.delete');
 
     Route::resource('villages', VillageController::class)
         ->except(['show'])
-        ->middleware([
-            'index' => 'permission:villages.view',
-            'create' => 'permission:villages.create',
-            'store' => 'permission:villages.create',
-            'edit' => 'permission:villages.update',
-            'update' => 'permission:villages.update',
-            'destroy' => 'permission:villages.delete',
-        ]);
+        ->middlewareFor('index', 'permission:villages.view')
+        ->middlewareFor(['create', 'store'], 'permission:villages.create')
+        ->middlewareFor(['edit', 'update'], 'permission:villages.update')
+        ->middlewareFor('destroy', 'permission:villages.delete');
 });

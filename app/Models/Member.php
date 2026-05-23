@@ -20,8 +20,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
     'place_of_birth_code',
     'date_of_birth',
     'gender_id',
-    'org_region_id',
     'phone_number',
+    'college_id',
     'is_created_from_member_activation',
     'member_activation_id',
 ])]
@@ -119,9 +119,9 @@ class Member extends Model implements HasMedia
         return $this->belongsTo(City::class, 'place_of_birth_code', 'code');
     }
 
-    public function orgRegion(): BelongsTo
+    public function college(): BelongsTo
     {
-        return $this->belongsTo(OrgRegion::class);
+        return $this->belongsTo(College::class);
     }
 
     public function kta(): HasOne

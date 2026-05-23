@@ -66,6 +66,26 @@
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
     </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label" for="college_lat">Latitude (lintang)</label>
+        <input type="number" name="lat" id="college_lat"
+            class="form-control @error('lat') is-invalid @enderror"
+            value="{{ old('lat', isset($college) ? $college->lat : '') }}" required step="any"
+            min="-90" max="90">
+        @error('lat')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+    <div class="col-12 col-md-6">
+        <label class="form-label" for="college_long">Longitude (bujur)</label>
+        <input type="number" name="long" id="college_long"
+            class="form-control @error('long') is-invalid @enderror"
+            value="{{ old('long', isset($college) ? $college->long : '') }}" required step="any"
+            min="-180" max="180">
+        @error('long')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
 </div>
 
 @push('styles')

@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use App\Models\College;
 use Laravolt\Indonesia\Models\City;
 use Laravolt\Indonesia\Models\District;
 use Laravolt\Indonesia\Models\Village;
@@ -54,6 +55,47 @@ class LookupController extends Controller
             'results' => $results,
             'pagination' => [
                 'more' => $cities->hasMorePages(),
+            ],
+        ]);
+    }
+
+    /**
+     * Perguruan tinggi untuk UI select (format Select2-compatible: results + pagination.more).
+     */
+    public function colleges(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'q' => ['nullable', 'string', 'max:100'],
+            'page' => ['nullable', 'integer', 'min:1'],
+        ]);
+
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->toArray());
+        }
+
+        $q = $request->input('q');
+        $perPage = 20;
+        $page = max(1, (int) $request->input('page', 1));
+
+        $query = College::query()
+            ->orderBy('name');
+
+        if ($q !== null && $q !== '') {
+            $q = (string) $q;
+            $query->where('name', 'like', '%'.$q.'%');
+        }
+
+        $colleges = $query->paginate($perPage, ['*'], 'page', $page);
+
+        $results = $colleges->getCollection()->map(fn (College $college) => [
+            'id' => $college->getKey(),
+            'text' => $college->name,
+        ])->values()->all();
+
+        return response()->json([
+            'results' => $results,
+            'pagination' => [
+                'more' => $colleges->hasMorePages(),
             ],
         ]);
     }

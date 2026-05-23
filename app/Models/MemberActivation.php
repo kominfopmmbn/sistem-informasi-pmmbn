@@ -23,8 +23,8 @@ use Illuminate\Notifications\Notifiable;
     'place_of_birth_code',
     'date_of_birth',
     'gender_id',
-    'org_region_id',
     'phone_number',
+    'college_id',
 ])]
 class MemberActivation extends Model implements HasMedia
 {
@@ -57,9 +57,9 @@ class MemberActivation extends Model implements HasMedia
         return $this->belongsTo(City::class, 'place_of_birth_code', 'code');
     }
 
-    public function orgRegion(): BelongsTo
+    public function college(): BelongsTo
     {
-        return $this->belongsTo(OrgRegion::class);
+        return $this->belongsTo(College::class);
     }
 
     public function memberActivationStatusLogs(): HasMany

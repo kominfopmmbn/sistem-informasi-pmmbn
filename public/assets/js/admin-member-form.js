@@ -1,5 +1,5 @@
 /**
- * Admin member form: Dropzone dokumen pendukung (sinkron ke input file), Select2 provinsi/kota, gender & wilayah org.
+ * Admin member form: Dropzone dokumen pendukung (sinkron ke input file), Select2 provinsi/kota & gender.
  */
 'use strict';
 
@@ -25,19 +25,15 @@ $(function () {
 
   if (typeof $.fn.select2 !== 'undefined') {
     const $gender = $('#member_gender_id');
-    const $orgRegion = $('#member_org_region_id');
-    [$gender, $orgRegion].forEach(function ($el) {
-      if (!$el.length) {
-        return;
-      }
-      $el.wrap('<div class="position-relative"></div>');
-      $el.select2({
-        placeholder: $el.data('placeholder') || '—',
+    if ($gender.length) {
+      $gender.wrap('<div class="position-relative"></div>');
+      $gender.select2({
+        placeholder: $gender.data('placeholder') || '—',
         allowClear: true,
-        dropdownParent: $el.parent(),
+        dropdownParent: $gender.parent(),
         width: '100%'
       });
-    });
+    }
   }
 
   if (typeof Dropzone !== 'undefined') {
@@ -172,6 +168,41 @@ $(function () {
       }
 
       updateCityHint();
+    }
+  }
+
+  const $college = $('#member_college_id');
+  if ($college.length && typeof $.fn.select2 !== 'undefined') {
+    const collegeSearchUrl = $college.data('search-url');
+    if (collegeSearchUrl) {
+      $college.wrap('<div class="position-relative"></div>');
+      $college.select2({
+        placeholder: $college.data('placeholder') || 'Pilih perguruan tinggi',
+        allowClear: !$college.prop('required'),
+        dropdownParent: $college.parent(),
+        width: '100%',
+        minimumInputLength: 0,
+        ajax: {
+          url: collegeSearchUrl,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term,
+              page: params.page || 1
+            };
+          },
+          processResults: function (data) {
+            const rows = (data.results || []).map(function (item) {
+              return { id: item.id, text: item.text };
+            });
+            return {
+              results: rows,
+              pagination: { more: !!(data.pagination && data.pagination.more) }
+            };
+          }
+        }
+      });
     }
   }
 });

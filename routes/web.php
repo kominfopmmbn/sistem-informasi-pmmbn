@@ -13,6 +13,7 @@ Route::prefix('select')
     ->middleware('throttle:120,1')
     ->group(function (): void {
         Route::get('cities', [LookupController::class, 'cities'])->name('cities');
+        Route::get('colleges', [LookupController::class, 'colleges'])->name('colleges');
         Route::get('districts', [LookupController::class, 'districts'])->name('districts');
         Route::get('villages', [LookupController::class, 'villages'])->name('villages');
     });
@@ -52,3 +53,11 @@ Route::prefix('article')
     });
 
 Route::get('/kta/{ktaNumber}', [KtaController::class, 'show'])->name('kta.show');
+
+Route::get('/program-unggulan', function () {
+    return view('front.program-unggulan.index');
+})->name('program-unggulan.index');
+Route::get('/program-unggulan/show', function () {
+    return view('front.program-unggulan.show');
+})->name('program-unggulan.show');
+
