@@ -25,7 +25,6 @@ class StoreMemberActivationRequest extends FormRequest
         return [
             'nim' => ['required', 'string', 'max:255'],
             'full_name' => ['required', 'string', 'max:255'],
-            'nickname' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'email:rfc',

@@ -69,14 +69,6 @@
                             <div class="invalid-feedback @error('full_name') d-block @enderror">@error('full_name'){{ $message }}@enderror</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="member_nickname">Nama panggilan <span class="text-danger">*</span></label>
-                            <input type="text" name="nickname" id="member_nickname"
-                                class="form-control form-control-custom @error('nickname') is-invalid border-danger @enderror"
-                                required value="{{ old('nickname', $memberActivation?->nickname ?? '') }}" maxlength="255">
-                            <div class="invalid-feedback @error('nickname') d-block @enderror">@error('nickname'){{ $message }}@enderror</div>
-                        </div>
-
-                        <div class="col-md-6">
                             <label class="form-label" for="member_province_code">Provinsi tempat lahir <span class="text-danger">*</span></label>
                             <div class="select2-primary @error('province_code') is-invalid border-danger @enderror"
                                 required>

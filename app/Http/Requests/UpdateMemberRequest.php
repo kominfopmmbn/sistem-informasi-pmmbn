@@ -45,7 +45,6 @@ class UpdateMemberRequest extends FormRequest
                 Rule::unique($table, 'nim')->ignore($record->getKey()),
             ],
             'full_name' => ['nullable', 'string', 'max:255'],
-            'nickname' => ['nullable', 'string', 'max:255'],
             'email' => [
                 'nullable',
                 'email:rfc',

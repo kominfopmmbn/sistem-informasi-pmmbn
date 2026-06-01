@@ -59,7 +59,6 @@
                                 <th>NIM</th>
                                 <th>Email</th>
                                 <th>Nama Lengkap</th>
-                                <th>Nama Panggilan</th>
                                 <th>Tempat Lahir</th>
                                 <th>Tanggal Lahir</th>
                                 <th>Jenis Kelamin</th>
@@ -152,10 +151,6 @@
                         {
                             data: 'full_name',
                             name: 'full_name'
-                        },
-                        {
-                            data: 'nickname',
-                            name: 'nickname'
                         },
                         {
                             data: 'place_of_birth_city.name',

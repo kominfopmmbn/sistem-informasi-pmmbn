@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Gender;
 use App\Enums\MemberActivationStatus;
 use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
@@ -154,7 +153,6 @@ class MemberActivationController extends Controller
             $member->update([
                 'nim' => $member_activation->nim,
                 'full_name' => $member_activation->full_name,
-                'nickname' => $member_activation->nickname,
                 'email' => $member_activation->email,
                 'place_of_birth_code' => $member_activation->place_of_birth_code,
                 'date_of_birth' => $member_activation->date_of_birth,
@@ -167,7 +165,6 @@ class MemberActivationController extends Controller
             $member = Member::query()->create([
                 'nim' => $member_activation->nim,
                 'full_name' => $member_activation->full_name,
-                'nickname' => $member_activation->nickname,
                 'email' => $member_activation->email,
                 'place_of_birth_code' => $member_activation->place_of_birth_code,
                 'date_of_birth' => $member_activation->date_of_birth,
@@ -217,6 +214,7 @@ class MemberActivationController extends Controller
         );
 
         DB::commit();
+
         return redirect()
             ->route('admin.member-activations.index')
             ->with('success', 'Anggota berhasil diaktivasi.');
@@ -246,6 +244,7 @@ class MemberActivationController extends Controller
         );
 
         DB::commit();
+
         return redirect()
             ->route('admin.member-activations.index')
             ->with('success', 'Anggota berhasil ditolak.');

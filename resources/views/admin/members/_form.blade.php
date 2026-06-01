@@ -70,16 +70,6 @@
         @enderror
     </div>
     <div class="col-12 col-md-6">
-        <label class="form-label" for="member_nickname">Nama panggilan</label>
-        <input type="text" name="nickname" id="member_nickname"
-            class="form-control @error('nickname') is-invalid @enderror"
-            value="{{ old('nickname', isset($member) ? $member->nickname : '') }}" maxlength="255" autocomplete="nickname">
-        @error('nickname')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-
-    <div class="col-12 col-md-6">
         <label class="form-label" for="member_province_code">Provinsi tempat lahir</label>
         <div class="select2-primary @error('province_code') is-invalid @enderror">
             <div class="position-relative w-100">

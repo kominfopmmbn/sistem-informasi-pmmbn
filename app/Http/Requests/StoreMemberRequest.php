@@ -37,7 +37,6 @@ class StoreMemberRequest extends FormRequest
         return [
             'nim' => ['nullable', 'string', 'max:255', 'unique:members,nim'],
             'full_name' => ['nullable', 'string', 'max:255'],
-            'nickname' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email:rfc', 'max:255', 'unique:members,email'],
             'province_code' => ['nullable', 'string', 'size:2', 'exists:provinces,code', 'required_with:place_of_birth_code'],
             'place_of_birth_code' => [

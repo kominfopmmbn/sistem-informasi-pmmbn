@@ -123,7 +123,6 @@ class MemberCrudTest extends TestCase
         $this->post(route('admin.members.store'), [
             'nim' => 'NIM-001',
             'full_name' => 'Budi Tester',
-            'nickname' => 'Budi',
             'email' => 'budi@example.test',
             'province_code' => $province->code,
             'place_of_birth_code' => $city->code,

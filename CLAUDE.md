@@ -18,8 +18,6 @@ composer test         # config:clear then php artisan test (PHPUnit)
 php artisan test tests/Feature/LookupCollegesTest.php             # single file
 php artisan test tests/Feature/LookupCollegesTest.php --filter=methodName   # single test
 php artisan test --testsuite=Unit                                 # one suite (Unit | Feature)
-
-./vendor/bin/pint     # format PHP (Laravel Pint, default ruleset — no pint.json)
 ```
 
 Tests run against an **in-memory SQLite** DB (see `phpunit.xml`); local dev uses MySQL. Stack: Tailwind CSS 4 + Vite 8, **plain Blade** (no Livewire/Inertia/Vue).

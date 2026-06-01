@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('nim')->nullable()->unique();
             $table->string('full_name')->nullable();
-            $table->string('nickname')->nullable();
             $table->string('email')->unique()->nullable();
             $table->char('place_of_birth_code', 4)->nullable(); // relasi ke table cities
             $table->date('date_of_birth')->nullable();

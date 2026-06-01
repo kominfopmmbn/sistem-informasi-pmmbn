@@ -3,22 +3,20 @@
 namespace App\Models;
 
 use App\Enums\Gender;
-use App\Enums\MemberActivationStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Notifications\Notifiable;
 
 #[Fillable([
     'nim',
     'full_name',
-    'nickname',
     'email',
     'place_of_birth_code',
     'date_of_birth',
@@ -29,9 +27,9 @@ use Illuminate\Notifications\Notifiable;
 class MemberActivation extends Model implements HasMedia
 {
     use InteractsWithMedia;
+    use Notifiable;
     use SoftDeletes;
     use Userstamps;
-    use Notifiable;
 
     /**
      * Nama koleksi sama seperti Member agar aturan ukuran/mime (validasi & Dropzone) tetap satu referensi.

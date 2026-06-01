@@ -15,7 +15,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 #[Fillable([
     'nim',
     'full_name',
-    'nickname',
     'email',
     'place_of_birth_code',
     'date_of_birth',
