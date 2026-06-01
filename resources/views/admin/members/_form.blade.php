@@ -2,8 +2,6 @@
     use App\Enums\Gender;
     use App\Models\Member;
 
-    /** @var \Illuminate\Support\Collection<int, \Laravolt\Indonesia\Models\Province> $provinces */
-    $provinceCode = old('province_code', isset($member) && $member->placeOfBirthCity ? $member->placeOfBirthCity->province_code : '');
     $placeCode = old('place_of_birth_code', isset($member) ? $member->place_of_birth_code : '');
     $placeName = '';
     if (isset($member) && $member->relationLoaded('placeOfBirthCity') && $member->placeOfBirthCity !== null) {
@@ -70,34 +68,14 @@
         @enderror
     </div>
     <div class="col-12 col-md-6">
-        <label class="form-label" for="member_province_code">Provinsi tempat lahir</label>
-        <div class="select2-primary @error('province_code') is-invalid @enderror">
-            <div class="position-relative w-100">
-                <select name="province_code" id="member_province_code"
-                    class="select2 form-select @error('province_code') is-invalid @enderror"
-                    data-placeholder="Pilih provinsi (opsional)">
-                    <option value=""></option>
-                    @foreach ($provinces as $province)
-                        <option value="{{ $province->code }}" @selected((string) $provinceCode === (string) $province->code)>
-                            {{ $province->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        @error('province_code')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
-        @enderror
-    </div>
-    <div class="col-12 col-md-6">
         <label class="form-label" for="member_place_of_birth_code">Kota / kabupaten tempat lahir</label>
         <div class="select2-primary @error('place_of_birth_code') is-invalid @enderror">
             <div class="position-relative w-100">
                 <select name="place_of_birth_code" id="member_place_of_birth_code"
                     class="select2 form-select @error('place_of_birth_code') is-invalid @enderror"
                     data-search-url="{{ route('select.cities') }}"
-                    data-placeholder="Pilih kota/kabupaten"
-                    @if ($placeCode !== null && $placeCode !== '') data-initial-code="{{ $placeCode }}" data-initial-name="{{ $placeName }}" @endif
-                    @if (! filled($provinceCode)) disabled @endif>
+                    data-placeholder="Pilih kota/kabupaten (opsional)"
+                    @if ($placeCode !== null && $placeCode !== '') data-initial-code="{{ $placeCode }}" data-initial-name="{{ $placeName }}" @endif>
                     @if ($placeCode !== null && $placeCode !== '')
                         <option value="{{ $placeCode }}" selected>{{ $placeName }}</option>
                     @else
@@ -106,10 +84,6 @@
                 </select>
             </div>
         </div>
-        <p id="member_city_hint"
-            class="form-text text-body-secondary mb-0 @if (filled($provinceCode)) d-none @endif">
-            Pilih provinsi terlebih dahulu untuk memilih kota/kabupaten.
-        </p>
         @error('place_of_birth_code')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
@@ -248,5 +222,5 @@
 @push('scripts')
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/dropzone/dropzone.js') }}"></script>
-    <script src="{{ asset('assets/js/admin-member-form.js') }}"></script>
+    <script src="{{ asset('assets/js/admin-member-form.js') }}?v={{ filemtime(public_path('assets/js/admin-member-form.js')) }}"></script>
 @endpush

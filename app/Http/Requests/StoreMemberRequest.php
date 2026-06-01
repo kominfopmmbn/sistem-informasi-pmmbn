@@ -19,7 +19,6 @@ class StoreMemberRequest extends FormRequest
             'email' => $this->filled('email') ? $this->input('email') : null,
             'gender_id' => $this->filled('gender_id') ? $this->input('gender_id') : null,
             'place_of_birth_code' => $this->filled('place_of_birth_code') ? $this->input('place_of_birth_code') : null,
-            'province_code' => $this->filled('province_code') ? $this->input('province_code') : null,
             'college_id' => $this->filled('college_id') ? $this->input('college_id') : null,
             'date_of_birth' => $this->filled('date_of_birth') ? $this->input('date_of_birth') : null,
         ]);
@@ -32,22 +31,11 @@ class StoreMemberRequest extends FormRequest
 
     public function rules(): array
     {
-        $provinceCode = $this->input('province_code');
-
         return [
             'nim' => ['nullable', 'string', 'max:255', 'unique:members,nim'],
             'full_name' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email:rfc', 'max:255', 'unique:members,email'],
-            'province_code' => ['nullable', 'string', 'size:2', 'exists:provinces,code', 'required_with:place_of_birth_code'],
-            'place_of_birth_code' => [
-                'nullable',
-                'string',
-                'size:4',
-                'required_with:province_code',
-                filled($provinceCode)
-                    ? Rule::exists('cities', 'code')->where('province_code', (string) $provinceCode)
-                    : Rule::exists('cities', 'code')->where(static fn ($query) => $query->whereRaw('1 = 0')),
-            ],
+            'place_of_birth_code' => ['nullable', 'string', 'size:4', 'exists:cities,code'],
             'date_of_birth' => ['nullable', 'date'],
             'gender_id' => ['nullable', Rule::enum(Gender::class)],
             'phone_number' => ['nullable', 'string', 'max:255'],
@@ -86,9 +74,9 @@ class StoreMemberRequest extends FormRequest
         ));
     }
 
-    /** Province hanya untuk validasi kota tempat lahir; tidak disimpan. */
+    /** `supporting_documents` ditangani terpisah lewat MediaLibrary; tidak ikut disimpan ke kolom. */
     public function validatedPersistable(): array
     {
-        return Arr::except($this->validator->validated(), ['province_code', 'supporting_documents']);
+        return Arr::except($this->validator->validated(), ['supporting_documents']);
     }
 }

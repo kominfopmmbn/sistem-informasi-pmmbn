@@ -69,25 +69,6 @@
                             <div class="invalid-feedback @error('full_name') d-block @enderror">@error('full_name'){{ $message }}@enderror</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="member_province_code">Provinsi tempat lahir <span class="text-danger">*</span></label>
-                            <div class="select2-primary @error('province_code') is-invalid border-danger @enderror"
-                                required>
-                                <div class="position-relative w-100">
-                                    <select name="province_code" id="member_province_code"
-                                        class="select2 form-select form-control-custom @error('province_code') is-invalid border-danger @enderror"
-                                        required data-placeholder="Pilih provinsi">
-                                        <option value=""></option>
-                                        @foreach ($provinces as $province)
-                                            <option value="{{ $province->code }}" @selected((string) old('province_code', $memberActivation?->placeOfBirthCity?->province?->code ?? '') === (string) $province->code)>
-                                                {{ $province->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="invalid-feedback @error('province_code') d-block @enderror">@error('province_code'){{ $message }}@enderror</div>
-                        </div>
-                        <div class="col-md-6">
                             <label class="form-label" for="member_place_of_birth_code">Kota / kabupaten tempat
                                 lahir <span class="text-danger">*</span></label>
                             <div class="select2-primary @error('place_of_birth_code') is-invalid border-danger @enderror"
@@ -98,8 +79,7 @@
                                         data-search-url="{{ route('select.cities') }}"
                                         data-placeholder="Pilih kota/kabupaten"
                                         required
-                                        @if ($placeCode !== null && $placeCode !== '') data-initial-code="{{ $placeCode }}" data-initial-name="{{ $placeName }}" @endif
-                                        @if (!filled(old('province_code', $memberActivation?->placeOfBirthCity?->province?->code ?? ''))) disabled @endif>
+                                        @if ($placeCode !== null && $placeCode !== '') data-initial-code="{{ $placeCode }}" data-initial-name="{{ $placeName }}" @endif>
                                         @if ($placeCode !== null && $placeCode !== '')
                                             <option value="{{ $placeCode }}" selected>{{ $placeName }}</option>
                                         @else
@@ -108,10 +88,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <p id="member_city_hint"
-                                class="form-text small text-secondary mb-0 @if (filled(old('province_code', $memberActivation?->placeOfBirthCity?->province?->code ?? ''))) d-none @endif">
-                                Pilih provinsi terlebih dahulu untuk memilih kota/kabupaten.
-                            </p>
                             <div class="invalid-feedback @error('place_of_birth_code') d-block @enderror">@error('place_of_birth_code'){{ $message }}@enderror</div>
                         </div>
 
@@ -243,7 +219,7 @@
     <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/dropzone/dropzone.js') }}"></script>
-    <script src="{{ asset('assets/js/admin-member-form.js') }}"></script>
+    <script src="{{ asset('assets/js/admin-member-form.js') }}?v={{ filemtime(public_path('assets/js/admin-member-form.js')) }}"></script>
     <script>
         let isVerfiedEmail = false;
 
@@ -306,7 +282,7 @@
                     clearFieldInvalid($(this));
                 }
             });
-            $('#member_province_code, #member_place_of_birth_code, #member_gender_id, #member_college_id')
+            $('#member_place_of_birth_code, #member_gender_id, #member_college_id')
                 .on('change', function() {
                     if (($(this).val() || '').toString().trim() !== '') {
                         clearFieldInvalid($(this));

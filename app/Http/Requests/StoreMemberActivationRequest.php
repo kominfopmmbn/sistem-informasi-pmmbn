@@ -20,8 +20,6 @@ class StoreMemberActivationRequest extends FormRequest
 
     public function rules(): array
     {
-        $provinceCode = $this->input('province_code');
-
         return [
             'nim' => ['required', 'string', 'max:255'],
             'full_name' => ['required', 'string', 'max:255'],
@@ -39,16 +37,7 @@ class StoreMemberActivationRequest extends FormRequest
                     }
                 },
             ],
-            'province_code' => ['required', 'string', 'size:2', 'exists:provinces,code', 'required_with:place_of_birth_code'],
-            'place_of_birth_code' => [
-                'required',
-                'string',
-                'size:4',
-                'required_with:province_code',
-                filled($provinceCode)
-                    ? Rule::exists('cities', 'code')->where('province_code', (string) $provinceCode)
-                    : Rule::exists('cities', 'code')->where(static fn ($query) => $query->whereRaw('1 = 0')),
-            ],
+            'place_of_birth_code' => ['required', 'string', 'size:4', 'exists:cities,code'],
             'date_of_birth' => ['required', 'date'],
             'gender_id' => ['required', Rule::enum(Gender::class)],
             'phone_number' => ['required', 'string', 'max:255'],
@@ -87,9 +76,9 @@ class StoreMemberActivationRequest extends FormRequest
         ));
     }
 
-    /** Province hanya untuk validasi kota tempat lahir; tidak disimpan. */
+    /** `supporting_documents` ditangani terpisah lewat MediaLibrary; tidak ikut disimpan ke kolom. */
     public function validatedPersistable(): array
     {
-        return Arr::except($this->validator->validated(), ['province_code', 'supporting_documents']);
+        return Arr::except($this->validator->validated(), ['supporting_documents']);
     }
 }

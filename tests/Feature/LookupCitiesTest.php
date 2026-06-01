@@ -67,12 +67,32 @@ class LookupCitiesTest extends TestCase
         $this->assertContains($city->id, $ids);
     }
 
-    public function test_select_cities_requires_province_code(): void
+    public function test_select_cities_returns_results_without_province_code(): void
     {
         $response = $this->getJson(route('select.cities'));
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['province_code']);
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'results' => [
+                ['id', 'text'],
+            ],
+            'pagination' => ['more'],
+        ]);
+        $this->assertNotEmpty($response->json('results'));
+        $this->assertIsBool($response->json('pagination.more'));
+    }
+
+    public function test_select_cities_filters_by_q_without_province_code(): void
+    {
+        ['city' => $city] = $this->sampleProvinceAndCity();
+
+        $response = $this->getJson(route('select.cities', [
+            'q' => $city->name,
+        ]));
+
+        $response->assertOk();
+        $ids = collect($response->json('results'))->pluck('id')->all();
+        $this->assertContains($city->id, $ids);
     }
 
     public function test_select_cities_rejects_unknown_province_code(): void

@@ -153,14 +153,30 @@ class MemberCrudTest extends TestCase
         ])->assertSessionHasErrors(['email']);
     }
 
-    public function test_store_requires_city_when_province_given(): void
+    public function test_store_persists_place_of_birth_without_province(): void
     {
         $this->actingAsAdministrator();
-        $province = Province::query()->orderBy('id')->firstOrFail();
+        ['city' => $city] = $this->sampleProvinceAndCity();
 
         $this->post(route('admin.members.store'), [
-            'full_name' => 'Tanpa Kota',
-            'province_code' => $province->code,
+            'full_name' => 'Tanpa Provinsi',
+            'place_of_birth_code' => $city->code,
+        ])->assertRedirect(route('admin.members.index'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('members', [
+            'full_name' => 'Tanpa Provinsi',
+            'place_of_birth_code' => $city->code,
+        ]);
+    }
+
+    public function test_store_rejects_unknown_place_of_birth_code(): void
+    {
+        $this->actingAsAdministrator();
+
+        $this->post(route('admin.members.store'), [
+            'full_name' => 'Kota Tak Dikenal',
+            'place_of_birth_code' => '9999',
         ])->assertSessionHasErrors(['place_of_birth_code']);
     }
 

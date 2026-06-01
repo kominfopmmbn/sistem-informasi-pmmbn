@@ -16,13 +16,13 @@ use Laravolt\Indonesia\Models\Village;
 class LookupController extends Controller
 {
     /**
-     * Kota/kabupaten per provinsi untuk UI select (format Select2-compatible: results + pagination.more).
-     * Wajib `province_code` (kode BPS 2 digit).
+     * Kota/kabupaten untuk UI select (format Select2-compatible: results + pagination.more).
+     * `province_code` (kode BPS 2 digit) opsional: bila diisi, hasil disaring per provinsi; bila kosong, semua kota.
      */
     public function cities(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'province_code' => ['required', 'string', 'size:2', 'exists:provinces,code'],
+            'province_code' => ['nullable', 'string', 'size:2', 'exists:provinces,code'],
             'q' => ['nullable', 'string', 'max:100'],
             'page' => ['nullable', 'integer', 'min:1'],
         ]);
@@ -35,9 +35,12 @@ class LookupController extends Controller
         $perPage = 20;
         $page = max(1, (int) $request->input('page', 1));
 
-        $query = City::query()
-            ->where('province_code', $request->input('province_code'))
-            ->orderBy('name');
+        $query = City::query()->orderBy('name');
+
+        $provinceCode = $request->input('province_code');
+        if ($provinceCode !== null && $provinceCode !== '') {
+            $query->where('province_code', $provinceCode);
+        }
 
         if ($q !== null && $q !== '') {
             $q = (string) $q;
