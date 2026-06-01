@@ -1495,6 +1495,10 @@ footer .bi:hover {
     color: #666;
 }
 
+.select2-primary.is-invalid > div > div {
+    border-color: #ff3e1d;
+}
+
 select.form-select.form-select-custom {
     border: 0;
 }

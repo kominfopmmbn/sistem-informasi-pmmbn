@@ -38,21 +38,19 @@
                         @method('DELETE')
                     </form>
                 @endforeach
-                <form id="member-form" method="post" enctype="multipart/form-data"
+                <form id="member-form" method="post" enctype="multipart/form-data" novalidate
                     action="{{ route('about.member-activation.store') }}">
                     @csrf
                     <div class="row g-4">
                         <div class="col-md-6">
-                            <label class="form-label" for="member_nim">NIM</label>
+                            <label class="form-label" for="member_nim">NIM <span class="text-danger">*</span></label>
                             <input type="text" name="nim" id="member_nim"
                                 class="form-control form-control-custom @error('nim') is-invalid border-danger @enderror"
                                 required value="{{ old('nim', $memberActivation?->nim ?? '') }}" maxlength="255">
-                            @error('nim')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback @error('nim') d-block @enderror">@error('nim'){{ $message }}@enderror</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="member_email">Email</label>
+                            <label class="form-label" for="member_email">Email <span class="text-danger">*</span></label>
                             <input type="email" name="email" id="member_email"
                                 class="form-control form-control-custom @error('email') is-invalid border-danger @enderror"
                                 required value="{{ old('email', $memberActivation?->email ?? '') }}" maxlength="255">
@@ -63,27 +61,23 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="member_full_name">Nama lengkap</label>
+                            <label class="form-label" for="member_full_name">Nama lengkap <span class="text-danger">*</span></label>
                             <input type="text" name="full_name" id="member_full_name"
                                 class="form-control form-control-custom @error('full_name') is-invalid border-danger @enderror"
                                 required value="{{ old('full_name', $memberActivation?->full_name ?? '') }}"
                                 maxlength="255">
-                            @error('full_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback @error('full_name') d-block @enderror">@error('full_name'){{ $message }}@enderror</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="member_nickname">Nama panggilan</label>
+                            <label class="form-label" for="member_nickname">Nama panggilan <span class="text-danger">*</span></label>
                             <input type="text" name="nickname" id="member_nickname"
                                 class="form-control form-control-custom @error('nickname') is-invalid border-danger @enderror"
                                 required value="{{ old('nickname', $memberActivation?->nickname ?? '') }}" maxlength="255">
-                            @error('nickname')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback @error('nickname') d-block @enderror">@error('nickname'){{ $message }}@enderror</div>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" for="member_province_code">Provinsi tempat lahir</label>
+                            <label class="form-label" for="member_province_code">Provinsi tempat lahir <span class="text-danger">*</span></label>
                             <div class="select2-primary @error('province_code') is-invalid border-danger @enderror"
                                 required>
                                 <div class="position-relative w-100">
@@ -93,18 +87,17 @@
                                         <option value=""></option>
                                         @foreach ($provinces as $province)
                                             <option value="{{ $province->code }}" @selected((string) old('province_code', $memberActivation?->placeOfBirthCity?->province?->code ?? '') === (string) $province->code)>
-                                                {{ $province->name }}</option>
+                                                {{ $province->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-                            @error('province_code')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback @error('province_code') d-block @enderror">@error('province_code'){{ $message }}@enderror</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label" for="member_place_of_birth_code">Kota / kabupaten tempat
-                                lahir</label>
+                                lahir <span class="text-danger">*</span></label>
                             <div class="select2-primary @error('place_of_birth_code') is-invalid border-danger @enderror"
                                 required>
                                 <div class="position-relative w-100">
@@ -127,22 +120,18 @@
                                 class="form-text small text-secondary mb-0 @if (filled(old('province_code', $memberActivation?->placeOfBirthCity?->province?->code ?? ''))) d-none @endif">
                                 Pilih provinsi terlebih dahulu untuk memilih kota/kabupaten.
                             </p>
-                            @error('place_of_birth_code')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback @error('place_of_birth_code') d-block @enderror">@error('place_of_birth_code'){{ $message }}@enderror</div>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" for="member_date_of_birth">Tanggal lahir</label>
+                            <label class="form-label" for="member_date_of_birth">Tanggal lahir <span class="text-danger">*</span></label>
                             <input type="date" name="date_of_birth" id="member_date_of_birth"
                                 class="form-control form-control-custom @error('date_of_birth') is-invalid border-danger @enderror"
                                 required value="{{ old('date_of_birth', $memberActivation?->date_of_birth->format('Y-m-d') ?? '') }}">
-                            @error('date_of_birth')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback @error('date_of_birth') d-block @enderror">@error('date_of_birth'){{ $message }}@enderror</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="member_gender_id">Jenis kelamin</label>
+                            <label class="form-label" for="member_gender_id">Jenis kelamin <span class="text-danger">*</span></label>
                             <div class="select2-primary @error('gender_id') is-invalid border-danger @enderror" required>
                                 <div class="position-relative w-100">
                                     <select name="gender_id" id="member_gender_id"
@@ -156,24 +145,20 @@
                                     </select>
                                 </div>
                             </div>
-                            @error('gender_id')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback @error('gender_id') d-block @enderror">@error('gender_id'){{ $message }}@enderror</div>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" for="member_phone_number">Nomor telepon</label>
+                            <label class="form-label" for="member_phone_number">Nomor telepon <span class="text-danger">*</span></label>
                             <input type="text" name="phone_number" id="member_phone_number"
                                 class="form-control form-control-custom @error('phone_number') is-invalid border-danger @enderror"
                                 required value="{{ old('phone_number', $memberActivation?->phone_number ?? '') }}"
                                 maxlength="255">
-                            @error('phone_number')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback @error('phone_number') d-block @enderror">@error('phone_number'){{ $message }}@enderror</div>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" for="member_college_id">Perguruan tinggi</label>
+                            <label class="form-label" for="member_college_id">Perguruan tinggi <span class="text-danger">*</span></label>
                             <div class="select2-primary @error('college_id') form-control-custom is-invalid border-danger @enderror"
                                 required>
                                 <div class="position-relative w-100">
@@ -190,9 +175,7 @@
                                     </select>
                                 </div>
                             </div>
-                            @error('college_id')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
+                            <div class="invalid-feedback @error('college_id') d-block @enderror">@error('college_id'){{ $message }}@enderror</div>
                         </div>
 
                         <div class="col-12">
@@ -271,7 +254,73 @@
     <script src="{{ asset('assets/js/admin-member-form.js') }}"></script>
     <script>
         let isVerfiedEmail = false;
+
+        // Ambil teks label sebuah field (tanpa tanda bintang) untuk menyusun pesan validasi.
+        const requiredFieldLabel = (id) => {
+            const $label = $('label[for="' + id + '"]');
+            if (!$label.length) {
+                return 'Kolom ini';
+            }
+            const text = $label.clone().find('span').remove().end().text().replace(/\s+/g, ' ').trim();
+            return text || 'Kolom ini';
+        };
+
+        // Cari div .invalid-feedback milik field (bekerja untuk input teks maupun select2).
+        const requiredFieldFeedback = ($el) => $el.closest('[class*="col-"]').find('.invalid-feedback').first();
+
+        const setFieldInvalid = ($el, message) => {
+            $el.addClass('is-invalid border-danger');
+            $el.closest('.select2-primary').addClass('is-invalid border-danger');
+            requiredFieldFeedback($el).text(message).addClass('d-block');
+        };
+
+        const clearFieldInvalid = ($el) => {
+            $el.removeClass('is-invalid border-danger');
+            $el.closest('.select2-primary').removeClass('is-invalid border-danger');
+            requiredFieldFeedback($el).text('').removeClass('d-block');
+        };
+
+        // Validasi semua field wajib: beri border merah + pesan pada yang kosong.
+        const validateRequiredFields = () => {
+            let $first = null;
+            $('#member-form').find('input[required], select[required], textarea[required]').each(function() {
+                const $el = $(this);
+                const value = ($el.val() || '').toString().trim();
+                if (value === '') {
+                    setFieldInvalid($el, requiredFieldLabel(this.id) + ' wajib diisi');
+                    if (!$first) {
+                        $first = $el;
+                    }
+                } else {
+                    clearFieldInvalid($el);
+                }
+            });
+
+            if ($first) {
+                const $col = $first.closest('[class*="col-"]');
+                const target = ($col.length ? $col : $first)[0];
+                if (target && typeof target.scrollIntoView === 'function') {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return false;
+            }
+            return true;
+        };
+
         $(document).ready(function() {
+            // Hapus tanda error begitu field wajib mulai diisi.
+            $('#member-form').on('input', 'input[required], textarea[required]', function() {
+                if (($(this).val() || '').toString().trim() !== '') {
+                    clearFieldInvalid($(this));
+                }
+            });
+            $('#member_province_code, #member_place_of_birth_code, #member_gender_id, #member_college_id')
+                .on('change', function() {
+                    if (($(this).val() || '').toString().trim() !== '') {
+                        clearFieldInvalid($(this));
+                    }
+                });
+
             $('#member-form').submit(function(event) {
                 event.preventDefault();
                 // Jika sudah verified, langsung submit form ke server
@@ -280,9 +329,8 @@
                     return;
                 }
 
-                const memberForm = document.getElementById('member-form'); // ✅ DOM element
-                if (!memberForm.checkValidity()) { // ✅ Check if form is valid
-                    memberForm.reportValidity();
+                // Validasi field wajib (border merah + pesan di bawah input)
+                if (!validateRequiredFields()) {
                     return;
                 }
 
