@@ -68,7 +68,7 @@
         @enderror
     </div>
     <div class="col-12 col-md-6">
-        <label class="form-label" for="member_place_of_birth_code">Kota / kabupaten tempat lahir</label>
+        <label class="form-label" for="member_place_of_birth_code">Tempat Lahir</label>
         <div class="select2-primary @error('place_of_birth_code') is-invalid @enderror">
             <div class="position-relative w-100">
                 <select name="place_of_birth_code" id="member_place_of_birth_code"

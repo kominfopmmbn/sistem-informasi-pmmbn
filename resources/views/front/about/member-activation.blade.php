@@ -69,8 +69,7 @@
                             <div class="invalid-feedback @error('full_name') d-block @enderror">@error('full_name'){{ $message }}@enderror</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="member_place_of_birth_code">Kota / kabupaten tempat
-                                lahir <span class="text-danger">*</span></label>
+                            <label class="form-label" for="member_place_of_birth_code">Tempat Lahir <span class="text-danger">*</span></label>
                             <div class="select2-primary @error('place_of_birth_code') is-invalid border-danger @enderror"
                                 required>
                                 <div class="position-relative w-100">
