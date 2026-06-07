@@ -78,6 +78,8 @@ class MemberActivationController extends Controller
             'college.city',
             'college.province',
             'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
+            'memberActivationStatusLogs' => fn ($q) => $q->orderBy('id'),
+            'memberActivationStatusLogs.createdBy',
         ]);
         $provinces = Province::query()->orderBy('name', 'asc')->get();
 

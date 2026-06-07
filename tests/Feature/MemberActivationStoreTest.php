@@ -112,6 +112,8 @@ class MemberActivationStoreTest extends TestCase
         $this->assertDatabaseHas('member_activation_status_logs', [
             'member_activation_id' => $activation->id,
             'status_id' => MemberActivationStatus::PENDING->value,
+            'created_by' => null,
+            'updated_by' => null,
         ]);
     }
 

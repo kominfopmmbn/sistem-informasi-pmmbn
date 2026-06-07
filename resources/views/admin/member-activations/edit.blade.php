@@ -44,6 +44,41 @@
         </form>
     </div>
 
+    {{-- Riwayat status verifikasi (member_activation_status_logs) --}}
+    <div class="card mb-6">
+        <h5 class="card-header">Riwayat Status Verifikasi</h5>
+        <div class="card-body">
+            @php
+                $timelinePointClasses = [
+                    \App\Enums\MemberActivationStatus::PENDING->value => 'timeline-point-warning',
+                    \App\Enums\MemberActivationStatus::VERIFIED->value => 'timeline-point-success',
+                    \App\Enums\MemberActivationStatus::REJECTED->value => 'timeline-point-danger',
+                ];
+            @endphp
+            @if ($member->memberActivationStatusLogs->isNotEmpty())
+                <ul class="timeline mb-0">
+                    @foreach ($member->memberActivationStatusLogs as $log)
+                        <li class="timeline-item timeline-item-transparent">
+                            <span class="timeline-point {{ $timelinePointClasses[$log->status_id] ?? 'timeline-point-secondary' }}"></span>
+                            <div class="timeline-event">
+                                <div class="timeline-header mb-1">
+                                    {!! $log->status_badge !!}
+                                    <small class="text-body-secondary">{{ $log->created_at?->translatedFormat('d M Y H:i') }}</small>
+                                </div>
+                                <p class="mb-1">Oleh: {{ $log->createdBy?->name ?? 'Sistem' }}</p>
+                                @if (filled($log->notes))
+                                    <p class="mb-0">{{ $log->notes }}</p>
+                                @endif
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-muted mb-0">Belum ada riwayat status.</p>
+            @endif
+        </div>
+    </div>
+
     @if ($member->currentStatus?->isPending())
         <form action="{{ route('admin.member-activations.accept', ['member_activation' => $member]) }}" method="post"
             onsubmit="return confirm('Terima Anggota Ini?');">
@@ -76,6 +111,7 @@
             </div>
         </form>
     @endif
+
     <div class="modal fade" id="rejectModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">

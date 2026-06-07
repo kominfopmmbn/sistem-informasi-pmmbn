@@ -115,9 +115,11 @@ class MemberActivationPageController extends Controller
         );
         MemberController::attachSupportingDocumentsFromRequest($request, $memberActivation);
 
-        $memberActivation->memberActivationStatusLogs()->create([
+        $statusLog = $memberActivation->memberActivationStatusLogs()->make([
             'status_id' => MemberActivationStatus::PENDING->value,
         ]);
+        $statusLog->stopUserstamping();
+        $statusLog->save();
 
         DB::commit();
 

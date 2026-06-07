@@ -131,6 +131,41 @@ class MemberActivationAdminTest extends TestCase
             ->assertSee('Universitas Aktivasi Tes', false);
     }
 
+    public function test_edit_page_shows_status_verification_history(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->create(['name' => 'Admin Verifikator']);
+        $user->assignRole('Administrator');
+        $this->actingAs($user);
+
+        $activation = MemberActivation::withoutEvents(
+            fn () => MemberActivation::query()->create([
+                'full_name' => 'Pemohon Riwayat',
+                'email' => 'riwayat@example.test',
+            ])
+        );
+
+        // Log pertama tanpa pelaku (mensimulasikan pengajuan publik) → tampil "Sistem".
+        $activation->memberActivationStatusLogs()->create([
+            'status_id' => MemberActivationStatus::PENDING->value,
+        ]);
+        // Log kedua: ditolak oleh admin, dengan catatan.
+        $activation->memberActivationStatusLogs()->create([
+            'status_id' => MemberActivationStatus::REJECTED->value,
+            'notes' => 'Dokumen tidak terbaca',
+            'created_by' => $user->id,
+        ]);
+
+        $this->get(route('admin.member-activations.edit', ['member_activation' => $activation]))
+            ->assertOk()
+            ->assertSee('Riwayat Status Verifikasi', false)
+            ->assertSee(MemberActivationStatus::PENDING->label(), false)
+            ->assertSee(MemberActivationStatus::REJECTED->label(), false)
+            ->assertSee('Dokumen tidak terbaca', false)
+            ->assertSee('Admin Verifikator', false)
+            ->assertSee('Sistem', false);
+    }
+
     public function test_accept_copies_address_to_new_member(): void
     {
         Notification::fake();

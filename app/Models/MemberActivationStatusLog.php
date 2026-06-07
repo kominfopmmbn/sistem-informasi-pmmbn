@@ -4,12 +4,21 @@ namespace App\Models;
 
 use App\Enums\MemberActivationStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Mattiverse\Userstamps\Traits\Userstamps;
 
 #[Fillable(['member_activation_id', 'status_id', 'notes'])]
 class MemberActivationStatusLog extends Model
 {
+    use Userstamps;
+
     protected $table = 'member_activation_status_logs';
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
     public function getStatusBadgeAttribute(): string
     {
