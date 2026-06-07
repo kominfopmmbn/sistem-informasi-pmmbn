@@ -5,8 +5,10 @@ namespace Tests\Feature;
 use App\Enums\Gender;
 use App\Enums\MemberActivationStatus;
 use App\Models\College;
+use App\Models\District;
 use App\Models\MemberActivation;
 use App\Models\MemberActivationEmailOtpVerification;
+use App\Models\Village;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravolt\Indonesia\Models\City;
@@ -46,6 +48,24 @@ class MemberActivationStoreTest extends TestCase
         ]);
     }
 
+    /** Kecamatan + desa minimal (kode pos di kolom `meta` JSON) untuk memenuhi `exists:villages,code`. */
+    private function sampleVillage(City $city): Village
+    {
+        $district = District::query()->firstOrCreate(
+            ['code' => $city->code.'001'],
+            ['city_code' => $city->code, 'name' => 'KECAMATAN TES'],
+        );
+
+        return Village::query()->firstOrCreate(
+            ['code' => $district->code.'001'],
+            [
+                'district_code' => $district->code,
+                'name' => 'DESA TES',
+                'meta' => ['lat' => '-6.2', 'long' => '106.8', 'pos' => '40123'],
+            ],
+        );
+    }
+
     /** Payload publik yang valid; province_code sengaja tidak disertakan. */
     private function validPayload(City $city, array $overrides = []): array
     {
@@ -66,6 +86,7 @@ class MemberActivationStoreTest extends TestCase
             'gender_id' => Gender::MALE->value,
             'phone_number' => '081234567890',
             'address' => 'Jl. Mawar No. 1, Jakarta',
+            'village_code' => $this->sampleVillage($city)->code,
             'college_id' => $college->id,
         ], $overrides);
     }
@@ -75,7 +96,9 @@ class MemberActivationStoreTest extends TestCase
         $city = $this->sampleCity();
         $this->verifyEmail('pendaftar@example.test');
 
-        $this->post(route('about.member-activation.store'), $this->validPayload($city))
+        $payload = $this->validPayload($city);
+
+        $this->post(route('about.member-activation.store'), $payload)
             ->assertRedirect(route('about.member-activation.index'))
             ->assertSessionHas('success');
 
@@ -85,6 +108,7 @@ class MemberActivationStoreTest extends TestCase
 
         $this->assertSame($city->code, $activation->place_of_birth_code);
         $this->assertSame('Jl. Mawar No. 1, Jakarta', $activation->address);
+        $this->assertSame($payload['village_code'], $activation->village_code);
         $this->assertDatabaseHas('member_activation_status_logs', [
             'member_activation_id' => $activation->id,
             'status_id' => MemberActivationStatus::PENDING->value,
@@ -113,6 +137,29 @@ class MemberActivationStoreTest extends TestCase
 
         $this->post(route('about.member-activation.store'), $payload)
             ->assertSessionHasErrors(['place_of_birth_code']);
+    }
+
+    public function test_store_requires_village_code(): void
+    {
+        $city = $this->sampleCity();
+        $this->verifyEmail('pendaftar@example.test');
+
+        $payload = $this->validPayload($city);
+        unset($payload['village_code']);
+
+        $this->post(route('about.member-activation.store'), $payload)
+            ->assertSessionHasErrors(['village_code']);
+    }
+
+    public function test_store_rejects_unknown_village_code(): void
+    {
+        $city = $this->sampleCity();
+        $this->verifyEmail('pendaftar@example.test');
+
+        $payload = $this->validPayload($city, ['village_code' => '9999999999']);
+
+        $this->post(route('about.member-activation.store'), $payload)
+            ->assertSessionHasErrors(['village_code']);
     }
 
     public function test_store_requires_verified_email(): void

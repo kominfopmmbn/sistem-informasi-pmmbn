@@ -21,6 +21,7 @@ return new class extends Migration
             $table->smallInteger('gender_id')->nullable();
             $table->string('phone_number')->nullable();
             $table->text('address')->nullable();
+            $table->char('village_code', 10)->nullable(); // relasi ke table villages (desa/kelurahan domisili)
             $table->unsignedBigInteger('college_id')->nullable(); // relasi ke table colleges
             $table->unsignedBigInteger('member_activation_email_otp_verification_id')->nullable(); // relasi ke table member_activation_email_otp_verifications
             $table->timestamps();

@@ -4,8 +4,10 @@ namespace Tests\Feature\Admin;
 
 use App\Enums\Gender;
 use App\Models\College;
+use App\Models\District;
 use App\Models\Member;
 use App\Models\User;
+use App\Models\Village;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -70,6 +72,26 @@ class MemberCrudTest extends TestCase
             'lat' => -6.3612,
             'long' => 106.8268,
         ]);
+    }
+
+    /** Kecamatan + desa minimal (kode pos di kolom `meta` JSON) untuk memenuhi `exists:villages,code`. */
+    private function sampleVillage(): Village
+    {
+        ['city' => $city] = $this->sampleProvinceAndCity();
+
+        $district = District::query()->firstOrCreate(
+            ['code' => $city->code.'001'],
+            ['city_code' => $city->code, 'name' => 'KECAMATAN TES'],
+        );
+
+        return Village::query()->firstOrCreate(
+            ['code' => $district->code.'001'],
+            [
+                'district_code' => $district->code,
+                'name' => 'DESA TES',
+                'meta' => ['lat' => '-6.2', 'long' => '106.8', 'pos' => '40123'],
+            ],
+        );
     }
 
     public function test_guest_is_redirected_from_members_index_to_admin_login(): void
@@ -180,6 +202,33 @@ class MemberCrudTest extends TestCase
             'full_name' => 'Kota Tak Dikenal',
             'place_of_birth_code' => '9999',
         ])->assertSessionHasErrors(['place_of_birth_code']);
+    }
+
+    public function test_store_persists_village_code(): void
+    {
+        $this->actingAsAdministrator();
+        $village = $this->sampleVillage();
+
+        $this->post(route('admin.members.store'), [
+            'full_name' => 'Punya Desa',
+            'village_code' => $village->code,
+        ])->assertRedirect(route('admin.members.index'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('members', [
+            'full_name' => 'Punya Desa',
+            'village_code' => $village->code,
+        ]);
+    }
+
+    public function test_store_rejects_unknown_village_code(): void
+    {
+        $this->actingAsAdministrator();
+
+        $this->post(route('admin.members.store'), [
+            'full_name' => 'Desa Tak Dikenal',
+            'village_code' => '9999999999',
+        ])->assertSessionHasErrors(['village_code']);
     }
 
     public function test_destroy_soft_deletes_member(): void

@@ -42,6 +42,7 @@ class StoreMemberActivationRequest extends FormRequest
             'gender_id' => ['required', Rule::enum(Gender::class)],
             'phone_number' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:1000'],
+            'village_code' => ['required', 'string', 'size:10', 'exists:villages,code'],
             'college_id' => ['required', 'integer', 'exists:colleges,id'],
             'supporting_documents' => ['nullable', 'array', 'max:'.Member::SUPPORTING_DOCUMENTS_MAX_PER_SUBMIT],
             'supporting_documents.*' => Member::supportingDocumentItemRules(),

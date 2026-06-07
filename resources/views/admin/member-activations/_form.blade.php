@@ -10,6 +10,15 @@
         $placeRow = \App\Models\City::query()->where('code', $placeCode)->first();
         $placeName = $placeRow?->name ?? '';
     }
+
+    $villageCode = old('village_code', isset($member) ? $member->village_code : '');
+    $villageName = '';
+    if (isset($member) && $member->relationLoaded('village') && $member->village !== null) {
+        $villageName = $member->village->select_label;
+    } elseif ($villageCode !== null && $villageCode !== '') {
+        $villageRow = \App\Models\Village::query()->with('district.city.province')->where('code', $villageCode)->first();
+        $villageName = $villageRow?->select_label ?? '';
+    }
     $genderOld = old('gender_id', isset($member) && $member->gender_id !== null ? $member->gender_id->value : '');
     $collegeId = old('college_id', isset($member) ? $member->college_id : '');
     $collegeLabel = '';
@@ -40,7 +49,8 @@
     <div class="col-12 col-md-6">
         <label class="form-label" for="member_nim">NIM</label>
         <input type="text" name="nim" id="member_nim" class="form-control @error('nim') is-invalid @enderror"
-            value="{{ old('nim', isset($member) ? $member->nim : '') }}" maxlength="255" autocomplete="off">
+            value="{{ old('nim', isset($member) ? $member->nim : '') }}" maxlength="255" autocomplete="off"
+            placeholder="Masukkan NIM">
         @error('nim')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -48,7 +58,8 @@
     <div class="col-12 col-md-6">
         <label class="form-label" for="member_email">Email</label>
         <input type="email" name="email" id="member_email" class="form-control @error('email') is-invalid @enderror"
-            value="{{ old('email', isset($member) ? $member->email : '') }}" maxlength="255" autocomplete="email">
+            value="{{ old('email', isset($member) ? $member->email : '') }}" maxlength="255" autocomplete="email"
+            placeholder="contoh@email.com">
         @error('email')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -58,7 +69,7 @@
         <input type="text" name="full_name" id="member_full_name"
             class="form-control @error('full_name') is-invalid @enderror"
             value="{{ old('full_name', isset($member) ? $member->full_name : '') }}" maxlength="255"
-            autocomplete="name">
+            autocomplete="name" placeholder="Masukkan nama lengkap">
         @error('full_name')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -119,7 +130,7 @@
         <input type="text" name="phone_number" id="member_phone_number"
             class="form-control @error('phone_number') is-invalid @enderror"
             value="{{ old('phone_number', isset($member) ? $member->phone_number : '') }}" maxlength="255"
-            autocomplete="tel">
+            autocomplete="tel" placeholder="Contoh: 08123456789">
         @error('phone_number')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -147,10 +158,32 @@
     </div>
 
     <div class="col-12">
+        <label class="form-label" for="member_village_code">Desa / Kelurahan</label>
+        <div class="select2-primary @error('village_code') is-invalid @enderror">
+            <div class="position-relative w-100">
+                <select name="village_code" id="member_village_code"
+                    class="select2 form-select @error('village_code') is-invalid @enderror"
+                    data-search-url="{{ route('select.villages-search') }}"
+                    data-placeholder="Cari desa/kelurahan (nama atau kode pos)"
+                    @if ($villageCode !== null && $villageCode !== '') data-initial-code="{{ $villageCode }}" data-initial-name="{{ $villageName }}" @endif>
+                    @if ($villageCode !== null && $villageCode !== '')
+                        <option value="{{ $villageCode }}" selected>{{ $villageName }}</option>
+                    @else
+                        <option value=""></option>
+                    @endif
+                </select>
+            </div>
+        </div>
+        @error('village_code')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="col-12">
         <label class="form-label" for="member_address">Alamat</label>
         <textarea name="address" id="member_address" rows="3"
             class="form-control @error('address') is-invalid @enderror"
-            maxlength="1000">{{ old('address', isset($member) ? $member->address : '') }}</textarea>
+            maxlength="1000" placeholder="Masukkan alamat lengkap">{{ old('address', isset($member) ? $member->address : '') }}</textarea>
         @error('address')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror

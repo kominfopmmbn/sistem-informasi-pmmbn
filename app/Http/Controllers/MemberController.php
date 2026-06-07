@@ -63,6 +63,7 @@ class MemberController extends Controller
     {
         $member->load([
             'placeOfBirthCity',
+            'village.district.city.province',
             'college.city',
             'college.province',
             'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),

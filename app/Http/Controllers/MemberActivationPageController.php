@@ -7,6 +7,7 @@ use App\Http\Requests\StoreMemberActivationRequest;
 use App\Models\City;
 use App\Models\Member;
 use App\Models\MemberActivation;
+use App\Models\Village;
 use App\Models\MemberActivationEmailOtpVerification;
 use App\Notifications\MemberActivationEmailVerification;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -34,6 +35,7 @@ class MemberActivationPageController extends Controller
 
             $memberActivation = MemberActivation::query()->with([
                 'placeOfBirthCity.province',
+                'village.district.city.province',
                 'college',
                 'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
             ])->find($memberActivationId);
@@ -49,6 +51,13 @@ class MemberActivationPageController extends Controller
         if ($placeCode !== '') {
             $placeRow = City::query()->where('code', $placeCode)->first();
             $placeName = $placeRow?->name ?? '';
+        }
+
+        $villageCode = old('village_code', $memberActivation?->village_code ?? '');
+        $villageName = '';
+        if ($villageCode !== '') {
+            $villageRow = Village::query()->with('district.city.province')->where('code', $villageCode)->first();
+            $villageName = $villageRow?->select_label ?? '';
         }
 
         $collegeId = old('college_id', $memberActivation?->college_id ?? '');
@@ -83,6 +92,8 @@ class MemberActivationPageController extends Controller
             'provinces',
             'placeCode',
             'placeName',
+            'villageCode',
+            'villageName',
             'collegeId',
             'collegeLabel',
             'maxNewSupportingFiles',

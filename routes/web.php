@@ -16,6 +16,7 @@ Route::prefix('select')
         Route::get('colleges', [LookupController::class, 'colleges'])->name('colleges');
         Route::get('districts', [LookupController::class, 'districts'])->name('districts');
         Route::get('villages', [LookupController::class, 'villages'])->name('villages');
+        Route::get('villages-search', [LookupController::class, 'villagesSearch'])->name('villages-search');
     });
 
 Route::get('/', [HomePageController::class, 'index'])->name('home.index');

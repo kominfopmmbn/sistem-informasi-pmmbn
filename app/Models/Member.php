@@ -21,6 +21,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
     'gender_id',
     'phone_number',
     'address',
+    'village_code',
     'college_id',
     'is_created_from_member_activation',
     'member_activation_id',
@@ -117,6 +118,11 @@ class Member extends Model implements HasMedia
     public function placeOfBirthCity(): BelongsTo
     {
         return $this->belongsTo(City::class, 'place_of_birth_code', 'code');
+    }
+
+    public function village(): BelongsTo
+    {
+        return $this->belongsTo(Village::class, 'village_code', 'code');
     }
 
     public function college(): BelongsTo

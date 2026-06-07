@@ -108,6 +108,41 @@ $(function () {
     }
   }
 
+  const $village = $('#member_village_code');
+  if ($village.length && typeof $.fn.select2 !== 'undefined') {
+    const villageSearchUrl = $village.data('search-url');
+    if (villageSearchUrl) {
+      $village.wrap('<div class="position-relative"></div>');
+      $village.select2({
+        placeholder: $village.data('placeholder') || 'Cari desa/kelurahan (nama atau kode pos)',
+        allowClear: !$village.prop('required'),
+        dropdownParent: $village.parent(),
+        width: '100%',
+        minimumInputLength: 0,
+        ajax: {
+          url: villageSearchUrl,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term,
+              page: params.page || 1
+            };
+          },
+          processResults: function (data) {
+            const rows = (data.results || []).map(function (item) {
+              return { id: item.code, text: item.text };
+            });
+            return {
+              results: rows,
+              pagination: { more: !!(data.pagination && data.pagination.more) }
+            };
+          }
+        }
+      });
+    }
+  }
+
   const $college = $('#member_college_id');
   if ($college.length && typeof $.fn.select2 !== 'undefined') {
     const collegeSearchUrl = $college.data('search-url');

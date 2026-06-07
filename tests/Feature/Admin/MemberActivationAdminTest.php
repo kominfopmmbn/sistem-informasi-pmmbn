@@ -3,9 +3,11 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\College;
+use App\Models\District;
 use App\Models\Member;
 use App\Models\MemberActivation;
 use App\Models\User;
+use App\Models\Village;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -29,6 +31,24 @@ class MemberActivationAdminTest extends TestCase
         $this->seed(PermissionSeeder::class);
         $this->seed(ProvincesSeeder::class);
         $this->seed(CitiesSeeder::class);
+    }
+
+    /** Kecamatan + desa minimal (kode pos di kolom `meta` JSON) untuk memenuhi `exists:villages,code`. */
+    private function sampleVillage(City $city): Village
+    {
+        $district = District::query()->firstOrCreate(
+            ['code' => $city->code.'001'],
+            ['city_code' => $city->code, 'name' => 'KECAMATAN TES'],
+        );
+
+        return Village::query()->firstOrCreate(
+            ['code' => $district->code.'001'],
+            [
+                'district_code' => $district->code,
+                'name' => 'DESA TES',
+                'meta' => ['lat' => '-6.2', 'long' => '106.8', 'pos' => '40123'],
+            ],
+        );
     }
 
     public function test_edit_page_renders_for_admin(): void
@@ -104,6 +124,41 @@ class MemberActivationAdminTest extends TestCase
             'member_activation_id' => $activation->id,
             'email' => 'calon@example.test',
             'address' => 'Jl. Kenanga No. 3, Surabaya',
+        ]);
+    }
+
+    public function test_accept_copies_village_code_to_new_member(): void
+    {
+        Notification::fake();
+
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('Administrator');
+        $this->actingAs($user);
+
+        $province = Province::query()->orderBy('id')->firstOrFail();
+        $city = City::query()
+            ->where('province_code', $province->code)
+            ->orderBy('id')
+            ->firstOrFail();
+        $village = $this->sampleVillage($city);
+
+        $activation = MemberActivation::withoutEvents(
+            fn () => MemberActivation::query()->create([
+                'full_name' => 'Calon Desa',
+                'email' => 'calon-desa@example.test',
+                'village_code' => $village->code,
+            ])
+        );
+
+        $this->patch(route('admin.member-activations.accept', ['member_activation' => $activation]))
+            ->assertRedirect(route('admin.member-activations.index'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('members', [
+            'member_activation_id' => $activation->id,
+            'email' => 'calon-desa@example.test',
+            'village_code' => $village->code,
         ]);
     }
 }

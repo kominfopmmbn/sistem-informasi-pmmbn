@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use App\Models\College;
+use App\Models\Village as AppVillage;
 use Illuminate\Support\Facades\DB;
 use Laravolt\Indonesia\Models\City;
 use Laravolt\Indonesia\Models\District;
@@ -198,6 +199,53 @@ class LookupController extends Controller
         $results = $villages->getCollection()->map(fn (Village $v) => [
             'id' => $v->code,
             'text' => $v->name,
+            'code' => $v->code,
+        ])->values()->all();
+
+        return response()->json([
+            'results' => $results,
+            'pagination' => [
+                'more' => $villages->hasMorePages(),
+            ],
+        ]);
+    }
+
+    /**
+     * Desa/kelurahan untuk select domisili — pencarian rata (tanpa kecamatan induk), berdasarkan nama ATAU kode pos.
+     * Kode pos tersimpan di dalam kolom `meta` JSON (key `pos`); `meta->pos` dikompilasi ke json_extract di MySQL & SQLite.
+     */
+    public function villagesSearch(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'q' => ['nullable', 'string', 'max:100'],
+            'page' => ['nullable', 'integer', 'min:1'],
+        ]);
+
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->errors()->toArray());
+        }
+
+        $q = $request->input('q');
+        $perPage = 20;
+        $page = max(1, (int) $request->input('page', 1));
+
+        $query = AppVillage::query()
+            ->with('district.city.province')
+            ->orderBy('name');
+
+        if ($q !== null && $q !== '') {
+            $q = (string) $q;
+            $query->where(function ($w) use ($q): void {
+                $w->where('name', 'like', '%'.$q.'%')
+                    ->orWhere('meta->pos', 'like', '%'.$q.'%');
+            });
+        }
+
+        $villages = $query->paginate($perPage, ['*'], 'page', $page);
+
+        $results = $villages->getCollection()->map(fn (AppVillage $v) => [
+            'id' => $v->code,
+            'text' => $v->select_label,
             'code' => $v->code,
         ])->values()->all();
 

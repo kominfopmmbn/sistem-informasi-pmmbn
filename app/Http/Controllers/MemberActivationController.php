@@ -54,6 +54,7 @@ class MemberActivationController extends Controller
     {
         $member_activation->load([
             'placeOfBirthCity',
+            'village.district.city.province',
             'college.city',
             'college.province',
             'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
@@ -159,6 +160,7 @@ class MemberActivationController extends Controller
                 'gender_id' => $member_activation->gender_id,
                 'phone_number' => $member_activation->phone_number,
                 'address' => $member_activation->address,
+                'village_code' => $member_activation->village_code,
                 'college_id' => $member_activation->college_id,
                 'member_activation_id' => $member_activation->id,
             ]);
@@ -172,6 +174,7 @@ class MemberActivationController extends Controller
                 'gender_id' => $member_activation->gender_id,
                 'phone_number' => $member_activation->phone_number,
                 'address' => $member_activation->address,
+                'village_code' => $member_activation->village_code,
                 'college_id' => $member_activation->college_id,
                 'member_activation_id' => $member_activation->id,
                 'is_created_from_member_activation' => true,

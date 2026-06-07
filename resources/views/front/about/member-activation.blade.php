@@ -46,14 +46,16 @@
                             <label class="form-label" for="member_nim">NIM <span class="text-danger">*</span></label>
                             <input type="text" name="nim" id="member_nim"
                                 class="form-control form-control-custom @error('nim') is-invalid border-danger @enderror"
-                                required value="{{ old('nim', $memberActivation?->nim ?? '') }}" maxlength="255">
+                                required value="{{ old('nim', $memberActivation?->nim ?? '') }}" maxlength="255"
+                                placeholder="Masukkan NIM">
                             <div class="invalid-feedback @error('nim') d-block @enderror">@error('nim'){{ $message }}@enderror</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label" for="member_email">Email <span class="text-danger">*</span></label>
                             <input type="email" name="email" id="member_email"
                                 class="form-control form-control-custom @error('email') is-invalid border-danger @enderror"
-                                required value="{{ old('email', $memberActivation?->email ?? '') }}" maxlength="255">
+                                required value="{{ old('email', $memberActivation?->email ?? '') }}" maxlength="255"
+                                placeholder="contoh@email.com">
                             <div class="invalid-feedback">
                                 @error('email')
                                     {{ $message }}
@@ -65,7 +67,7 @@
                             <input type="text" name="full_name" id="member_full_name"
                                 class="form-control form-control-custom @error('full_name') is-invalid border-danger @enderror"
                                 required value="{{ old('full_name', $memberActivation?->full_name ?? '') }}"
-                                maxlength="255">
+                                maxlength="255" placeholder="Masukkan nama lengkap">
                             <div class="invalid-feedback @error('full_name') d-block @enderror">@error('full_name'){{ $message }}@enderror</div>
                         </div>
                         <div class="col-md-6">
@@ -120,7 +122,7 @@
                             <input type="text" name="phone_number" id="member_phone_number"
                                 class="form-control form-control-custom @error('phone_number') is-invalid border-danger @enderror"
                                 required value="{{ old('phone_number', $memberActivation?->phone_number ?? '') }}"
-                                maxlength="255">
+                                maxlength="255" placeholder="Contoh: 08123456789">
                             <div class="invalid-feedback @error('phone_number') d-block @enderror">@error('phone_number'){{ $message }}@enderror</div>
                         </div>
 
@@ -146,10 +148,32 @@
                         </div>
 
                         <div class="col-12">
+                            <label class="form-label" for="member_village_code">Desa / Kelurahan <span class="text-danger">*</span></label>
+                            <div class="select2-primary @error('village_code') is-invalid border-danger @enderror"
+                                required>
+                                <div class="position-relative w-100">
+                                    <select name="village_code" id="member_village_code"
+                                        class="select2 form-select form-select-custom @error('village_code') is-invalid border-danger @enderror"
+                                        data-search-url="{{ route('select.villages-search') }}"
+                                        data-placeholder="Cari desa/kelurahan (nama atau kode pos)"
+                                        required
+                                        @if ($villageCode !== null && $villageCode !== '') data-initial-code="{{ $villageCode }}" data-initial-name="{{ $villageName }}" @endif>
+                                        @if ($villageCode !== null && $villageCode !== '')
+                                            <option value="{{ $villageCode }}" selected>{{ $villageName }}</option>
+                                        @else
+                                            <option value=""></option>
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="invalid-feedback @error('village_code') d-block @enderror">@error('village_code'){{ $message }}@enderror</div>
+                        </div>
+
+                        <div class="col-12">
                             <label class="form-label" for="member_address">Alamat <span class="text-danger">*</span></label>
                             <textarea name="address" id="member_address" rows="3"
                                 class="form-control form-control-custom @error('address') is-invalid border-danger @enderror"
-                                required maxlength="1000">{{ old('address', $memberActivation?->address ?? '') }}</textarea>
+                                required maxlength="1000" placeholder="Masukkan alamat lengkap">{{ old('address', $memberActivation?->address ?? '') }}</textarea>
                             <div class="invalid-feedback @error('address') d-block @enderror">@error('address'){{ $message }}@enderror</div>
                         </div>
 
@@ -289,7 +313,7 @@
                     clearFieldInvalid($(this));
                 }
             });
-            $('#member_place_of_birth_code, #member_gender_id, #member_college_id')
+            $('#member_place_of_birth_code, #member_gender_id, #member_college_id, #member_village_code')
                 .on('change', function() {
                     if (($(this).val() || '').toString().trim() !== '') {
                         clearFieldInvalid($(this));
