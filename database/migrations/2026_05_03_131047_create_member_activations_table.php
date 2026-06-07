@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->char('village_code', 10)->nullable(); // relasi ke table villages (desa/kelurahan domisili)
             $table->unsignedBigInteger('college_id')->nullable(); // relasi ke table colleges
+            $table->unsignedBigInteger('regional_leader_id')->nullable(); // relasi ke table regional_leaders
             $table->unsignedBigInteger('member_activation_email_otp_verification_id')->nullable(); // relasi ke table member_activation_email_otp_verifications
             $table->timestamps();
             $table->softDeletes();

@@ -14,6 +14,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Laravolt\Indonesia\Models\Province;
@@ -166,6 +167,48 @@ class MemberActivationController extends Controller
             'member_id' => ['nullable', 'exists:members,id'],
         ]);
 
+        // Semua data wajib lengkap (kecuali dokumen pendukung) sebelum aktivasi diterima.
+        // Field-nya tidak ikut form "Terima"; jadi divalidasi dari record MemberActivation yang tersimpan.
+        $completeness = Validator::make(
+            $member_activation->only([
+                'nim', 'full_name', 'email', 'place_of_birth_code', 'date_of_birth',
+                'gender_id', 'phone_number', 'address', 'village_code', 'college_id', 'regional_leader_id',
+            ]),
+            [
+                'nim' => ['required'],
+                'full_name' => ['required'],
+                'email' => ['required'],
+                'place_of_birth_code' => ['required'],
+                'date_of_birth' => ['required'],
+                'gender_id' => ['required'],
+                'phone_number' => ['required'],
+                'address' => ['required'],
+                'village_code' => ['required'],
+                'college_id' => ['required'],
+                'regional_leader_id' => ['required'],
+            ],
+            ['required' => ':attribute wajib diisi sebelum aktivasi diterima.'],
+            [
+                'nim' => 'NIM',
+                'full_name' => 'Nama lengkap',
+                'email' => 'Email',
+                'place_of_birth_code' => 'Tempat lahir',
+                'date_of_birth' => 'Tanggal lahir',
+                'gender_id' => 'Jenis kelamin',
+                'phone_number' => 'Nomor telepon',
+                'address' => 'Alamat',
+                'village_code' => 'Desa / Kelurahan',
+                'college_id' => 'Perguruan tinggi',
+                'regional_leader_id' => 'Pimpinan wilayah',
+            ],
+        );
+
+        if ($completeness->fails()) {
+            return redirect()->back()
+                ->withErrors($completeness)
+                ->with('error', 'Lengkapi semua data anggota (kecuali dokumen pendukung) terlebih dahulu sebelum menerima aktivasi.');
+        }
+
         DB::beginTransaction();
         if ($request->has('member_id')) {
             $member = Member::query()->findOrFail($request->input('member_id'));
@@ -181,6 +224,7 @@ class MemberActivationController extends Controller
                 'address' => $member_activation->address,
                 'village_code' => $member_activation->village_code,
                 'college_id' => $member_activation->college_id,
+                'regional_leader_id' => $member_activation->regional_leader_id,
                 'member_activation_id' => $member_activation->id,
             ]);
         } else {
@@ -195,6 +239,7 @@ class MemberActivationController extends Controller
                 'address' => $member_activation->address,
                 'village_code' => $member_activation->village_code,
                 'college_id' => $member_activation->college_id,
+                'regional_leader_id' => $member_activation->regional_leader_id,
                 'member_activation_id' => $member_activation->id,
                 'is_created_from_member_activation' => true,
             ]);

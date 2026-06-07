@@ -29,6 +29,8 @@
             $collegeLabel = $member->college->name.' — '.$cityName.', '.$provinceName;
         }
     }
+    $regionalLeaderId = old('regional_leader_id', isset($member) ? $member->regional_leader_id : '');
+    $regionalLeaders = \App\Models\RegionalLeader::query()->orderBy('name')->get();
     $existingSupportingCount = isset($member) ? $member->getMedia(Member::SUPPORTING_DOCUMENTS_COLLECTION)->count() : 0;
     $maxNewSupportingFiles = max(
         0,
@@ -157,7 +159,26 @@
         @enderror
     </div>
 
-    <div class="col-12">
+    <div class="col-12 col-md-6">
+        <label class="form-label" for="member_regional_leader_id">Pimpinan wilayah</label>
+        <div class="select2-primary @error('regional_leader_id') is-invalid @enderror">
+            <div class="position-relative w-100">
+                <select name="regional_leader_id" id="member_regional_leader_id"
+                    class="select2 form-select @error('regional_leader_id') is-invalid @enderror"
+                    data-placeholder="Pilih pimpinan wilayah (opsional)">
+                    <option value=""></option>
+                    @foreach ($regionalLeaders as $rl)
+                        <option value="{{ $rl->id }}" @selected((string) $regionalLeaderId === (string) $rl->id)>{{ $rl->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        @error('regional_leader_id')
+            <div class="invalid-feedback d-block">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="col-12 col-md-6">
         <label class="form-label" for="member_village_code">Desa / Kelurahan</label>
         <div class="select2-primary @error('village_code') is-invalid @enderror">
             <div class="position-relative w-100">

@@ -7,6 +7,7 @@ use App\Models\College;
 use App\Models\District;
 use App\Models\Kta;
 use App\Models\Member;
+use App\Models\RegionalLeader;
 use App\Models\User;
 use App\Models\Village;
 use Database\Seeders\PermissionSeeder;
@@ -256,6 +257,36 @@ class MemberCrudTest extends TestCase
             'full_name' => 'Desa Tak Dikenal',
             'village_code' => '9999999999',
         ])->assertSessionHasErrors(['village_code']);
+    }
+
+    public function test_store_persists_regional_leader_id(): void
+    {
+        $this->actingAsAdministrator();
+        $regionalLeader = RegionalLeader::query()->create([
+            'code' => 'PW-01',
+            'name' => 'Pimpinan Wilayah Tes',
+        ]);
+
+        $this->post(route('admin.members.store'), [
+            'full_name' => 'Punya Pimpinan',
+            'regional_leader_id' => $regionalLeader->id,
+        ])->assertRedirect(route('admin.members.index'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('members', [
+            'full_name' => 'Punya Pimpinan',
+            'regional_leader_id' => $regionalLeader->id,
+        ]);
+    }
+
+    public function test_store_rejects_unknown_regional_leader_id(): void
+    {
+        $this->actingAsAdministrator();
+
+        $this->post(route('admin.members.store'), [
+            'full_name' => 'Pimpinan Tak Dikenal',
+            'regional_leader_id' => 999999,
+        ])->assertSessionHasErrors(['regional_leader_id']);
     }
 
     public function test_destroy_soft_deletes_member(): void

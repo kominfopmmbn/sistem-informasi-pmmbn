@@ -2,11 +2,13 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Enums\Gender;
 use App\Enums\MemberActivationStatus;
 use App\Models\College;
 use App\Models\District;
 use App\Models\Member;
 use App\Models\MemberActivation;
+use App\Models\RegionalLeader;
 use App\Models\User;
 use App\Models\Village;
 use Database\Seeders\PermissionSeeder;
@@ -52,6 +54,50 @@ class MemberActivationAdminTest extends TestCase
         );
     }
 
+    /**
+     * Atribut MemberActivation yang LENGKAP (semua kolom wajib selain dokumen pendukung terisi),
+     * sehingga lolos validasi kelengkapan pada aksi "Terima". `accept()` butuh data ini lengkap.
+     *
+     * @param  array<string, mixed>  $overrides
+     * @return array<string, mixed>
+     */
+    private function completeActivationAttributes(array $overrides = []): array
+    {
+        $province = Province::query()->orderBy('id')->firstOrFail();
+        $city = City::query()
+            ->where('province_code', $province->code)
+            ->orderBy('id')
+            ->firstOrFail();
+        $village = $this->sampleVillage($city);
+
+        $college = College::query()->create([
+            'name' => 'Universitas Aktivasi Tes',
+            'province_code' => $province->code,
+            'city_code' => $city->code,
+            'lat' => -6.3612,
+            'long' => 106.8268,
+        ]);
+
+        $regionalLeader = RegionalLeader::query()->create([
+            'code' => 'PW-01',
+            'name' => 'Pimpinan Wilayah Tes',
+        ]);
+
+        return array_merge([
+            'nim' => 'NIM-ACT-1',
+            'full_name' => 'Calon Anggota',
+            'email' => 'calon@example.test',
+            'place_of_birth_code' => $city->code,
+            'date_of_birth' => '1999-05-03',
+            'gender_id' => Gender::MALE->value,
+            'phone_number' => '081234567890',
+            'address' => 'Jl. Kenanga No. 3, Surabaya',
+            'village_code' => $village->code,
+            'college_id' => $college->id,
+            'regional_leader_id' => $regionalLeader->id,
+        ], $overrides);
+    }
+
     public function test_edit_page_renders_for_admin(): void
     {
         /** @var User $user */
@@ -94,27 +140,13 @@ class MemberActivationAdminTest extends TestCase
         $user->assignRole('Administrator');
         $this->actingAs($user);
 
-        $province = Province::query()->orderBy('id')->firstOrFail();
-        $city = City::query()
-            ->where('province_code', $province->code)
-            ->orderBy('id')
-            ->firstOrFail();
-
-        $college = College::query()->create([
-            'name' => 'Universitas Aktivasi Tes',
-            'province_code' => $province->code,
-            'city_code' => $city->code,
-            'lat' => -6.3612,
-            'long' => 106.8268,
-        ]);
-
         $activation = MemberActivation::withoutEvents(
-            fn () => MemberActivation::query()->create([
-                'full_name' => 'Calon Anggota',
-                'email' => 'calon@example.test',
-                'address' => 'Jl. Kenanga No. 3, Surabaya',
-                'college_id' => $college->id,
-            ])
+            fn () => MemberActivation::query()->create(
+                $this->completeActivationAttributes([
+                    'email' => 'calon@example.test',
+                    'address' => 'Jl. Kenanga No. 3, Surabaya',
+                ])
+            )
         );
 
         $this->patch(route('admin.member-activations.accept', ['member_activation' => $activation]))
@@ -137,19 +169,13 @@ class MemberActivationAdminTest extends TestCase
         $user->assignRole('Administrator');
         $this->actingAs($user);
 
-        $province = Province::query()->orderBy('id')->firstOrFail();
-        $city = City::query()
-            ->where('province_code', $province->code)
-            ->orderBy('id')
-            ->firstOrFail();
-        $village = $this->sampleVillage($city);
-
         $activation = MemberActivation::withoutEvents(
-            fn () => MemberActivation::query()->create([
-                'full_name' => 'Calon Desa',
-                'email' => 'calon-desa@example.test',
-                'village_code' => $village->code,
-            ])
+            fn () => MemberActivation::query()->create(
+                $this->completeActivationAttributes([
+                    'full_name' => 'Calon Desa',
+                    'email' => 'calon-desa@example.test',
+                ])
+            )
         );
 
         $this->patch(route('admin.member-activations.accept', ['member_activation' => $activation]))
@@ -159,7 +185,32 @@ class MemberActivationAdminTest extends TestCase
         $this->assertDatabaseHas('members', [
             'member_activation_id' => $activation->id,
             'email' => 'calon-desa@example.test',
-            'village_code' => $village->code,
+            'village_code' => $activation->village_code,
+        ]);
+    }
+
+    public function test_accept_blocked_when_member_activation_incomplete(): void
+    {
+        Notification::fake();
+
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('Administrator');
+        $this->actingAs($user);
+
+        // Lengkap kecuali Pimpinan wilayah (regional_leader_id) → "Terima" harus diblokir.
+        $activation = MemberActivation::withoutEvents(
+            fn () => MemberActivation::query()->create(
+                $this->completeActivationAttributes(['regional_leader_id' => null])
+            )
+        );
+
+        $this->patch(route('admin.member-activations.accept', ['member_activation' => $activation]))
+            ->assertSessionHasErrors(['regional_leader_id']);
+
+        // Tidak ada Member (dan KTA) yang dibuat dari aktivasi yang belum lengkap.
+        $this->assertDatabaseMissing('members', [
+            'member_activation_id' => $activation->id,
         ]);
     }
 

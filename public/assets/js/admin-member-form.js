@@ -34,6 +34,17 @@ $(function () {
         width: '100%'
       });
     }
+
+    const $regionalLeader = $('#member_regional_leader_id');
+    if ($regionalLeader.length) {
+      $regionalLeader.wrap('<div class="position-relative"></div>');
+      $regionalLeader.select2({
+        placeholder: $regionalLeader.data('placeholder') || '—',
+        allowClear: true,
+        dropdownParent: $regionalLeader.parent(),
+        width: '100%'
+      });
+    }
   }
 
   if (typeof Dropzone !== 'undefined') {

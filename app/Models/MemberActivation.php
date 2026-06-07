@@ -25,6 +25,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
     'address',
     'village_code',
     'college_id',
+    'regional_leader_id',
 ])]
 class MemberActivation extends Model implements HasMedia
 {
@@ -65,6 +66,11 @@ class MemberActivation extends Model implements HasMedia
     public function college(): BelongsTo
     {
         return $this->belongsTo(College::class);
+    }
+
+    public function regionalLeader(): BelongsTo
+    {
+        return $this->belongsTo(RegionalLeader::class);
     }
 
     public function memberActivationStatusLogs(): HasMany
