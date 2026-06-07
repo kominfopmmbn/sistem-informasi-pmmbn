@@ -52,6 +52,15 @@
             </li>
         @endcan
 
+        @can('regional-leaders.view')
+            <li class="menu-item {{ request()->routeIs('admin.regional-leaders.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.regional-leaders.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-id-card"></i>
+                    <div>Pimpinan Wilayah</div>
+                </a>
+            </li>
+        @endcan
+
         @canany(['members.view', 'member-activations.view'])
             <li class="menu-header small">
                 <span class="menu-header-text" data-i18n="Anggota">Anggota</span>

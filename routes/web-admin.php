@@ -9,6 +9,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MemberActivationController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProvinceController;
+use App\Http\Controllers\RegionalLeaderController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VillageController;
@@ -112,6 +113,13 @@ Route::middleware(['auth'])->group(function (): void {
         ->middlewareFor(['create', 'store'], 'permission:colleges.create')
         ->middlewareFor(['edit', 'update'], 'permission:colleges.update')
         ->middlewareFor('destroy', 'permission:colleges.delete');
+
+    Route::resource('regional-leaders', RegionalLeaderController::class)
+        ->except(['show'])
+        ->middlewareFor('index', 'permission:regional-leaders.view')
+        ->middlewareFor(['create', 'store'], 'permission:regional-leaders.create')
+        ->middlewareFor(['edit', 'update'], 'permission:regional-leaders.update')
+        ->middlewareFor('destroy', 'permission:regional-leaders.delete');
 
     Route::resource('provinces', ProvinceController::class)
         ->except(['show'])
