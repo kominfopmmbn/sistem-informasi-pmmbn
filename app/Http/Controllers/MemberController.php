@@ -9,6 +9,7 @@ use App\Models\MemberActivation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Laravolt\Indonesia\Models\Province;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -19,9 +20,11 @@ class MemberController extends Controller
     {
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:255'],
+            'verification' => ['nullable', Rule::in(['verified', 'unverified'])],
         ]);
 
         $q = isset($filters['q']) ? trim((string) $filters['q']) : '';
+        $verification = $filters['verification'] ?? null;
 
         $query = Member::query()
             ->with(['placeOfBirthCity', 'kta', 'college'])
@@ -36,9 +39,15 @@ class MemberController extends Controller
             });
         }
 
+        if ($verification === 'verified') {
+            $query->whereHas('kta');
+        } elseif ($verification === 'unverified') {
+            $query->whereDoesntHave('kta');
+        }
+
         $members = $query->paginate(15)->withQueryString();
 
-        $filterState = ['q' => $q];
+        $filterState = ['q' => $q, 'verification' => $verification];
 
         return view('admin.members.index', compact('members', 'filterState'));
     }

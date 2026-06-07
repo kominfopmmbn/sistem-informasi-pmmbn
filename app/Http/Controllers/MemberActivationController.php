@@ -14,6 +14,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Laravolt\Indonesia\Models\Province;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -25,9 +26,13 @@ class MemberActivationController extends Controller
     {
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', Rule::in(array_column(MemberActivationStatus::cases(), 'value'))],
         ]);
 
         $q = isset($filters['q']) ? trim((string) $filters['q']) : '';
+        $status = isset($filters['status']) && $filters['status'] !== ''
+            ? MemberActivationStatus::from((int) $filters['status'])
+            : null;
 
         $query = MemberActivation::query()
             ->with(['placeOfBirthCity', 'currentStatus', 'college'])
@@ -42,9 +47,23 @@ class MemberActivationController extends Controller
             });
         }
 
+        if ($status !== null) {
+            // Cocokkan status TERAKHIR (log terbaru), bukan sekadar pernah berstatus tsb.
+            $query->whereIn('id', function ($sub) use ($status): void {
+                $sub->select('member_activation_id')
+                    ->from('member_activation_status_logs')
+                    ->where('status_id', $status->value)
+                    ->whereIn('id', function ($latest): void {
+                        $latest->selectRaw('MAX(id)')
+                            ->from('member_activation_status_logs')
+                            ->groupBy('member_activation_id');
+                    });
+            });
+        }
+
         $members = $query->paginate(15)->withQueryString();
 
-        $filterState = ['q' => $q];
+        $filterState = ['q' => $q, 'status' => $status?->value];
 
         return view('admin.member-activations.index', compact('members', 'filterState'));
     }

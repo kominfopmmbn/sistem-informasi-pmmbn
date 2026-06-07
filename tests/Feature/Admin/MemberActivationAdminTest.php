@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Enums\MemberActivationStatus;
 use App\Models\College;
 use App\Models\District;
 use App\Models\Member;
@@ -160,5 +161,50 @@ class MemberActivationAdminTest extends TestCase
             'email' => 'calon-desa@example.test',
             'village_code' => $village->code,
         ]);
+    }
+
+    public function test_index_filters_by_current_status(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('Administrator');
+        $this->actingAs($user);
+
+        // A: status terakhir PENDING.
+        $pending = MemberActivation::withoutEvents(
+            fn () => MemberActivation::query()->create([
+                'full_name' => 'Pemohon Pending Satu',
+                'email' => 'pending-satu@example.test',
+            ])
+        );
+        $pending->memberActivationStatusLogs()->create([
+            'status_id' => MemberActivationStatus::PENDING->value,
+        ]);
+
+        // B: pernah PENDING lalu DITOLAK → status terakhir REJECTED.
+        $rejected = MemberActivation::withoutEvents(
+            fn () => MemberActivation::query()->create([
+                'full_name' => 'Pemohon Tolak Dua',
+                'email' => 'tolak-dua@example.test',
+            ])
+        );
+        $rejected->memberActivationStatusLogs()->create([
+            'status_id' => MemberActivationStatus::PENDING->value,
+        ]);
+        $rejected->memberActivationStatusLogs()->create([
+            'status_id' => MemberActivationStatus::REJECTED->value,
+        ]);
+
+        // Filter PENDING: hanya A (B punya riwayat PENDING tapi status terakhirnya REJECTED).
+        $this->get(route('admin.member-activations.index', ['status' => MemberActivationStatus::PENDING->value]))
+            ->assertOk()
+            ->assertSee('Pemohon Pending Satu', false)
+            ->assertDontSee('Pemohon Tolak Dua', false);
+
+        // Filter REJECTED: hanya B.
+        $this->get(route('admin.member-activations.index', ['status' => MemberActivationStatus::REJECTED->value]))
+            ->assertOk()
+            ->assertSee('Pemohon Tolak Dua', false)
+            ->assertDontSee('Pemohon Pending Satu', false);
     }
 }

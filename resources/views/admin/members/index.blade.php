@@ -17,12 +17,25 @@
     <form method="get" action="{{ route('admin.members.index') }}" class="card mb-4">
         <div class="card-body">
             <div class="row g-3 align-items-end">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-5">
                     <label class="form-label" for="filter_q">NIM / nama / email</label>
                     <input type="search" name="q" id="filter_q" class="form-control" placeholder="Cari…"
                         value="{{ $filterState['q'] }}">
                 </div>
-                <div class="col-12 col-md-6 d-flex flex-wrap justify-content-end gap-2">
+                <div class="col-12 col-md-4">
+                    <label class="form-label" for="filter_status">Status verifikasi</label>
+                    <div class="select2-primary">
+                        <div class="position-relative w-100">
+                            <select name="verification" id="filter_status" class="select2 form-select"
+                                data-placeholder="Semua status">
+                                <option value=""></option>
+                                <option value="verified" @selected(($filterState['verification'] ?? null) === 'verified')>Sudah Verifikasi</option>
+                                <option value="unverified" @selected(($filterState['verification'] ?? null) === 'unverified')>Belum Verifikasi</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 d-flex flex-wrap justify-content-end gap-2">
                     <button type="submit" class="btn btn-primary">Terapkan</button>
                     <a href="{{ route('admin.members.index') }}" class="btn btn-label-secondary">Reset</a>
                 </div>
@@ -104,3 +117,12 @@
         @endif
     </div>
 @endsection
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+    <script src="{{ asset('assets/js/admin-members-index.js') }}"></script>
+@endpush

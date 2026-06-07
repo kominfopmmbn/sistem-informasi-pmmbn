@@ -10,12 +10,28 @@
     <form method="get" action="{{ route('admin.member-activations.index') }}" class="card mb-4">
         <div class="card-body">
             <div class="row g-3 align-items-end">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-5">
                     <label class="form-label" for="filter_q">NIM / nama / email</label>
                     <input type="search" name="q" id="filter_q" class="form-control" placeholder="Cari…"
                         value="{{ $filterState['q'] }}">
                 </div>
-                <div class="col-12 col-md-6 d-flex flex-wrap justify-content-end gap-2">
+                <div class="col-12 col-md-4">
+                    <label class="form-label" for="filter_status">Status</label>
+                    <div class="select2-primary">
+                        <div class="position-relative w-100">
+                            <select name="status" id="filter_status" class="select2 form-select"
+                                data-placeholder="Semua status">
+                                <option value=""></option>
+                                @foreach (\App\Enums\MemberActivationStatus::cases() as $status)
+                                    <option value="{{ $status->value }}"
+                                        @selected($filterState['status'] !== null && (int) $filterState['status'] === $status->value)>
+                                        {{ $status->label() }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 d-flex flex-wrap justify-content-end gap-2">
                     <button type="submit" class="btn btn-primary">Terapkan</button>
                     <a href="{{ route('admin.member-activations.index') }}" class="btn btn-label-secondary">Reset</a>
                 </div>
@@ -99,3 +115,12 @@
         @endif
     </div>
 @endsection
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+    <script src="{{ asset('assets/js/admin-member-activations-index.js') }}"></script>
+@endpush

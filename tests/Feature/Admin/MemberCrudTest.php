@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Enums\Gender;
 use App\Models\College;
 use App\Models\District;
+use App\Models\Kta;
 use App\Models\Member;
 use App\Models\User;
 use App\Models\Village;
@@ -127,6 +128,32 @@ class MemberCrudTest extends TestCase
         $this->get(route('admin.members.index'))->assertOk()
             ->assertSee('Anggota Tes', false)
             ->assertSee('12345', false);
+    }
+
+    public function test_index_filters_by_verification_status(): void
+    {
+        $this->actingAsAdministrator();
+
+        $withKta = Member::query()->create([
+            'full_name' => 'Anggota Ber KTA',
+            'email' => 'ber-kta@example.test',
+        ]);
+        Kta::query()->create(['member_id' => $withKta->id]);
+
+        Member::query()->create([
+            'full_name' => 'Anggota Tanpa KTA',
+            'email' => 'tanpa-kta@example.test',
+        ]);
+
+        $this->get(route('admin.members.index', ['verification' => 'verified']))
+            ->assertOk()
+            ->assertSee('Anggota Ber KTA', false)
+            ->assertDontSee('Anggota Tanpa KTA', false);
+
+        $this->get(route('admin.members.index', ['verification' => 'unverified']))
+            ->assertOk()
+            ->assertSee('Anggota Tanpa KTA', false)
+            ->assertDontSee('Anggota Ber KTA', false);
     }
 
     public function test_create_renders(): void
