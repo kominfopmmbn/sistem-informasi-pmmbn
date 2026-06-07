@@ -65,6 +65,7 @@ class MemberActivationStoreTest extends TestCase
             'date_of_birth' => '2000-01-01',
             'gender_id' => Gender::MALE->value,
             'phone_number' => '081234567890',
+            'address' => 'Jl. Mawar No. 1, Jakarta',
             'college_id' => $college->id,
         ], $overrides);
     }
@@ -83,10 +84,23 @@ class MemberActivationStoreTest extends TestCase
             ->firstOrFail();
 
         $this->assertSame($city->code, $activation->place_of_birth_code);
+        $this->assertSame('Jl. Mawar No. 1, Jakarta', $activation->address);
         $this->assertDatabaseHas('member_activation_status_logs', [
             'member_activation_id' => $activation->id,
             'status_id' => MemberActivationStatus::PENDING->value,
         ]);
+    }
+
+    public function test_store_requires_address(): void
+    {
+        $city = $this->sampleCity();
+        $this->verifyEmail('pendaftar@example.test');
+
+        $payload = $this->validPayload($city);
+        unset($payload['address']);
+
+        $this->post(route('about.member-activation.store'), $payload)
+            ->assertSessionHasErrors(['address']);
     }
 
     public function test_store_requires_place_of_birth_code(): void

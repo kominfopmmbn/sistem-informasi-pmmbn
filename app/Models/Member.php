@@ -20,6 +20,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
     'date_of_birth',
     'gender_id',
     'phone_number',
+    'address',
     'college_id',
     'is_created_from_member_activation',
     'member_activation_id',

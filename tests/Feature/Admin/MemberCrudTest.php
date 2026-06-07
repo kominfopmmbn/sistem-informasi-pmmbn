@@ -129,6 +129,7 @@ class MemberCrudTest extends TestCase
             'date_of_birth' => '1999-05-03',
             'gender_id' => Gender::MALE->value,
             'phone_number' => '081234567890',
+            'address' => 'Jl. Melati No. 2, Bandung',
             'college_id' => $college->id,
         ])->assertRedirect(route('admin.members.index'))
             ->assertSessionHas('success');
@@ -140,6 +141,7 @@ class MemberCrudTest extends TestCase
             'place_of_birth_code' => $city->code,
             'gender_id' => Gender::MALE->value,
             'phone_number' => '081234567890',
+            'address' => 'Jl. Melati No. 2, Bandung',
             'college_id' => $college->id,
         ]);
     }

@@ -158,6 +158,7 @@ class MemberActivationController extends Controller
                 'date_of_birth' => $member_activation->date_of_birth,
                 'gender_id' => $member_activation->gender_id,
                 'phone_number' => $member_activation->phone_number,
+                'address' => $member_activation->address,
                 'college_id' => $member_activation->college_id,
                 'member_activation_id' => $member_activation->id,
             ]);
@@ -170,6 +171,7 @@ class MemberActivationController extends Controller
                 'date_of_birth' => $member_activation->date_of_birth,
                 'gender_id' => $member_activation->gender_id,
                 'phone_number' => $member_activation->phone_number,
+                'address' => $member_activation->address,
                 'college_id' => $member_activation->college_id,
                 'member_activation_id' => $member_activation->id,
                 'is_created_from_member_activation' => true,

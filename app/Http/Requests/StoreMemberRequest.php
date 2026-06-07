@@ -39,6 +39,7 @@ class StoreMemberRequest extends FormRequest
             'date_of_birth' => ['nullable', 'date'],
             'gender_id' => ['nullable', Rule::enum(Gender::class)],
             'phone_number' => ['nullable', 'string', 'max:255'],
+            'address' => ['nullable', 'string', 'max:1000'],
             'college_id' => ['nullable', 'integer', 'exists:colleges,id'],
             'supporting_documents' => ['nullable', 'array', 'max:'.Member::SUPPORTING_DOCUMENTS_MAX_PER_SUBMIT],
             'supporting_documents.*' => Member::supportingDocumentItemRules(),

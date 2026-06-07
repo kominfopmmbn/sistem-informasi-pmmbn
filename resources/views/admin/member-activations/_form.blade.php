@@ -147,6 +147,16 @@
     </div>
 
     <div class="col-12">
+        <label class="form-label" for="member_address">Alamat</label>
+        <textarea name="address" id="member_address" rows="3"
+            class="form-control @error('address') is-invalid @enderror"
+            maxlength="1000">{{ old('address', isset($member) ? $member->address : '') }}</textarea>
+        @error('address')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="col-12">
         <label class="form-label">Dokumen pendukung</label>
         <input type="file" name="supporting_documents[]" id="member_supporting_documents" class="d-none" multiple
             accept="{{ $supportingAccept }}">
