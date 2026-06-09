@@ -1,5 +1,7 @@
 @extends('front.layouts.app')
 
+@section('title', 'Program Unggulan')
+
 @section('content')
 
 <section class="container program-hero-section">
@@ -18,83 +20,36 @@
 </section>
 
 <div class="container mt-5 mb-5">
-    <h6 class="fw-bold mb-3">PROGRAM UTAMA</h6>
+    <h6 class="text-brand fw-bold mb-3" style="letter-spacing: 0.08em;">PROGRAM UTAMA</h6>
     <hr class="mb-4">
     <div class="row g-4">
-        <div class="col-md-3">
-            <div class="card custom-card">
-                <img src="https://placehold.co/300x180/e0e0e0/555555?text=Gambar+Kelas" class="card-img-top"
-                    alt="Sekolah Moderasi">
-                <div class="custom-card-body flex-grow-1">
-                    <div>
-                        <h5 class="fw-bold">Sekolah Moderasi</h5>
-                        <p class="card-text-custom">Program pendidikan dan kajian interaktif untuk memahami nilai
-                            toleransi, inklusivitas, dan hubungan antarumat beragama melalui diskusi, studi kasus, dan
-                            dialog lintas iman.</p>
+        @forelse ($programs as $program)
+            @php
+                $cover = $program->getFirstMediaUrl(\App\Models\Program::COVER_COLLECTION);
+            @endphp
+            <div class="col-12 col-sm-6 col-lg-3">
+                <a href="{{ route('program-unggulan.show', $program->slug) }}" class="card custom-card text-decoration-none">
+                    <div class="custom-card-thumb">
+                        <img src="{{ $cover ?: 'https://placehold.co/300x180/f3e9e9/8b1515?text=Program' }}"
+                            class="card-img-top" alt="{{ $program->title }}">
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <span class="badge-custom">Pendidikan</span>
-                        <a href="#" class="btn-arrow"><i class="bi bi-arrow-up-right"></i></a>
+                    <div class="custom-card-body flex-grow-1">
+                        <div>
+                            <h5 class="custom-card-title fw-bold">{{ $program->title }}</h5>
+                            <p class="card-text-custom">{{ \Illuminate\Support\Str::limit($program->excerpt, 140) }}</p>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="custom-card-cta">Selengkapnya</span>
+                            <span class="btn-arrow"><i class="bi bi-arrow-up-right"></i></span>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card custom-card">
-                <img src="https://placehold.co/300x180/2c3e50/ffffff?text=Branding+UI/UX" class="card-img-top"
-                    alt="Kaderisasi">
-                <div class="custom-card-body flex-grow-1">
-                    <div>
-                        <h5 class="fw-bold">Kaderisasi</h5>
-                        <p class="card-text-custom">Program pembinaan karakter kebangsaan yang menanamkan nilai cinta
-                            tanah air, kesadaran konstitusi, dan tanggung jawab sosial sebagai bagian dari bela negara.
-                        </p>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <span class="badge-custom">Kaderisasi</span>
-                        <a href="#" class="btn-arrow"><i class="bi bi-arrow-up-right"></i></a>
-                    </div>
-                </div>
+        @empty
+            <div class="col-12">
+                <p class="text-muted text-center py-5 mb-0">Belum ada program unggulan.</p>
             </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card custom-card">
-                <img src="https://placehold.co/300x180/8e44ad/ffffff?text=Generative+AI" class="card-img-top"
-                    alt="Digital Campaign">
-                <div class="custom-card-body flex-grow-1">
-                    <div>
-                        <h5 class="fw-bold">Digital Campaign</h5>
-                        <p class="card-text-custom">Program pengembangan intelektual melalui riset, penulisan, dan
-                            publikasi gagasan mahasiswa terkait moderasi beragama dan wawasan kebangsaan.</p>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <span class="badge-custom">Publikasi</span>
-                        <a href="#" class="btn-arrow"><i class="bi bi-arrow-up-right"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card custom-card">
-                <img src="https://placehold.co/300x180/000000/ffffff?text=Steve+Jobs" class="card-img-top"
-                    alt="Forum Diskusi">
-                <div class="custom-card-body flex-grow-1">
-                    <div>
-                        <h5 class="fw-bold">Forum Diskusi Lintas Iman</h5>
-                        <p class="card-text-custom">Ruang pertemuan antar mahasiswa dari berbagai latar belakang,
-                            mendiskusikan isu-isu keagamaan dan kebangsaan secara terbuka.</p>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <span class="badge-custom">Pendidikan</span>
-                        <a href="#" class="btn-arrow"><i class="bi bi-arrow-up-right"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        @endforelse
     </div>
 </div>
 
@@ -115,7 +70,7 @@
         min-height: 400px;
         display: flex;
         align-items: center;
-        background: linear-gradient(to right, rgba(150, 0, 0, 0.8), rgba(0, 100, 150, 0.2)),
+        background: linear-gradient(to right, rgba(94, 13, 13, 0.92), rgba(139, 21, 21, 0.4)),
             url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
         color: white;
         padding: 3rem;
@@ -144,22 +99,38 @@
         opacity: 0.9;
     }
 
-    /* Styling untuk Kartu (Card) */
+    /* Styling untuk Kartu (Card) — selaras tema maroon PMMBN */
     .custom-card {
-        background-color: #383333;
-        /* Warna gelap kecoklatan */
-        border: none;
+        background-color: #ffffff;
+        border: 1px solid #efe2e2;
         border-radius: 16px;
-        color: white;
+        color: #212529;
         height: 100%;
         /* Agar tinggi kartu sama rata */
+        overflow: hidden;
+        box-shadow: 0 4px 18px rgba(139, 21, 21, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .custom-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(139, 21, 21, 0.28);
+        box-shadow: 0 16px 34px rgba(139, 21, 21, 0.16);
+    }
+
+    .custom-card-thumb {
+        overflow: hidden;
     }
 
     .custom-card img {
-        border-top-left-radius: 16px;
-        border-top-right-radius: 16px;
         object-fit: cover;
         height: 180px;
+        width: 100%;
+        transition: transform 0.4s ease;
+    }
+
+    .custom-card:hover img {
+        transform: scale(1.05);
     }
 
     .custom-card-body {
@@ -169,40 +140,49 @@
         justify-content: space-between;
     }
 
-    .card-text-custom {
-        color: #d1d1d1;
-        font-size: 0.9rem;
-        margin-bottom: 20px;
+    .custom-card-title {
+        color: #2b2b2b;
+        font-size: 1.05rem;
+        line-height: 1.4;
+        margin-bottom: 0.6rem;
+        transition: color 0.3s ease;
     }
 
-    /* Styling untuk Label/Badge di bawah kartu */
-    .badge-custom {
-        background-color: #fcebeb;
-        color: #8b0000;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.8rem;
-        text-decoration: none;
+    .custom-card:hover .custom-card-title {
+        color: #8b1515;
+    }
+
+    .card-text-custom {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .custom-card-cta {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #8b1515;
     }
 
     /* Styling untuk Tombol Panah */
     .btn-arrow {
-        border: 1px solid #777;
-        color: #ccc;
+        border: 1px solid #8b1515;
+        color: #8b1515;
         border-radius: 50%;
-        width: 35px;
-        height: 35px;
+        width: 38px;
+        height: 38px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
+        flex-shrink: 0;
         transition: 0.3s;
     }
 
-    .btn-arrow:hover {
-        background-color: #555;
-        color: white;
+    .custom-card:hover .btn-arrow {
+        background-color: #8b1515;
+        color: #ffffff;
     }
 
 </style>

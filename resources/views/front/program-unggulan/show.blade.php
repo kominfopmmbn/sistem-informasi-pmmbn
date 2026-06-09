@@ -1,209 +1,135 @@
 @extends('front.layouts.app')
 
+@section('title', $program->title . ' - Program Unggulan')
 
 @section('content')
+@php
+    $cover = $program->getFirstMediaUrl(\App\Models\Program::COVER_COLLECTION);
+    $gallery = $program->getMedia(\App\Models\Program::GALLERY_COLLECTION);
+@endphp
 <div class="container py-4">
-    <div class="hero position-relative rounded-4 overflow-hidden mb-4 mb-md-5">
+    <div class="hero position-relative rounded-4 overflow-hidden mb-4 mb-md-5"
+        @if ($cover) style="background-image: url('{{ $cover }}');" @endif>
         <div class="hero-pattern position-absolute top-0 bottom-0 start-0 end-0 z-0"></div>
         <div class="hero-overlay position-absolute top-0 bottom-0 start-0 end-0 z-1"></div>
 
         <div class="position-relative z-2 p-4 p-md-5 w-100">
-            <span class="hero-tag badge rounded-pill text-uppercase fw-semibold mb-2 px-3 py-2">Program Unggulan ·
-                Pendidikan</span>
-            <h1 class="fs-3 display-6-md fw-bold text-white mb-2">Sekolah Moderasi</h1>
+            <span class="hero-tag badge rounded-pill text-uppercase fw-semibold mb-2 px-3 py-2">Program Unggulan</span>
+            <h1 class="fs-3 display-6-md fw-bold text-white mb-2">{{ $program->title }}</h1>
         </div>
     </div>
 
     <div class="row g-4 g-lg-5">
         <div class="col-lg-8">
 
-            <section class="mb-5">
-                <p class="text-maroon-light fw-bold text-uppercase mb-1"
-                    style="font-size: 12px; letter-spacing: 0.1em;">Tentang Program</p>
-                <h2 class="h4 fw-bold text-dark mb-3">Apa itu Sekolah Moderasi?</h2>
-                <p class="text-secondary" style="line-height: 1.8;">Sekolah Moderasi adalah program pendidikan dan
-                    kajian intensif yang dirancang khusus bagi mahasiswa untuk memahami, menghayati, dan
-                    mengimplementasikan nilai-nilai toleransi, inklusivitas, dan harmoni antarumat beragama dalam
-                    kehidupan sehari-hari.</p>
-                <p class="text-secondary" style="line-height: 1.8;">Melalui metode diskusi interaktif, studi kasus
-                    nyata, dan dialog lintas iman, peserta diajak untuk membuka wawasan, mempererat relasi antar
-                    komunitas, serta menjadi agen perubahan yang aktif dalam menjaga kerukunan bangsa di era
-                    kontemporer.</p>
-            </section>
+            @if ($program->about_content)
+                <section class="mb-5">
+                    <p class="text-maroon-light fw-bold text-uppercase mb-1"
+                        style="font-size: 12px; letter-spacing: 0.1em;">Tentang Program</p>
+                    <h2 class="h4 fw-bold text-dark mb-3">{{ $program->about_heading ?: $program->title }}</h2>
+                    <div class="text-secondary program-about" style="line-height: 1.8;">
+                        {!! $program->about_content !!}
+                    </div>
+                </section>
+            @endif
 
-            <hr class="text-black-50 my-4">
+            @if ($program->goals->isNotEmpty())
+                <hr class="text-black-50 my-4">
 
-            <section class="mb-5">
-                <p class="text-maroon-light fw-bold text-uppercase mb-1"
-                    style="font-size: 12px; letter-spacing: 0.1em;">Tujuan Program</p>
-                <h2 class="h4 fw-bold text-dark mb-4">Yang Akan Kamu Capai</h2>
+                <section class="mb-5">
+                    <p class="text-maroon-light fw-bold text-uppercase mb-1"
+                        style="font-size: 12px; letter-spacing: 0.1em;">Tujuan Program</p>
+                    <h2 class="h4 fw-bold text-dark mb-4">Yang Akan Kamu Capai</h2>
 
-                <div class="d-flex flex-column gap-3">
-                    <div class="d-flex align-items-start gap-3 p-3 rounded-3 bg-white border shadow-sm">
-                        <div
-                            class="tujuan-num rounded-circle bg-maroon-main text-white fw-bold d-flex align-items-center justify-content-center flex-shrink-0">
-                            1</div>
-                        <div class="text-dark" style="font-size: 14.5px; line-height: 1.6;">Memahami konsep moderasi
-                            beragama secara mendalam melalui kajian akademis dan perspektif lintas tradisi keagamaan.
-                        </div>
+                    <div class="d-flex flex-column gap-3">
+                        @foreach ($program->goals as $goal)
+                            <div class="d-flex align-items-start gap-3 p-3 rounded-3 bg-white border shadow-sm">
+                                <div
+                                    class="tujuan-num rounded-circle bg-maroon-main text-white fw-bold d-flex align-items-center justify-content-center flex-shrink-0">
+                                    {{ $loop->iteration }}</div>
+                                <div class="text-dark" style="font-size: 14.5px; line-height: 1.6;">{{ $goal->content }}
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="d-flex align-items-start gap-3 p-3 rounded-3 bg-white border shadow-sm">
-                        <div
-                            class="tujuan-num rounded-circle bg-maroon-main text-white fw-bold d-flex align-items-center justify-content-center flex-shrink-0">
-                            2</div>
-                        <div class="text-dark" style="font-size: 14.5px; line-height: 1.6;">Mengembangkan kemampuan
-                            berdialog secara konstruktif dengan individu dari latar belakang agama, budaya, dan
-                            pandangan yang berbeda.</div>
-                    </div>
-                    <div class="d-flex align-items-start gap-3 p-3 rounded-3 bg-white border shadow-sm">
-                        <div
-                            class="tujuan-num rounded-circle bg-maroon-main text-white fw-bold d-flex align-items-center justify-content-center flex-shrink-0">
-                            3</div>
-                        <div class="text-dark" style="font-size: 14.5px; line-height: 1.6;">Melatih kepekaan terhadap
-                            isu intoleransi, radikalisme, dan ujaran kebencian agar mampu merespons secara bijak di
-                            ruang publik maupun digital.</div>
-                    </div>
-                    <div class="d-flex align-items-start gap-3 p-3 rounded-3 bg-white border shadow-sm">
-                        <div
-                            class="tujuan-num rounded-circle bg-maroon-main text-white fw-bold d-flex align-items-center justify-content-center flex-shrink-0">
-                            4</div>
-                        <div class="text-dark" style="font-size: 14.5px; line-height: 1.6;">Menjadi agen moderasi yang
-                            mampu menginisiasi gerakan kerukunan di lingkungan kampus dan masyarakat sekitar.</div>
-                    </div>
-                </div>
-            </section>
+                </section>
+            @endif
 
-            <hr class="text-black-50 my-4">
+            @if ($gallery->isNotEmpty())
+                <hr class="text-black-50 my-4">
 
-            <section class="mb-5">
-                <p class="text-maroon-light fw-bold text-uppercase mb-1"
-                    style="font-size: 12px; letter-spacing: 0.1em;">Galeri</p>
-                <h2 class="h4 fw-bold text-dark mb-4">Dokumentasi Kegiatan</h2>
+                <section class="mb-5">
+                    <p class="text-maroon-light fw-bold text-uppercase mb-1"
+                        style="font-size: 12px; letter-spacing: 0.1em;">Galeri</p>
+                    <h2 class="h4 fw-bold text-dark mb-4">Dokumentasi Kegiatan</h2>
 
-                <div class="galeri-grid">
-                    <div
-                        class="galeri-item galeri-main rounded-3 bg-light border position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
-                        <i class="ti ti-photo fs-1 text-maroon-light opacity-50 mb-2"></i>
-                        <span class="text-secondary small">Foto Utama</span>
-                        <div
-                            class="galeri-overlay position-absolute top-0 bottom-0 start-0 end-0 d-flex align-items-center justify-content-center z-2">
-                            <i class="ti ti-zoom-in text-white fs-2"></i>
-                        </div>
+                    <div class="galeri-grid">
+                        @foreach ($gallery as $image)
+                            <div class="galeri-item {{ $loop->first ? 'galeri-main' : '' }} rounded-3 border position-relative overflow-hidden">
+                                <img src="{{ $image->getUrl() }}" alt="" loading="lazy"
+                                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+                                <button type="button" data-galeri-index="{{ $loop->index }}"
+                                    class="galeri-overlay position-absolute top-0 bottom-0 start-0 end-0 d-flex align-items-center justify-content-center z-2 w-100 h-100 p-0"
+                                    aria-label="Perbesar foto">
+                                    <i class="bi bi-zoom-in text-white fs-2"></i>
+                                </button>
+                            </div>
+                        @endforeach
                     </div>
-                    <div
-                        class="galeri-item rounded-3 bg-light border position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
-                        <i class="ti ti-photo fs-3 text-maroon-light opacity-50 mb-1"></i>
-                        <span class="text-secondary" style="font-size: 11px;">Sesi Diskusi</span>
-                        <div
-                            class="galeri-overlay position-absolute top-0 bottom-0 start-0 end-0 d-flex align-items-center justify-content-center z-2">
-                            <i class="ti ti-zoom-in text-white fs-4"></i>
-                        </div>
-                    </div>
-                    <div
-                        class="galeri-item rounded-3 bg-light border position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
-                        <i class="ti ti-photo fs-3 text-maroon-light opacity-50 mb-1"></i>
-                        <span class="text-secondary" style="font-size: 11px;">Dialog</span>
-                        <div
-                            class="galeri-overlay position-absolute top-0 bottom-0 start-0 end-0 d-flex align-items-center justify-content-center z-2">
-                            <i class="ti ti-zoom-in text-white fs-4"></i>
-                        </div>
-                    </div>
-                    <div
-                        class="galeri-item rounded-3 bg-light border position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
-                        <i class="ti ti-photo fs-3 text-maroon-light opacity-50 mb-1"></i>
-                        <span class="text-secondary" style="font-size: 11px;">Kasus</span>
-                        <div
-                            class="galeri-overlay position-absolute top-0 bottom-0 start-0 end-0 d-flex align-items-center justify-content-center z-2">
-                            <i class="ti ti-zoom-in text-white fs-4"></i>
-                        </div>
-                    </div>
-                    <div
-                        class="galeri-item rounded-3 bg-light border position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
-                        <i class="ti ti-photo fs-3 text-maroon-light opacity-50 mb-1"></i>
-                        <span class="text-secondary" style="font-size: 11px;">Penutupan</span>
-                        <div
-                            class="galeri-overlay position-absolute top-0 bottom-0 start-0 end-0 d-flex align-items-center justify-content-center z-2">
-                            <i class="ti ti-zoom-in text-white fs-4"></i>
+                </section>
+
+                {{-- Lightbox popup galeri --}}
+                <div class="modal fade galeri-lightbox" id="galeriLightbox" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-fullscreen">
+                        <div class="modal-content bg-transparent border-0">
+                            <button type="button" class="btn-close btn-close-white galeri-lightbox-close"
+                                data-bs-dismiss="modal" aria-label="Tutup"></button>
+                            <div class="modal-body d-flex align-items-center justify-content-center p-0">
+                                <div class="swiper galeri-swiper w-100 h-100">
+                                    <div class="swiper-wrapper">
+                                        @foreach ($gallery as $image)
+                                            <div class="swiper-slide d-flex align-items-center justify-content-center">
+                                                <img src="{{ $image->getUrl() }}" alt="" class="galeri-slide-img">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-button-next"></div>
+                                    <div class="swiper-pagination"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            @endif
 
         </div>
 
         <div class="col-lg-4">
-            <div class="sticky-top" style="top: 2rem;">
+            <div class="sticky-top" style="top: 6rem;">
                 <h3 class="h6 fw-bold text-dark border-bottom pb-2 mb-3">Program Lainnya</h3>
 
                 <div class="d-flex flex-column gap-2">
-
-                    <div class="prog-card d-flex align-items-start gap-3 p-3 rounded-3 border bg-white"
-                        onclick="alert('Tampilkan detail program Kaderisasi')">
-                        <div class="prog-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=300&q=80"
-                                alt="Banner Kaderisasi" class="w-100 h-100 object-fit-cover">
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="prog-name fw-semibold text-dark mb-1" style="font-size: 14px;">Kaderisasi</div>
-                            <div class="text-secondary mb-2" style="font-size: 12px; line-height: 1.4;">Pembinaan
-                                karakter kebangsaan dan bela negara bagi mahasiswa.</div>
-                            <span
-                                class="prog-badge badge bg-maroon-subtle-custom text-maroon-main rounded-pill fw-medium"
-                                style="font-size: 10px;">Kaderisasi</span>
-                        </div>
-                    </div>
-
-                    <div class="prog-card d-flex align-items-start gap-3 p-3 rounded-3 border bg-white"
-                        onclick="alert('Tampilkan detail program Digital Campaign')">
-                        <div class="prog-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=300&q=80"
-                                alt="Banner Digital Campaign" class="w-100 h-100 object-fit-cover">
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="prog-name fw-semibold text-dark mb-1" style="font-size: 14px;">Digital Campaign
+                    @forelse ($otherPrograms as $other)
+                        @php
+                            $otherCover = $other->getFirstMediaUrl(\App\Models\Program::COVER_COLLECTION);
+                        @endphp
+                        <a href="{{ route('program-unggulan.show', $other->slug) }}"
+                            class="prog-card d-flex align-items-start gap-3 p-3 rounded-3 border bg-white text-decoration-none">
+                            <div class="prog-img-wrapper">
+                                <img src="{{ $otherCover ?: 'https://placehold.co/300x180/e0e0e0/555555?text=Program' }}"
+                                    alt="{{ $other->title }}" class="w-100 h-100 object-fit-cover">
                             </div>
-                            <div class="text-secondary mb-2" style="font-size: 12px; line-height: 1.4;">Riset,
-                                penulisan, dan publikasi gagasan kebangsaan secara digital.</div>
-                            <span
-                                class="prog-badge badge bg-maroon-subtle-custom text-maroon-main rounded-pill fw-medium"
-                                style="font-size: 10px;">Publikasi</span>
-                        </div>
-                    </div>
-
-                    <div class="prog-card d-flex align-items-start gap-3 p-3 rounded-3 border bg-white"
-                        onclick="alert('Tampilkan detail program Forum Diskusi Lintas Iman')">
-                        <div class="prog-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=300&q=80"
-                                alt="Banner Forum Diskusi" class="w-100 h-100 object-fit-cover">
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="prog-name fw-semibold text-dark mb-1" style="font-size: 14px;">Forum Diskusi
-                                Lintas Iman</div>
-                            <div class="text-secondary mb-2" style="font-size: 12px; line-height: 1.4;">Ruang terbuka
-                                antar mahasiswa berbagai latar belakang.</div>
-                            <span
-                                class="prog-badge badge bg-maroon-subtle-custom text-maroon-main rounded-pill fw-medium"
-                                style="font-size: 10px;">Sosial</span>
-                        </div>
-                    </div>
-
-                    <div class="prog-card d-flex align-items-start gap-3 p-3 rounded-3 border bg-white"
-                        onclick="alert('Tampilkan detail program Aksi Sosial Kebangsaan')">
-                        <div class="prog-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1593113589914-07553f1db85c?w=300&q=80"
-                                alt="Banner Aksi Sosial" class="w-100 h-100 object-fit-cover">
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="prog-name fw-semibold text-dark mb-1" style="font-size: 14px;">Aksi Sosial
-                                Kebangsaan</div>
-                            <div class="text-secondary mb-2" style="font-size: 12px; line-height: 1.4;">Pengabdian
-                                masyarakat sebagai wujud nyata bela negara.</div>
-                            <span
-                                class="prog-badge badge bg-maroon-subtle-custom text-maroon-main rounded-pill fw-medium"
-                                style="font-size: 10px;">Sosial</span>
-                        </div>
-                    </div>
-
+                            <div class="flex-grow-1">
+                                <div class="prog-name fw-semibold text-dark mb-1" style="font-size: 14px;">
+                                    {{ $other->title }}</div>
+                                <div class="text-secondary mb-0" style="font-size: 12px; line-height: 1.4;">
+                                    {{ \Illuminate\Support\Str::limit($other->excerpt, 80) }}</div>
+                            </div>
+                        </a>
+                    @empty
+                        <p class="text-muted small mb-0">Belum ada program lain.</p>
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -213,6 +139,7 @@
 @endsection
 
 @push('styles')
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/swiper/swiper.css') }}">
 <style>
     /* CSS Kustom */
     :root {
@@ -231,7 +158,7 @@
     .hero {
         position: relative;
         width: 100%;
-        min-heightht: 400px;
+        min-height: 400px;
         background: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') no-repeat center center / cover;
         border-radius: 16px;
         overflow: hidden;
@@ -317,11 +244,36 @@
         background: rgba(123, 26, 26, 0.5);
         opacity: 0;
         transition: opacity 0.2s;
+        border: 0;
+        cursor: pointer;
     }
 
     .galeri-main {
         grid-column: span 2;
         grid-row: span 2;
+    }
+
+    /* Lightbox popup galeri */
+    .galeri-lightbox .modal-body {
+        background: rgba(0, 0, 0, 0.92);
+    }
+
+    .galeri-slide-img {
+        max-width: 100%;
+        max-height: 100vh;
+        object-fit: contain;
+    }
+
+    .galeri-lightbox-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 10;
+    }
+
+    .galeri-swiper {
+        --swiper-navigation-color: #fff;
+        --swiper-pagination-color: #fff;
     }
 
     /* Sidebar Cards */
@@ -348,4 +300,9 @@
     }
 </style>
 
+@endpush
+
+@push('scripts')
+<script src="{{ asset('assets/vendor/libs/swiper/swiper.js') }}"></script>
+<script src="{{ asset('assets/js/front-program-gallery.js') }}"></script>
 @endpush

@@ -61,6 +61,15 @@
             </li>
         @endcan
 
+        @can('programs.view')
+            <li class="menu-item {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.programs.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-star"></i>
+                    <div>Program Unggulan</div>
+                </a>
+            </li>
+        @endcan
+
         @canany(['members.view', 'member-activations.view'])
             <li class="menu-header small">
                 <span class="menu-header-text" data-i18n="Anggota">Anggota</span>

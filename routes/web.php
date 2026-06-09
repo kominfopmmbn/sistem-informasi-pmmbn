@@ -6,6 +6,7 @@ use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\KtaController;
 use App\Http\Controllers\LookupController;
 use App\Http\Controllers\MemberActivationPageController;
+use App\Http\Controllers\ProgramPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('select')
@@ -55,10 +56,10 @@ Route::prefix('article')
 
 Route::get('/kta/{ktaNumber}', [KtaController::class, 'show'])->name('kta.show');
 
-Route::get('/program-unggulan', function () {
-    return view('front.program-unggulan.index');
-})->name('program-unggulan.index');
-Route::get('/program-unggulan/show', function () {
-    return view('front.program-unggulan.show');
-})->name('program-unggulan.show');
+Route::prefix('program-unggulan')
+    ->name('program-unggulan.')
+    ->group(function (): void {
+        Route::get('/', [ProgramPageController::class, 'index'])->name('index');
+        Route::get('/{slug}', [ProgramPageController::class, 'show'])->name('show');
+    });
 
