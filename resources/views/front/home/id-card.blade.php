@@ -6,7 +6,7 @@
                 <h2 class="fw-bold text-brand mb-3">Identitas Resmi Anggota</h2>
                 <p class="text-muted mb-4">Setiap anggota resmi akan mendapatkan Kartu Tanda Anggota (KTA) sebagai
                     identitas dan bentuk komitmen dalam menjalankan visi dan misi organisasi.</p>
-                <a href="#" class="btn btn-brand">Daftar Sekarang</a>
+                <a href="{{ route('about.member-activation.index') }}" class="btn btn-brand">Aktivasi Sekarang</a>
             </div>
             <div class="col-lg-6 text-center">
                 <div class="bg-brand rounded-4 mx-auto position-relative shadow"

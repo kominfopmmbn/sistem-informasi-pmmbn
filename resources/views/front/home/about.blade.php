@@ -35,7 +35,7 @@
                 <p class="text-muted">Gerakan ini lahir dari kepedulian pemuda terhadap kondisi sosial masyarakat.
                     Kami percaya bahwa setiap langkah kecil yang dilakukan bersama-sama akan membawa perubahan besar
                     bagi kemajuan bangsa. Kami berkomitmen untuk terus mengabdi dengan tulus dan ikhlas.</p>
-                <a href="#" class="btn btn-outline-brand mt-3">Selengkapnya</a>
+                <a href="{{ route('about.profil-organisasi') }}" class="btn btn-outline-brand mt-3">Selengkapnya</a>
             </div>
 
         </div>

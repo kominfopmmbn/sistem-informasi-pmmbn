@@ -16,10 +16,13 @@
             <div class="col-lg-2 col-6">
                 <h6 class="fw-bold mb-3">Tentang</h6>
                 <ul class="list-unstyled small text-white-50">
-                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Profil</a>
+                    <li class="mb-2"><a href="{{ route('about.profil-organisasi') }}" class="text-white-50 text-decoration-none">Profil</a>
                     </li>
-                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Visi &
-                            Misi</a></li>
+                    <li class="mb-2">
+                        <a href="#" class="text-white-50 text-decoration-none">
+                            Visi & Misi
+                        </a>
+                    </li>
                     <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Struktur</a>
                     </li>
                     <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Karir</a>
@@ -29,12 +32,21 @@
             <div class="col-lg-2 col-6">
                 <h6 class="fw-bold mb-3">Layanan</h6>
                 <ul class="list-unstyled small text-white-50">
-                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Program
-                            Unggulan</a></li>
-                    <li class="mb-2"><a href="#"
-                            class="text-white-50 text-decoration-none">Pendaftaran</a></li>
-                    <li class="mb-2"><a href="#"
-                            class="text-white-50 text-decoration-none">Verifikasi</a></li>
+                    <li class="mb-2">
+                        <a href="{{ route('program-unggulan.index') }}" class="text-white-50 text-decoration-none">
+                            Program Unggulan
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="text-white-50 text-decoration-none">
+                            Pendaftaran
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ route('about.member-activation.index') }}" class="text-white-50 text-decoration-none">
+                            Verifikasi
+                        </a>
+                    </li>
                     <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">FAQ</a></li>
                 </ul>
             </div>
