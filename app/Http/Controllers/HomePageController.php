@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Program;
 use App\Support\ArticleGrid;
 
 class HomePageController extends Controller
@@ -13,6 +14,12 @@ class HomePageController extends Controller
         $news = ArticleGrid::latestBerita(self::HOME_TAB_LIMIT);
         $opinions = ArticleGrid::latestOpini(self::HOME_TAB_LIMIT);
 
+        $programs = Program::active()
+            ->with(['media' => fn ($q) => $q->where('collection_name', Program::COVER_COLLECTION)])
+            ->orderBy('sort_order')
+            ->orderBy('title')
+            ->get();
+
         $heroSlides = [
             asset('assets-front-pages/img/bg-hero-home.JPG'),
             asset('assets-front-pages/img/download-hero.png'),
@@ -20,6 +27,6 @@ class HomePageController extends Controller
             asset('assets-front-pages/img/ketum.png'),
         ];
 
-        return view('front.home.index', compact('news', 'opinions', 'heroSlides'));
+        return view('front.home.index', compact('news', 'opinions', 'programs', 'heroSlides'));
     }
 }

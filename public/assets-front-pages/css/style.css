@@ -329,6 +329,43 @@ body {
     }
 }
 
+/* Slider kartu program — geser horizontal dengan scroll-snap */
+.card-slider-container {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    /* Sembunyikan scrollbar IE/Edge */
+    scrollbar-width: none;
+    /* Sembunyikan scrollbar Firefox */
+}
+
+.card-slider-container::-webkit-scrollbar {
+    display: none;
+    /* Sembunyikan scrollbar Chrome/Safari */
+}
+
+.card-slider-container > div {
+    scroll-snap-align: start;
+}
+
+/* Ikon navigasi slider program */
+.nav-icon {
+    transition: all 0.3s ease;
+}
+
+.nav-icon.active-btn {
+    color: var(--brand-color) !important;
+    opacity: 1 !important;
+    cursor: pointer;
+}
+
+.nav-icon.disabled-btn {
+    color: #6c757d !important;
+    opacity: 0.5 !important;
+    cursor: not-allowed;
+}
+
 /* =========================================
 6. BERITA SECTION
 ========================================= */
