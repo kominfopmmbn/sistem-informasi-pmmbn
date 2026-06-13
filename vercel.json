@@ -1,6 +1,9 @@
 {
     "functions": {
-        "api/index.php": { "runtime": "vercel-php@0.7.4" }
+        "api/index.php": {
+            "runtime": "vercel-php@0.7.4",
+            "excludeFiles": "vendor/laravolt/indonesia/resources/csv/**"
+        }
     },
     "routes": [
         { "src": "/assets/(.*)", "dest": "/public/assets/$1" },

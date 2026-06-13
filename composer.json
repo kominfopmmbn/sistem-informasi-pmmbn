@@ -76,6 +76,9 @@
         ],
         "pre-autoload-dump": [
             "Aws\\Script\\Composer\\Composer::removeUnusedServices"
+        ],
+        "vercel": [
+            "Aws\\Script\\Composer\\Composer::removeUnusedServices"
         ]
     },
     "extra": {
