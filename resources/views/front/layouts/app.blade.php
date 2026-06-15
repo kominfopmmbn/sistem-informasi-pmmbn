@@ -5,8 +5,12 @@
 
 <body class="{{ $bodyClass ?? '' }}">
     <div id="page-transition-overlay" class="page-transition-overlay" aria-hidden="true">
+    <div class="page-transition-logo-wrap">
+        <div class="spinner-ring-outer"></div>
+        <div class="spinner-ring"></div>
         <img src="{{ asset('assets/img/logo/pmmbn.png') }}" alt="PMMBN" class="page-transition-logo">
     </div>
+</div>
 
     @include('front.layouts.partials.navbar')
 

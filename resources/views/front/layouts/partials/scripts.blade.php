@@ -13,7 +13,7 @@
     (function() {
         var overlay = document.getElementById('page-transition-overlay');
         var hasNavigated = false;
-        var bounceDuration = 1300;
+        var bounceDuration = 1500;
         var transitionFlagKey = 'frontTransitionFromClick';
 
         if (!overlay) {

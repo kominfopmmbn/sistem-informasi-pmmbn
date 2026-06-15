@@ -63,7 +63,7 @@
         </div>
         <hr class="border-secondary">
         <div class="text-center small text-white-50 mt-3">
-            &copy; 2024 Gerakan Pemuda Mahasiswa. All rights reserved.
+            &copy; Pergerakan Mahasiswa Moderasi Beragama 2026. All rights reserved.
         </div>
     </div>
 </footer>
