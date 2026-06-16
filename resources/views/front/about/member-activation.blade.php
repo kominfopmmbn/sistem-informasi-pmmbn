@@ -7,7 +7,7 @@
 
     // Tentukan langkah awal: buka Step 2 bila ada error server pada field Step 2,
     // selain itu Step 1 (termasuk error email "belum diverifikasi").
-    $step2Keys = ['nim', 'college_id', 'supporting_documents'];
+    $step2Keys = ['nim', 'college_id', 'college_other', 'supporting_documents'];
     $hasStep2Error = collect($errors->keys())->contains(
         fn ($k) => in_array($k, $step2Keys, true) || str_starts_with($k, 'supporting_documents.'),
     );
@@ -206,11 +206,13 @@
                                     <div class="position-relative w-100">
                                         <select name="college_id" id="member_college_id"
                                             class="select2 form-select form-select-custom @error('college_id') is-invalid border-danger @enderror"
-                                            data-search-url="{{ route('select.colleges') }}"
+                                            data-search-url="{{ route('select.colleges', ['with_other' => 1]) }}"
                                             data-placeholder="Pilih perguruan tinggi"
                                             required>
                                             @if ($collegeId !== '' && $collegeId !== null)
                                                 <option value="{{ $collegeId }}" selected>{{ $collegeLabel }}</option>
+                                            @elseif ($collegeIsOther)
+                                                <option value="other" selected>Lainnya (tidak ada di daftar)</option>
                                             @else
                                                 <option value=""></option>
                                             @endif
@@ -218,6 +220,16 @@
                                     </div>
                                 </div>
                                 <div class="invalid-feedback @error('college_id') d-block @enderror">@error('college_id'){{ $message }}@enderror</div>
+                            </div>
+
+                            <div class="col-md-6 {{ $collegeIsOther ? '' : 'd-none' }}" id="member_college_other_wrap">
+                                <label class="form-label" for="member_college_other">Nama perguruan tinggi (Lainnya) <span class="text-danger">*</span></label>
+                                <input type="text" name="college_other" id="member_college_other"
+                                    class="form-control form-control-custom @error('college_other') is-invalid border-danger @enderror"
+                                    value="{{ old('college_other', $collegeOther) }}" maxlength="255"
+                                    @if ($collegeIsOther) required @endif
+                                    placeholder="Tulis nama perguruan tinggi">
+                                <div class="invalid-feedback @error('college_other') d-block @enderror">@error('college_other'){{ $message }}@enderror</div>
                             </div>
 
                             <div class="col-12">

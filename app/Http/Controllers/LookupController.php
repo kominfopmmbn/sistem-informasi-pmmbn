@@ -72,6 +72,7 @@ class LookupController extends Controller
         $validator = Validator::make($request->all(), [
             'q' => ['nullable', 'string', 'max:100'],
             'page' => ['nullable', 'integer', 'min:1'],
+            'with_other' => ['nullable'],
         ]);
 
         if ($validator->fails()) {
@@ -96,6 +97,11 @@ class LookupController extends Controller
             'id' => $college->getKey(),
             'text' => $college->name,
         ])->values()->all();
+
+        // Opsi "Lainnya" hanya untuk form publik (?with_other=1); disematkan di atas halaman pertama.
+        if ($request->boolean('with_other') && $page === 1) {
+            array_unshift($results, ['id' => 'other', 'text' => 'Lainnya (tidak ada di daftar)']);
+        }
 
         return response()->json([
             'results' => $results,

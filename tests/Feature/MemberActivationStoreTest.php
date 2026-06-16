@@ -172,4 +172,39 @@ class MemberActivationStoreTest extends TestCase
         $this->post(route('about.member-activation.store'), $this->validPayload($city))
             ->assertSessionHasErrors(['email']);
     }
+
+    public function test_store_accepts_other_college_with_free_text(): void
+    {
+        $city = $this->sampleCity();
+        $this->verifyEmail('pendaftar@example.test');
+
+        // Pendaftar memilih "Lainnya" (sentinel) dan mengisi nama perguruan tinggi manual.
+        $payload = $this->validPayload($city, [
+            'college_id' => 'other',
+            'college_other' => 'Universitas Tak Terdaftar',
+        ]);
+
+        $this->post(route('about.member-activation.store'), $payload)
+            ->assertRedirect(route('about.member-activation.index'))
+            ->assertSessionHas('success');
+
+        $activation = MemberActivation::query()
+            ->where('email', 'pendaftar@example.test')
+            ->firstOrFail();
+
+        $this->assertNull($activation->college_id);
+        $this->assertSame('Universitas Tak Terdaftar', $activation->college_other);
+    }
+
+    public function test_store_requires_college_other_when_other_selected(): void
+    {
+        $city = $this->sampleCity();
+        $this->verifyEmail('pendaftar@example.test');
+
+        // "Lainnya" dipilih tanpa mengisi nama perguruan tinggi → wajib diisi.
+        $payload = $this->validPayload($city, ['college_id' => 'other']);
+
+        $this->post(route('about.member-activation.store'), $payload)
+            ->assertSessionHasErrors(['college_other']);
+    }
 }

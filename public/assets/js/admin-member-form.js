@@ -188,4 +188,18 @@ $(function () {
       });
     }
   }
+
+  // Toggle input "Nama perguruan tinggi (Lainnya)" — hanya ada di form publik.
+  const $collegeOther = $('#member_college_other');
+  if ($college.length && $collegeOther.length) {
+    const $collegeOtherWrap = $('#member_college_other_wrap');
+    const toggleCollegeOther = () => {
+      const isOther = $college.val() === 'other';
+      $collegeOtherWrap.toggleClass('d-none', !isOther);
+      // Wajib hanya saat "Lainnya" dipilih dan select memang required (form publik).
+      $collegeOther.prop('required', isOther && $college.prop('required'));
+    };
+    $college.on('change', toggleCollegeOther);
+    toggleCollegeOther();
+  }
 });

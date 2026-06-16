@@ -249,6 +249,34 @@ class MemberActivationAdminTest extends TestCase
         ]);
     }
 
+    public function test_accept_blocked_when_only_college_other(): void
+    {
+        Notification::fake();
+
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('Administrator');
+        $this->actingAs($user);
+
+        // Pendaftar memilih "Lainnya": college_id null, hanya college_other terisi.
+        // "Terima" tetap mewajibkan college_id → harus diblokir sampai admin memilih kampus terdaftar.
+        $activation = MemberActivation::withoutEvents(
+            fn () => MemberActivation::query()->create(
+                $this->completeActivationAttributes([
+                    'college_id' => null,
+                    'college_other' => 'Universitas Manual',
+                ])
+            )
+        );
+
+        $this->patch(route('admin.member-activations.accept', ['member_activation' => $activation]))
+            ->assertSessionHasErrors(['college_id']);
+
+        $this->assertDatabaseMissing('members', [
+            'member_activation_id' => $activation->id,
+        ]);
+    }
+
     public function test_index_filters_by_current_status(): void
     {
         /** @var User $user */

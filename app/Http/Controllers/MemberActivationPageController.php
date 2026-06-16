@@ -60,7 +60,12 @@ class MemberActivationPageController extends Controller
             $villageName = $villageRow?->select_label ?? '';
         }
 
-        $collegeId = old('college_id', $memberActivation?->college_id ?? '');
+        $collegeOther = old('college_other', $memberActivation?->college_other ?? '');
+        $collegeIdRaw = old('college_id', $memberActivation?->college_id ?? '');
+        // "Lainnya" bila sentinel terkirim, atau record tersimpan tanpa college_id tapi punya college_other.
+        $collegeIsOther = $collegeIdRaw === 'other'
+            || (($collegeIdRaw === '' || $collegeIdRaw === null) && $collegeOther !== '' && $collegeOther !== null);
+        $collegeId = $collegeIsOther ? '' : $collegeIdRaw;
         $collegeLabel = '';
         if ($collegeId !== '' && $collegeId !== null) {
             if ($memberActivation?->relationLoaded('college') && $memberActivation->college !== null) {
@@ -96,6 +101,8 @@ class MemberActivationPageController extends Controller
             'villageName',
             'collegeId',
             'collegeLabel',
+            'collegeOther',
+            'collegeIsOther',
             'maxNewSupportingFiles',
             'supportingMaxFileMb',
             'supportingAccept',

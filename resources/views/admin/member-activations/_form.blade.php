@@ -29,6 +29,7 @@
             $collegeLabel = $member->college->name.' — '.$cityName.', '.$provinceName;
         }
     }
+    $collegeOther = old('college_other', isset($member) ? $member->college_other : '');
     $regionalLeaderId = old('regional_leader_id', isset($member) ? $member->regional_leader_id : '');
     $regionalLeaders = \App\Models\RegionalLeader::query()->orderBy('name')->get();
     $existingSupportingCount = isset($member) ? $member->getMedia(Member::SUPPORTING_DOCUMENTS_COLLECTION)->count() : 0;
@@ -158,6 +159,14 @@
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
     </div>
+
+    @if (!empty($collegeOther))
+        <div class="col-12 col-md-6">
+            <label class="form-label">Perguruan tinggi (diisi manual oleh pendaftar)</label>
+            <input type="text" class="form-control" value="{{ $collegeOther }}" readonly>
+            <p class="form-text text-body-secondary mb-0">Pilih perguruan tinggi terdaftar di atas sebelum menerima aktivasi.</p>
+        </div>
+    @endif
 
     <div class="col-12 col-md-6">
         <label class="form-label" for="member_regional_leader_id">Pimpinan wilayah</label>

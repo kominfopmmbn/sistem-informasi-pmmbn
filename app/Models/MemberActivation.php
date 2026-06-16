@@ -25,6 +25,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
     'address',
     'village_code',
     'college_id',
+    'college_other',
     'regional_leader_id',
 ])]
 class MemberActivation extends Model implements HasMedia

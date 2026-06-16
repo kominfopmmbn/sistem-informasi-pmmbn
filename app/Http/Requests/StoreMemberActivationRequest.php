@@ -13,9 +13,25 @@ use Illuminate\Validation\Rule;
 
 class StoreMemberActivationRequest extends FormRequest
 {
+    /** True bila pendaftar memilih opsi "Lainnya" pada perguruan tinggi. */
+    private bool $choseOther = false;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->choseOther = $this->input('college_id') === 'other';
+
+        if ($this->choseOther) {
+            // "Lainnya": tidak ada perguruan tinggi terdaftar; nama diisi di college_other.
+            $this->merge(['college_id' => null]);
+        } else {
+            // Perguruan tinggi terdaftar dipilih (atau kosong): abaikan teks bebas.
+            $this->merge(['college_other' => null]);
+        }
     }
 
     public function rules(): array
@@ -43,9 +59,23 @@ class StoreMemberActivationRequest extends FormRequest
             'phone_number' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:1000'],
             'village_code' => ['required', 'string', 'size:10', 'exists:villages,code'],
-            'college_id' => ['required', 'integer', 'exists:colleges,id'],
+            'college_id' => $this->choseOther
+                ? ['nullable']
+                : ['required', 'integer', 'exists:colleges,id'],
+            'college_other' => $this->choseOther
+                ? ['required', 'string', 'max:255']
+                : ['nullable', 'string', 'max:255'],
             'supporting_documents' => ['nullable', 'array', 'max:'.Member::SUPPORTING_DOCUMENTS_MAX_PER_SUBMIT],
             'supporting_documents.*' => Member::supportingDocumentItemRules(),
+        ];
+    }
+
+    /** @return array<string, string> */
+    public function attributes(): array
+    {
+        return [
+            'college_id' => 'Perguruan tinggi',
+            'college_other' => 'Nama perguruan tinggi',
         ];
     }
 
