@@ -1,7 +1,7 @@
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg bg-white sticky-top shadow-sm py-3 main-navbar">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="#">
+        <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="{{ asset('assets/img/logo/pmmbn.png') }}" alt="Logo" width="40" height="40"
                 class="d-inline-block align-text-top me-2">
             <span class="fw-bold fs-6 text-wrap" style="max-width: 200px; line-height: 1.2;">Pergerakan Mahasiswa
