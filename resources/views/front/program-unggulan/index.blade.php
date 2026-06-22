@@ -185,6 +185,18 @@
         color: #ffffff;
     }
 
+    /* Mobile (phone) overrides */
+    @media (max-width: 575.98px) {
+        .hero-card {
+            min-height: 260px;
+            padding: 1.75rem;
+        }
+
+        .hero-title {
+            font-size: 1.6rem;
+        }
+    }
+
 </style>
 @endpush
 

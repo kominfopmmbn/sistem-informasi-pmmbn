@@ -174,6 +174,13 @@
         }
     }
 
+    @media (max-width: 575.98px) {
+        .hero {
+            min-height: 260px;
+            /* Kecilkan hero di HP */
+        }
+    }
+
     .hero-overlay {
         background: linear-gradient(to top, #4a0d0d 0%, transparent 60%);
     }

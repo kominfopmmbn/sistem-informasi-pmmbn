@@ -538,6 +538,29 @@ body {
     transform: scale(1.2);
 }
 
+/* Home — mobile (phone) overrides */
+@media (max-width: 575.98px) {
+    .hero-section {
+        height: 70vh;
+    }
+
+    .hero-section .display-4 {
+        font-size: 2rem;
+    }
+
+    .program-showcase-image {
+        min-height: 240px;
+    }
+
+    #map {
+        height: 320px !important;
+    }
+
+    .stats-section .stat-number {
+        font-size: 2.25rem;
+    }
+}
+
 /* =========================================
 8. FOOTER SECTION
 ========================================= */
@@ -865,11 +888,64 @@ footer .bi:hover {
     .page-download .download-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .page-download .hero-card {
+        min-height: 320px;
+        padding: 2.25rem;
+    }
+
+    .page-download .hero-title {
+        font-size: 2rem;
+    }
 }
 
 @media (max-width: 575.98px) {
     .page-download .download-grid {
         grid-template-columns: 1fr;
+    }
+
+    .page-download .hero-card {
+        min-height: 230px;
+        padding: 1.5rem;
+        border-radius: 1rem;
+    }
+
+    .page-download .hero-subtitle {
+        font-size: 0.78rem;
+    }
+
+    .page-download .hero-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .page-download .hero-desc {
+        font-size: 0.88rem;
+    }
+
+    .page-download .download-grid-section {
+        margin-top: 1.75rem;
+    }
+
+    .page-download .download-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .page-download .download-title {
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .page-download .btn-open {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.7rem 1rem;
+        font-size: 0.85rem;
     }
 }
 
@@ -1066,6 +1142,31 @@ footer .bi:hover {
     color: var(--page-brand-color);
     font-size: 2rem;
     text-decoration: none;
+}
+
+/* Tentang — mobile (phone) overrides */
+@media (max-width: 575.98px) {
+    .page-tentang .tentang-hero-section {
+        height: 250px;
+    }
+
+    .page-tentang .hero-content {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .page-tentang .tentang-hero-section .display-4 {
+        font-size: 1.75rem;
+    }
+
+    .page-tentang .img-main {
+        height: 220px;
+    }
+
+    .page-tentang .visi-misi-img {
+        height: auto;
+        max-height: 320px;
+    }
 }
 
 /* =========================================
@@ -1334,6 +1435,26 @@ footer .bi:hover {
     color: white;
 }
 
+/* News list — mobile (phone) overrides */
+@media (max-width: 575.98px) {
+    .page-news .news-hero-section {
+        min-height: 260px;
+    }
+
+    .page-news .hero-content {
+        padding: 24px;
+    }
+
+    .page-news .hero-content .display-5 {
+        font-size: 1.6rem;
+    }
+
+    .page-news .search-wrapper,
+    .page-news .filter-control {
+        width: 100% !important;
+    }
+}
+
 /* =========================================
 13. NEWS DETAIL PAGE
 ========================================= */
@@ -1465,6 +1586,21 @@ footer .bi:hover {
     color: var(--page-brand-color);
     font-size: 2rem;
     cursor: pointer;
+}
+
+/* News detail — mobile (phone) overrides */
+@media (max-width: 575.98px) {
+    .page-news-detail .hero-img {
+        max-height: 240px;
+    }
+
+    .page-news-detail .article-title {
+        font-size: 1.6rem;
+    }
+
+    .page-news-detail .share-sidebar {
+        position: static;
+    }
 }
 
 /* =========================================
@@ -1615,6 +1751,24 @@ select.form-select.form-select-custom {
 
 .page-card-member .back-to-top:hover {
     color: #ff3333;
+}
+
+/* Card member (member activation) — mobile (phone) overrides */
+@media (max-width: 575.98px) {
+    .page-card-member .card-member-hero-section {
+        min-height: 260px;
+    }
+
+    .page-card-member .hero-content {
+        left: 5%;
+        right: 5%;
+        max-width: none;
+        padding: 12px;
+    }
+
+    .page-card-member .card-member-hero-section .display-5 {
+        font-size: 1.6rem;
+    }
 }
 
 /* =========================================
