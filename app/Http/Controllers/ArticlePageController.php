@@ -36,6 +36,10 @@ class ArticlePageController extends Controller
             ])
             ->firstOrFail();
 
+        // Increment penghitung view secara atomik via base query agar event Eloquent /
+        // Userstamps tidak terpicu (jangan ubah updated_at / updated_by saat dilihat publik).
+        Article::whereKey($article->getKey())->toBase()->increment('views_count');
+
         $relatedArticles = Article::published()
             ->where('category_id', $article->category_id)
             ->where('id', '!=', $article->id)
