@@ -74,24 +74,29 @@
                     <div class="member-step{{ $initialStep === 1 ? '' : ' d-none' }}" data-step="1">
                         <div class="row g-4">
                             <div class="col-md-6">
-                                <label class="form-label" for="member_email">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" id="member_email"
-                                    class="form-control form-control-custom @error('email') is-invalid border-danger @enderror"
-                                    required value="{{ old('email', $memberActivation?->email ?? '') }}" maxlength="255"
-                                    placeholder="contoh@email.com">
-                                <div class="invalid-feedback">
-                                    @error('email')
-                                        {{ $message }}
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
                                 <label class="form-label" for="member_full_name">Nama lengkap <span class="text-danger">*</span></label>
                                 <input type="text" name="full_name" id="member_full_name"
                                     class="form-control form-control-custom @error('full_name') is-invalid border-danger @enderror"
                                     required value="{{ old('full_name', $memberActivation?->full_name ?? '') }}"
                                     maxlength="255" placeholder="Masukkan nama lengkap">
                                 <div class="invalid-feedback @error('full_name') d-block @enderror">@error('full_name'){{ $message }}@enderror</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="member_gender_id">Jenis kelamin <span class="text-danger">*</span></label>
+                                <div class="select2-primary @error('gender_id') is-invalid border-danger @enderror" required>
+                                    <div class="position-relative w-100">
+                                        <select name="gender_id" id="member_gender_id"
+                                            class="select2 form-select form-select-custom @error('gender_id') is-invalid border-danger @enderror"
+                                            required data-placeholder="Pilih">
+                                            <option value=""></option>
+                                            @foreach (Gender::cases() as $g)
+                                                <option value="{{ $g->value }}" @selected((string) old('gender_id', $memberActivation?->gender_id?->value ?? '') === (string) $g->value)>
+                                                    {{ $g->label() }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback @error('gender_id') d-block @enderror">@error('gender_id'){{ $message }}@enderror</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="member_place_of_birth_code">Tempat Lahir <span class="text-danger">*</span></label>
@@ -122,22 +127,18 @@
                                     required value="{{ old('date_of_birth', $memberActivation?->date_of_birth->format('Y-m-d') ?? '') }}">
                                 <div class="invalid-feedback @error('date_of_birth') d-block @enderror">@error('date_of_birth'){{ $message }}@enderror</div>
                             </div>
+
                             <div class="col-md-6">
-                                <label class="form-label" for="member_gender_id">Jenis kelamin <span class="text-danger">*</span></label>
-                                <div class="select2-primary @error('gender_id') is-invalid border-danger @enderror" required>
-                                    <div class="position-relative w-100">
-                                        <select name="gender_id" id="member_gender_id"
-                                            class="select2 form-select form-select-custom @error('gender_id') is-invalid border-danger @enderror"
-                                            required data-placeholder="Pilih">
-                                            <option value=""></option>
-                                            @foreach (Gender::cases() as $g)
-                                                <option value="{{ $g->value }}" @selected((string) old('gender_id', $memberActivation?->gender_id?->value ?? '') === (string) $g->value)>
-                                                    {{ $g->label() }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                <label class="form-label" for="member_email">Email <span class="text-danger">*</span></label>
+                                <input type="email" name="email" id="member_email"
+                                    class="form-control form-control-custom @error('email') is-invalid border-danger @enderror"
+                                    required value="{{ old('email', $memberActivation?->email ?? '') }}" maxlength="255"
+                                    placeholder="contoh@email.com">
+                                <div class="invalid-feedback">
+                                    @error('email')
+                                        {{ $message }}
+                                    @enderror
                                 </div>
-                                <div class="invalid-feedback @error('gender_id') d-block @enderror">@error('gender_id'){{ $message }}@enderror</div>
                             </div>
 
                             <div class="col-md-6">
