@@ -14,8 +14,10 @@
             @include('admin.articles._form', ['article' => $article])
 
             <div class="pt-6 d-flex flex-wrap align-items-center gap-2">
-                @can('articles.update')
+                @can('articles.publish')
                     <button type="submit" name="save_action" value="publish" class="btn btn-primary">Simpan</button>
+                @endcan
+                @can('articles.update')
                     <button type="submit" name="save_action" value="draft" class="btn btn-secondary">Simpan Draft</button>
                 @endcan
                 @can('articles.view')

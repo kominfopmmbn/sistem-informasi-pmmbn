@@ -18,6 +18,7 @@ class PermissionSeeder extends Seeder
             'articles.update',
             'articles.delete',
             'articles.other',
+            'articles.publish',
             'documents.view',
             'documents.create',
             'documents.update',

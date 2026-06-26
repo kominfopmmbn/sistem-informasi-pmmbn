@@ -580,6 +580,7 @@ class ArticleCrudTest extends TestCase
         $editor = User::factory()->create();
         $editor->givePermissionTo(array_merge($this->articleEditorPermissions(), [
             'articles.other',
+            'articles.publish',
         ]));
         $other = User::factory()->create();
         $this->actingAs($editor);
@@ -599,5 +600,113 @@ class ArticleCrudTest extends TestCase
             ->assertViewHas('articles', fn ($paginator) => $paginator->total() === 1);
 
         $this->get(route('admin.articles.edit', $theirs))->assertOk();
+    }
+
+    public function test_store_publish_without_articles_publish_permission_forces_draft(): void
+    {
+        /** @var User $editor */
+        $editor = User::factory()->create();
+        $editor->givePermissionTo($this->articleEditorPermissions());
+        $this->actingAs($editor);
+
+        $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-no-pub']);
+
+        $this->post(route('admin.articles.store'), [
+            'save_action' => 'publish',
+            'title' => 'Coba Terbit',
+            'content' => '<p>Isi</p>',
+            'category_id' => (string) $cat->id,
+        ])->assertRedirect(route('admin.articles.index'))
+            ->assertSessionHas('success', 'Artikel disimpan sebagai draf.');
+
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Coba Terbit',
+            'is_draft' => true,
+        ]);
+    }
+
+    public function test_store_publish_with_articles_publish_permission_publishes(): void
+    {
+        /** @var User $editor */
+        $editor = User::factory()->create();
+        $editor->givePermissionTo(array_merge($this->articleEditorPermissions(), [
+            'articles.publish',
+        ]));
+        $this->actingAs($editor);
+
+        $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-with-pub']);
+
+        $this->post(route('admin.articles.store'), [
+            'save_action' => 'publish',
+            'title' => 'Terbit Beneran',
+            'content' => '<p>Isi</p>',
+            'category_id' => (string) $cat->id,
+            'published_at' => '2025-07-01 09:00',
+        ])->assertRedirect(route('admin.articles.index'))
+            ->assertSessionHas('success', 'Artikel berhasil diterbitkan.');
+
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Terbit Beneran',
+            'is_draft' => false,
+        ]);
+    }
+
+    public function test_edit_published_article_forbidden_without_articles_publish_permission(): void
+    {
+        /** @var User $editor */
+        $editor = User::factory()->create();
+        $editor->givePermissionTo($this->articleEditorPermissions());
+        $this->actingAs($editor);
+
+        $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-pub-edit']);
+        $article = Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Sudah Terbit',
+            'slug' => 'sudah-terbit',
+            'content' => '<p>x</p>',
+            'published_at' => now(),
+            'is_draft' => false,
+        ]);
+        $article->forceFill(['created_by' => $editor->id])->save();
+
+        $this->get(route('admin.articles.edit', $article))->assertForbidden();
+
+        $this->put(route('admin.articles.update', $article), [
+            'save_action' => 'draft',
+            'title' => 'Sudah Terbit',
+            'category_id' => (string) $cat->id,
+        ])->assertForbidden();
+    }
+
+    public function test_update_draft_publish_without_permission_keeps_draft(): void
+    {
+        /** @var User $editor */
+        $editor = User::factory()->create();
+        $editor->givePermissionTo($this->articleEditorPermissions());
+        $this->actingAs($editor);
+
+        $cat = Category::query()->create(['title' => 'C', 'slug' => 'c-draft-keep']);
+        $article = Article::query()->create([
+            'category_id' => $cat->id,
+            'title' => 'Masih Draf',
+            'slug' => 'masih-draf',
+            'content' => null,
+            'published_at' => null,
+            'is_draft' => true,
+        ]);
+        $article->forceFill(['created_by' => $editor->id])->save();
+
+        $this->put(route('admin.articles.update', $article), [
+            'save_action' => 'publish',
+            'title' => 'Masih Draf',
+            'content' => '<p>isi</p>',
+            'category_id' => (string) $cat->id,
+        ])->assertRedirect(route('admin.articles.index'))
+            ->assertSessionHas('success', 'Draf tersimpan.');
+
+        $this->assertDatabaseHas('articles', [
+            'id' => $article->id,
+            'is_draft' => true,
+        ]);
     }
 }

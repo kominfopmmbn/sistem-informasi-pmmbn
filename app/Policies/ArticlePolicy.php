@@ -14,6 +14,11 @@ class ArticlePolicy
             return false;
         }
 
+        // Artikel yang sudah terbit hanya boleh diubah oleh yang punya izin publish.
+        if (! $article->is_draft && ! $user->can('articles.publish')) {
+            return false;
+        }
+
         if ($user->can('articles.other')) {
             return true;
         }

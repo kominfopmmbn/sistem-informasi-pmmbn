@@ -80,7 +80,7 @@ class ArticleController extends Controller
     public function store(StoreArticleRequest $request): RedirectResponse
     {
         $data = $request->safe()->except(['tags', 'cover_photo', 'save_action']);
-        $data['is_draft'] = $request->string('save_action')->toString() === 'draft';
+        $data['is_draft'] = ! $request->isPublishing();
         $data['slug'] = $this->uniqueSlugFromTitle($request->string('title')->toString());
 
         $article = Article::create($data);
@@ -119,7 +119,7 @@ class ArticleController extends Controller
         $this->authorize('update', $article);
 
         $data = $request->safe()->except(['tags', 'cover_photo', 'remove_cover', 'save_action']);
-        $data['is_draft'] = $request->string('save_action')->toString() === 'draft';
+        $data['is_draft'] = ! $request->isPublishing();
         $data['slug'] = $this->uniqueSlugFromTitle($request->string('title')->toString(), $article->getKey());
 
         $article->update($data);

@@ -17,9 +17,16 @@ class UpdateArticleRequest extends FormRequest
             : $this->user()->can('update', $article);
     }
 
+    /** Aksi terbit hanya berlaku jika user memang punya izin publish. */
+    public function isPublishing(): bool
+    {
+        return $this->string('save_action')->toString() === 'publish'
+            && $this->user()->can('articles.publish');
+    }
+
     public function rules(): array
     {
-        $isPublish = $this->string('save_action')->toString() === 'publish';
+        $isPublish = $this->isPublishing();
 
         return [
             'save_action' => ['required', Rule::in(['draft', 'publish'])],
