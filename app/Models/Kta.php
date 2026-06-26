@@ -40,9 +40,10 @@ class Kta extends Model
 
     public function generateNumber(self $model): string
     {
-        $pwCode = '00';
+        // ponytail: fallback '00' jika member belum punya regional leader (kolom nullable)
+        $regionalLeaderCode = $model->member?->regionalLeader?->code ?? '00';
         $year = date('y');
-        return $pwCode . $year . str_pad($model->order_number, 4, '0', STR_PAD_LEFT);
+        return $regionalLeaderCode . $year . str_pad($model->order_number, 4, '0', STR_PAD_LEFT);
     }
 
     public function generateOrderNumber(self $model): int
