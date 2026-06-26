@@ -65,18 +65,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="row mt-5" data-aos="fade-up" data-aos-offset="50">
-            <div class="col-12">
-                <div class="timeline">
-                    <div class="timeline-point">2021</div>
-                    <div class="timeline-point">2022</div>
-                    <div class="timeline-point">2023</div>
-                    <div class="timeline-point">2024</div>
-                    <div class="timeline-point">2025</div>
-                </div>
-            </div>
-        </div>
     </section>
 
     <section class="container my-5 py-5">

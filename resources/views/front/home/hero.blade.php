@@ -34,7 +34,7 @@
                 <h1 class="display-4 fw-bold mb-3">Pemuda Berdaya. Indonesia Digdaya</h1>
                 <p class="lead mb-4">Mari bergabung bersama kami dalam gerakan membangun bangsa melalui kolaborasi,
                     inovasi, dan aksi nyata untuk Indonesia yang lebih baik.</p>
-                <a href="#" class="btn btn-outline-light rounded-pill px-4 py-2"
+                <a href="{{ route('about.profil-organisasi') }}" class="btn btn-outline-light rounded-pill px-4 py-2"
                     style="border: 2px solid white;">Pelajari Lebih Lanjut <i
                         class="bi bi-arrow-right ms-2"></i></a>
             </div>
