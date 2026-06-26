@@ -1,8 +1,11 @@
 <!-- Modal -->
-<div class="modal fade" id="member-activation-verification-email-modal" data-bs-backdrop="static" data-bs-keyboard="false"
+<div class="modal fade" id="member-activation-verification-email-modal"
     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
             <div class="modal-body">
                 <form id="member-activation-verification-email-form"
                     action="{{ route('about.member-activation.verify-email') }}" method="post">
