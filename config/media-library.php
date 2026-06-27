@@ -38,10 +38,7 @@ return [
      * The maximum file size of an item in bytes.
      * Adding a larger file will result in an exception.
      */
-    // Default 10MB. Di Vercel set MEDIA_MAX_FILE_SIZE=4194304 (4MB) karena batas
-    // body request Vercel/Lambda ~4.5MB; ini juga menurunkan aturan validasi upload
-    // turunannya (lihat App\Models\Member::supportingDocumentItemRules()).
-    'max_file_size' => (int) env('MEDIA_MAX_FILE_SIZE', 1024 * 1024 * 10),
+    'max_file_size' => 1024 * 1024 * 10, // 10MB
 
     /*
      * This queue connection will be used to generate derived and responsive images.

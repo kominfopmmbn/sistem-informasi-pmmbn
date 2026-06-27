@@ -15,12 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Di Vercel filesystem read-only kecuali /tmp. Arahkan storage path ke sana
-        // agar compiled views, cache framework, dan berkas temporer MediaLibrary bisa ditulis.
-        // (Vercel otomatis men-set env VERCEL pada runtime serverless.)
-        if (env('VERCEL')) {
-            $this->app->useStoragePath('/tmp/storage');
-        }
+        //
     }
 
     /**
