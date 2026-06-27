@@ -7,16 +7,6 @@
             data-bs-interval="6000"
             data-bs-pause="hover"
             aria-label="Banner utama beranda">
-            <div class="carousel-indicators">
-                @foreach ($heroSlides as $index => $_slide)
-                    <button type="button"
-                        data-bs-target="#heroCarousel"
-                        data-bs-slide-to="{{ $index }}"
-                        class="{{ $loop->first ? 'active' : '' }}"
-                        aria-current="{{ $loop->first ? 'true' : 'false' }}"
-                        aria-label="Slide {{ $index + 1 }}"></button>
-                @endforeach
-            </div>
             <div class="carousel-inner h-100">
                 @foreach ($heroSlides as $slideSrc)
                     <div class="carousel-item h-100 {{ $loop->first ? 'active' : '' }}">
