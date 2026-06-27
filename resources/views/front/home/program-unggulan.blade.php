@@ -98,7 +98,7 @@
         let currentIndex = 0;
         const totalCards = cards.length;
 
-        function updateSlider() {
+        function updateSlider(scroll = true) {
             // Ganti class active pada card
             cards.forEach((card, index) => {
                 if (index === currentIndex) {
@@ -127,12 +127,14 @@
                 iconNext.className = "bi bi-arrow-right-circle fs-4 text-brand nav-icon active-btn";
             }
 
-            // Geser posisi scroll menyesuaikan card yang aktif
-            const activeCardWrap = cards[currentIndex].parentElement;
-            slider.scrollTo({
-                left: activeCardWrap.offsetLeft - slider.offsetLeft,
-                behavior: 'smooth'
-            });
+            // Geser posisi scroll menyesuaikan card yang aktif (lewati saat dipicu oleh scroll manual)
+            if (scroll) {
+                const activeCardWrap = cards[currentIndex].parentElement;
+                slider.scrollTo({
+                    left: activeCardWrap.offsetLeft - slider.offsetLeft,
+                    behavior: 'smooth'
+                });
+            }
         }
 
         // Event Listener untuk Tombol Next
@@ -149,6 +151,35 @@
                 currentIndex--;
                 updateSlider();
             }
+        });
+
+        // Klik card langsung mengaktifkan card tersebut
+        cards.forEach((card, index) => {
+            card.addEventListener("click", () => {
+                currentIndex = index;
+                updateSlider();
+            });
+        });
+
+        // Saat slider di-swipe/scroll (mobile), aktifkan card terdekat tanpa scroll ulang
+        let scrollTimer;
+        slider.addEventListener("scroll", () => {
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(() => {
+                let nearest = 0,
+                    min = Infinity;
+                cards.forEach((card, i) => {
+                    const dist = Math.abs((card.parentElement.offsetLeft - slider.offsetLeft) - slider.scrollLeft);
+                    if (dist < min) {
+                        min = dist;
+                        nearest = i;
+                    }
+                });
+                if (nearest !== currentIndex) {
+                    currentIndex = nearest;
+                    updateSlider(false);
+                }
+            }, 120);
         });
     }
 });
