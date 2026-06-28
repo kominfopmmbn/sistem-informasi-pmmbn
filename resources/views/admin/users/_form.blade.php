@@ -22,19 +22,25 @@
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-6 form-password-toggle">
         <label class="form-label" for="user_password">Password @if (isset($user))<span class="text-body-secondary fw-normal">(kosongkan bila tidak diubah)</span>@endif</label>
-        <input type="password" name="password" id="user_password"
-            class="form-control @error('password') is-invalid @enderror"
-            @if (!isset($user)) required @endif autocomplete="new-password">
-        @error('password')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
+        <div class="input-group input-group-merge @error('password') has-validation @enderror">
+            <input type="password" name="password" id="user_password"
+                class="form-control @error('password') is-invalid @enderror"
+                @if (!isset($user)) required @endif autocomplete="new-password">
+            <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
+            @error('password')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
     </div>
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-6 form-password-toggle">
         <label class="form-label" for="user_password_confirmation">Konfirmasi password</label>
-        <input type="password" name="password_confirmation" id="user_password_confirmation" class="form-control"
-            @if (!isset($user)) required @endif autocomplete="new-password">
+        <div class="input-group input-group-merge">
+            <input type="password" name="password_confirmation" id="user_password_confirmation" class="form-control"
+                @if (!isset($user)) required @endif autocomplete="new-password">
+            <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
+        </div>
     </div>
     <div class="col-12">
         <label class="form-label" for="user_role_id">Peran</label>
