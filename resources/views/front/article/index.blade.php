@@ -58,8 +58,8 @@
         <div id="articleCardsRegion" role="tabpanel" aria-labelledby="tab-berita">
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4" id="articleCardGridBerita">
                 @foreach ($articles as $article)
-                    <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="{{ $loop->index * 100 }}">
-                        @include('front.components.article-card', ['article' => $article, 'columnClass' => 'col'])
+                    <div class="h-100" data-aos="fade-up" data-aos-duration="600" data-aos-delay="{{ $loop->index * 100 }}">
+                        @include('front.components.article-card', ['article' => $article, 'columnClass' => 'col h-100'])
                     </div>
                 @endforeach
             </div>

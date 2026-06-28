@@ -11,13 +11,16 @@
             </div>
         </div>
 
-        <div class="row justify-content-center text-center" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+        <div class="row justify-content-center text-center mb-5" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
             <div class="col-lg-8">
                 <h1 class="article-title">{{ $article->title }}</h1>
-                <p class="article-date">{{ $article->published_at->format('d F Y') }}</p>
-                @if (filled($article->author))
-                    <p class="article-author">Oleh {{ $article->author }}</p>
-                @endif
+                <p class="article-meta">
+                    @if (filled($article->author))
+                        <span class="article-author">Oleh {{ $article->author }}</span>
+                        <span class="article-meta-sep">•</span>
+                    @endif
+                    <span class="article-date">{{ $article->published_at->format('d F Y') }}</span>
+                </p>
             </div>
         </div>
 
@@ -46,6 +49,7 @@
                             <a href="{{ route('article.show', $relatedArticle->slug) }}" class="sidebar-item">
                                 <img src="{{ $relatedArticle->getFirstMediaUrl(\App\Models\Article::COVER_COLLECTION) }}"
                                      alt="{{ $relatedArticle->title }}">
+                                <span class="sidebar-item-title">{{ \Illuminate\Support\Str::limit($relatedArticle->title, 60) }}</span>
                             </a>
                         @endforeach
                     </div>
