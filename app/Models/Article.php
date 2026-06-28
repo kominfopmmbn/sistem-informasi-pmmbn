@@ -17,6 +17,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
     'title',
     'slug',
     'subtitle',
+    'author',
     'content',
     'published_at',
     'is_draft',

@@ -40,6 +40,7 @@ class ArticleSeeder extends Seeder
                 ? null
                 : fake()->dateTimeBetween('-90 days', 'now');
             $subtitle = fake()->boolean(70) ? rtrim(fake()->sentence(fake()->numberBetween(5, 12)), '.') : null;
+            $author = fake()->boolean(80) ? fake()->name() : null;
             $content = collect(range(1, fake()->numberBetween(1, 3)))
                 ->map(function () {
                     return '<p>'.e(fake()->paragraph()).'</p>';
@@ -60,6 +61,7 @@ class ArticleSeeder extends Seeder
                     'category_id' => $categoryId,
                     'title' => $title,
                     'subtitle' => $subtitle,
+                    'author' => $author,
                     'content' => $content,
                     'is_draft' => $isDraft,
                     'published_at' => $publishedAt,
@@ -70,11 +72,36 @@ class ArticleSeeder extends Seeder
             );
 
             if(!$isDraft && !$archivedAt) {
-                $cover = UploadedFile::fake()->image('cover-'.$i.'.jpg', 640, 480);
-                $article->addMedia($cover)->toMediaCollection(Article::COVER_COLLECTION);
+                $this->attachRemoteImage(
+                    $article,
+                    "https://picsum.photos/seed/{$slug}/1200/800",
+                    'cover-'.$i.'.jpg',
+                );
             }
 
             $article->tags()->sync($syncTagIds);
+        }
+    }
+
+    /**
+     * Lampirkan sampul dari URL remote; fallback ke gambar palsu bila gagal.
+     * Meniru ProgramSeeder::attachRemoteImage(). Cover bersifat singleFile →
+     * lewati bila sudah ada agar tak mengunduh ulang tiap run (idempoten).
+     */
+    private function attachRemoteImage(Article $article, string $url, string $name): void
+    {
+        if ($article->getFirstMedia(Article::COVER_COLLECTION) !== null) {
+            return;
+        }
+
+        try {
+            $article->addMediaFromUrl($url)
+                ->usingFileName($name)
+                ->toMediaCollection(Article::COVER_COLLECTION);
+        } catch (\Throwable $e) {
+            $this->command?->warn("Gagal mengunduh {$url} ({$e->getMessage()}). Memakai gambar placeholder.");
+            $article->addMedia(UploadedFile::fake()->image($name, 1200, 800))
+                ->toMediaCollection(Article::COVER_COLLECTION);
         }
     }
 }

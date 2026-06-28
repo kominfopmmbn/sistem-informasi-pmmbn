@@ -116,6 +116,14 @@
         @enderror
     </div>
     <div class="col-md-6">
+        <label class="form-label" for="author">Penulis</label>
+        <input type="text" name="author" id="author" class="form-control @error('author') is-invalid @enderror"
+            value="{{ old('author', $article?->author) }}">
+        @error('author')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+    <div class="col-md-6">
         <label class="form-label" for="category_id">Kategori <span class="text-danger">*</span></label>
         <div class="select2-primary @error('category_id') is-invalid @enderror">
             <select name="category_id" id="category_id"

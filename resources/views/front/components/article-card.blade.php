@@ -28,6 +28,9 @@
         </div>
         <div class="news-meta">
             <p class="news-date mb-0">{{ $dateLabel }}</p>
+            @if (filled($article->author))
+                <span class="news-author">{{ $article->author }}</span>
+            @endif
             <span class="news-views"><i class="bi bi-eye"></i> {{ $article->views_count }}</span>
         </div>
         <h5>{{ $titleDisplay }}</h5>

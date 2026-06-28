@@ -252,6 +252,7 @@ class ArticleCrudTest extends TestCase
             'save_action' => 'publish',
             'title' => 'Judul Publikasi',
             'subtitle' => 'Sub',
+            'author' => 'Budi Santoso',
             'content' => '<p>Isi teks cukup</p>',
             'category_id' => (string) $cat->id,
             'published_at' => '2025-01-10 10:00',
@@ -265,6 +266,7 @@ class ArticleCrudTest extends TestCase
             'is_draft' => false,
             'category_id' => $cat->id,
             'slug' => 'judul-publikasi',
+            'author' => 'Budi Santoso',
         ]);
 
         $article = Article::query()->where('slug', 'judul-publikasi')->firstOrFail();
@@ -355,6 +357,7 @@ class ArticleCrudTest extends TestCase
         $this->put(route('admin.articles.update', $article), [
             'save_action' => 'publish',
             'title' => 'Baru Diterbitkan',
+            'author' => 'Penulis Baru',
             'content' => '<p>pembaruan</p>',
             'category_id' => (string) $cat->id,
             'published_at' => '2025-02-01 12:00',
@@ -366,6 +369,7 @@ class ArticleCrudTest extends TestCase
             'title' => 'Baru Diterbitkan',
             'slug' => 'baru-diterbitkan',
             'is_draft' => false,
+            'author' => 'Penulis Baru',
         ]);
     }
 

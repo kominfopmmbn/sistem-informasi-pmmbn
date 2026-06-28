@@ -32,6 +32,7 @@ class UpdateArticleRequest extends FormRequest
             'save_action' => ['required', Rule::in(['draft', 'publish'])],
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
+            'author' => ['nullable', 'string', 'max:255'],
             'content' => $isPublish
                 ? ['required', 'string', new QuillContentNotEmpty]
                 : ['nullable', 'string'],

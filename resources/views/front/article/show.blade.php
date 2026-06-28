@@ -15,6 +15,9 @@
             <div class="col-lg-8">
                 <h1 class="article-title">{{ $article->title }}</h1>
                 <p class="article-date">{{ $article->published_at->format('d F Y') }}</p>
+                @if (filled($article->author))
+                    <p class="article-author">Oleh {{ $article->author }}</p>
+                @endif
             </div>
         </div>
 
