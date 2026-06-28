@@ -8,7 +8,7 @@
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <div class="breadcrumb-custom" data-aos="fade-right" data-aos-delay="200" data-aos-duration="600">
-                    Artikel <i class="fa-solid fa-chevron-right fa-xs mx-2"></i>
+                    Artikel <i class="bi bi-chevron-right mx-2 small"></i>
                     <span id="heroCrumbLabel">{{ $selectedCategory->title }}</span>
                 </div>
                 <h1 class="display-5 fw-bold mb-3" id="heroTitle" data-aos="fade-right" data-aos-delay="400" data-aos-duration="600">
@@ -37,22 +37,31 @@
     <div class="container my-5">
 
         <div class="row justify-content-center mb-5" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
-            <div class="col-md-8 d-flex gap-3 justify-content-center flex-wrap">
-                <div class="search-wrapper" style="width: 250px;">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" class="form-control filter-control" placeholder="Search">
+            <form method="GET" action="{{ route('article.index', $selectedCategory->slug) }}"
+                  class="col-md-8 news-filter d-flex gap-3 justify-content-center flex-wrap align-items-center">
+                <div class="search-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="q" value="{{ request('q') }}" class="form-control filter-control" placeholder="Cari berita…">
                 </div>
-                <select class="form-select filter-control" style="width: 150px;">
-                    <option selected>Bulan</option>
-                    <option value="1">Januari</option>
-                    <option value="2">Februari</option>
+                @php($months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'])
+                <select name="month" class="form-select filter-control" onchange="this.form.submit()">
+                    <option value="">Bulan</option>
+                    @foreach ($months as $i => $name)
+                        <option value="{{ $i + 1 }}" @selected(request('month') == $i + 1)>{{ $name }}</option>
+                    @endforeach
                 </select>
-                <select class="form-select filter-control" style="width: 150px;">
-                    <option selected>Tahun</option>
-                    <option value="2025">2025</option>
-                    <option value="2024">2024</option>
+                <select name="year" class="form-select filter-control" onchange="this.form.submit()">
+                    <option value="">Tahun</option>
+                    @foreach ($years as $y)
+                        <option value="{{ $y }}" @selected(request('year') == $y)>{{ $y }}</option>
+                    @endforeach
                 </select>
-            </div>
+                @if (request()->hasAny(['q', 'month', 'year']))
+                    <a href="{{ route('article.index', $selectedCategory->slug) }}" class="filter-reset">
+                        <i class="bi bi-x-lg"></i>Reset
+                    </a>
+                @endif
+            </form>
         </div>
 
         <div id="articleCardsRegion" role="tabpanel" aria-labelledby="tab-berita">

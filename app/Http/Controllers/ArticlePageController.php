@@ -14,16 +14,42 @@ class ArticlePageController extends Controller
     public function index(Request $request, string $categorySlug)
     {
         $selectedCategory = Category::query()->where('slug', $categorySlug)->firstOrFail();
+
         $articles = Article::published()
             ->where('category_id', $selectedCategory->id)
-            ->with(['media' => ArticleGrid::coverMediaConstraint()])
+            ->with(['media' => ArticleGrid::coverMediaConstraint()]);
+
+        if (($q = trim((string) $request->input('q'))) !== '') {
+            $articles->where('title', 'like', '%'.addcslashes($q, '%_\\').'%');
+        }
+
+        $month = $request->input('month');
+        if (is_numeric($month) && (int) $month >= 1 && (int) $month <= 12) {
+            $articles->whereMonth('published_at', (int) $month);
+        }
+
+        $year = $request->input('year');
+        if (is_numeric($year)) {
+            $articles->whereYear('published_at', (int) $year);
+        }
+
+        $articles = $articles
             ->orderBy('published_at', 'desc')
             ->paginate($request->input('per_page', self::PER_TAB))
             ->withQueryString();
 
         $categories = Category::query()->orderBy('title', 'asc')->get();
 
-        return view('front.article.index', compact('selectedCategory', 'articles', 'categories'));
+        // Rentang tahun penuh dari published_at paling awal s/d paling akhir (terbaru → terlama).
+        $bounds = Article::published()
+            ->where('category_id', $selectedCategory->id)
+            ->selectRaw('MIN(published_at) as first_at, MAX(published_at) as last_at')
+            ->first();
+        $years = $bounds->first_at
+            ? range((int) substr($bounds->last_at, 0, 4), (int) substr($bounds->first_at, 0, 4))
+            : [];
+
+        return view('front.article.index', compact('selectedCategory', 'articles', 'categories', 'years'));
     }
 
     public function show(string $slug)

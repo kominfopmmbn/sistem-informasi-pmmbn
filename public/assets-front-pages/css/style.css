@@ -1288,25 +1288,92 @@ footer .bi:hover {
 
 .page-news .filter-control {
     border-radius: 50px;
-    padding: 10px 20px;
-    border: 1px solid #ddd;
+    padding: 11px 20px;
+    border: 1px solid #e7e7e7;
+    background-color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
     font-size: 0.9rem;
+    color: #333;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.page-news .filter-control::placeholder {
+    color: #9a9a9a;
+}
+
+.page-news .filter-control:focus {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 0.18rem rgba(185, 43, 39, 0.12);
+    outline: none;
+}
+
+.page-news select.filter-control {
+    width: 150px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    padding-right: 42px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23B92B27' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px;
+}
+
+.page-news select.filter-control:hover {
+    border-color: #e0b6b5;
 }
 
 .page-news .search-wrapper {
     position: relative;
+    width: 260px;
 }
 
 .page-news .search-wrapper i {
     position: absolute;
-    left: 15px;
+    left: 18px;
     top: 50%;
     transform: translateY(-50%);
-    color: #999;
+    color: #b0b0b0;
+    transition: color 0.2s ease;
 }
 
 .page-news .search-wrapper input {
-    padding-left: 40px;
+    width: 100%;
+    padding-left: 44px;
+}
+
+.page-news .search-wrapper:focus-within i {
+    color: var(--primary-red);
+}
+
+.page-news .filter-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 17px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--primary-red);
+    background-color: rgba(185, 43, 39, 0.08);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.page-news .filter-reset:hover {
+    background-color: rgba(185, 43, 39, 0.15);
+}
+
+@media (max-width: 575.98px) {
+    .page-news .news-filter {
+        flex-direction: column;
+    }
+
+    .page-news .news-filter .search-wrapper,
+    .page-news .news-filter select.filter-control {
+        width: 100%;
+    }
 }
 
 .page-news .news-card {
