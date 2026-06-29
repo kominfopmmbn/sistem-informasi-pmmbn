@@ -16,16 +16,9 @@
                 <li class="nav-item"><a
                         class="nav-link {{ request()->routeIs('home.index') ? 'active text-brand' : '' }}"
                         aria-current="page" href="{{ route('home.index') }}">Beranda</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->routeIs('about.*') ? 'active text-brand' : '' }}"
-                        href="#" id="tentangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Tentang
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="tentangDropdown">
-                        <li><a class="dropdown-item" href="{{ route('about.profil-organisasi') }}">Profil Organisasi</a></li>
-                        <li><a class="dropdown-item" href="{{ route('about.member-activation.index') }}">KTA</a></li>
-                    </ul>
-                </li>
+                <li class="nav-item"><a
+                        class="nav-link {{ request()->routeIs('about.profil-organisasi') ? 'active text-brand' : '' }}"
+                        href="{{ route('about.profil-organisasi') }}">Tentang</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->routeIs('article.*') ? 'active text-brand' : '' }}"
                         href="#" id="artikelDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
