@@ -181,6 +181,10 @@
         }
     }
 
+    .col-lg-4 .sticky-top {
+    z-index: 1 !important;
+    }
+
     .hero-overlay {
         background: linear-gradient(to top, #4a0d0d 0%, transparent 60%);
     }
