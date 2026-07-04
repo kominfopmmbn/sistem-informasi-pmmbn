@@ -24,7 +24,7 @@ class HomePageController extends Controller
             asset('assets-front-pages/img/bg-hero-home.JPG'),
             asset('assets-front-pages/img/download-hero.png'),
             asset('assets-front-pages/img/kta-hero.png'),
-            asset('assets-front-pages/img/ketum.png'),
+            asset('assets-front-pages/img/fotbar-hero.JPG'),
         ];
 
         return view('front.home.index', compact('news', 'opinions', 'programs', 'heroSlides'));
