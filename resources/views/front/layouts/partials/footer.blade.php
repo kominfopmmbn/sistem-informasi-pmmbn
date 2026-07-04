@@ -4,10 +4,8 @@
         <div class="row g-4 mb-4">
             <div class="col-lg-4">
                 <div class="d-flex align-items-center mb-3">
-                    <div class="bg-brand text-white rounded-circle d-flex align-items-center justify-content-center me-2"
-                        style="width: 35px; height: 35px;">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
+                    <img src="{{ asset('assets/img/logo/pmmbn.png') }}" alt="Logo PMMBN" width="35" height="35"
+                        class="d-inline-block align-text-top me-2">
                     <span class="fw-bold fs-6">PMMBN</span>
                 </div>
                 <p class="small text-white-50">Menyatukan langkah, mengabdi untuk negeri. Bersama kita wujudkan
