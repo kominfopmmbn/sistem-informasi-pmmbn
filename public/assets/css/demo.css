@@ -2,6 +2,37 @@
 * demo.css
 * File include item demo only specific css only
 ******************************************************************************/
+/* ===== Override warna primary jadi merah maroon PMMBN ===== */
+:root {
+    --bs-primary: #8B1515;
+    --bs-primary-rgb: 139, 21, 21;
+    --bs-primary-text-emphasis: #5c0e0e;
+    --bs-primary-bg-subtle: #f3e1e1;
+    --bs-primary-border-subtle: #d99b9b;
+}
+
+.btn-primary {
+    --bs-btn-bg: #8B1515;
+    --bs-btn-border-color: #8B1515;
+    --bs-btn-hover-bg: #6e1010;
+    --bs-btn-hover-border-color: #6e1010;
+    --bs-btn-active-bg: #5c0e0e;
+    --bs-btn-active-border-color: #5c0e0e;
+    --bs-btn-disabled-bg: #8B1515;
+    --bs-btn-disabled-border-color: #8B1515;
+}
+
+.text-primary {
+    color: #8B1515 !important;
+}
+
+.bg-primary {
+    background-color: #8B1515 !important;
+}
+
+.border-primary {
+    border-color: #8B1515 !important;
+}
 
 .menu .app-brand.demo {
   height: 64px;
