@@ -70,7 +70,7 @@
         min-height: 400px;
         display: flex;
         align-items: center;
-        background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)),
+        background: linear-gradient(to right, rgba(11, 11, 11, 0.69), rgba(4, 20, 28, 0.2)),
             url('../../assets-front-pages/img/fotbarr.JPG') center/cover no-repeat;
         color: white;
         padding: 3rem;
