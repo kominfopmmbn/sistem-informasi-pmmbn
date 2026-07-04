@@ -70,8 +70,8 @@
         min-height: 400px;
         display: flex;
         align-items: center;
-        background: linear-gradient(to right, rgba(94, 13, 13, 0.92), rgba(139, 21, 21, 0.4)),
-            url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)),
+            url('../../assets-front-pages/img/fotbarr.JPG') center/cover no-repeat;
         color: white;
         padding: 3rem;
     }
