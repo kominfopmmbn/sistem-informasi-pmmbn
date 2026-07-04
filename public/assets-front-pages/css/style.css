@@ -990,7 +990,7 @@ footer .bi:hover {
 
 .page-tentang .tentang-hero-section {
     position: relative;
-    background: url('https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+    background: url('../img/kta-hero.png') no-repeat center center;
     background-size: cover;
     height: 400px;
     border-radius: 20px;
