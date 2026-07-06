@@ -146,9 +146,12 @@ class MemberActivationAdminTest extends TestCase
         );
 
         // Log pertama tanpa pelaku (mensimulasikan pengajuan publik) → tampil "Sistem".
-        $activation->memberActivationStatusLogs()->create([
+        // Userstamps dimatikan agar created_by tetap null, meniru alur store publik.
+        $firstLog = $activation->memberActivationStatusLogs()->make([
             'status_id' => MemberActivationStatus::PENDING->value,
         ]);
+        $firstLog->stopUserstamping();
+        $firstLog->save();
         // Log kedua: ditolak oleh admin, dengan catatan.
         $activation->memberActivationStatusLogs()->create([
             'status_id' => MemberActivationStatus::REJECTED->value,
