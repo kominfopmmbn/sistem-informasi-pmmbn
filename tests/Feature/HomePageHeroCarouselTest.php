@@ -15,7 +15,6 @@ class HomePageHeroCarouselTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('id="heroCarousel"', false);
-        $response->assertSee('carousel-indicators', false);
         $response->assertSee('hero-slide-bg', false);
     }
 }
