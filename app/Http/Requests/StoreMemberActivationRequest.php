@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Gender;
 use App\Models\Member;
+use App\Models\MemberActivation;
 use App\Models\MemberActivationEmailOtpVerification;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -36,13 +37,27 @@ class StoreMemberActivationRequest extends FormRequest
 
     public function rules(): array
     {
+        // Identitas pendaftaran adalah email (store memakai updateOrCreate berbasis email),
+        // jadi baris milik email ini diabaikan agar pendaftar boleh submit ulang/memperbarui datanya.
+        $existingActivationId = MemberActivation::query()
+            ->where('email', (string) $this->input('email'))
+            ->value('id');
+
         return [
-            'nim' => ['required', 'string', 'max:255'],
+            'nim' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('member_activations', 'nim')->ignore($existingActivationId),
+                Rule::unique('members', 'nim'),
+            ],
             'full_name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'email:rfc',
                 'max:255',
+                Rule::unique('member_activations', 'email')->ignore($existingActivationId),
+                Rule::unique('members', 'email'),
                 function ($attribute, $value, $fail) {
                     $memberActivationEmailOtpVerification = MemberActivationEmailOtpVerification::query()
                         ->where('email', $value)
@@ -76,6 +91,15 @@ class StoreMemberActivationRequest extends FormRequest
         return [
             'college_id' => 'Perguruan tinggi',
             'college_other' => 'Nama perguruan tinggi',
+        ];
+    }
+
+    /** @return array<string, string> */
+    public function messages(): array
+    {
+        return [
+            'nim.unique' => 'NIM sudah terdaftar.',
+            'email.unique' => 'Email sudah terdaftar.',
         ];
     }
 

@@ -6,6 +6,7 @@ use App\Enums\Gender;
 use App\Enums\MemberActivationStatus;
 use App\Models\College;
 use App\Models\District;
+use App\Models\Member;
 use App\Models\MemberActivation;
 use App\Models\MemberActivationEmailOtpVerification;
 use App\Models\Village;
@@ -206,5 +207,90 @@ class MemberActivationStoreTest extends TestCase
 
         $this->post(route('about.member-activation.store'), $payload)
             ->assertSessionHasErrors(['college_other']);
+    }
+
+    public function test_store_rejects_nim_already_used_by_another_activation(): void
+    {
+        $city = $this->sampleCity();
+
+        // Pendaftaran lain sudah memakai NIM ini (email berbeda).
+        MemberActivation::withoutEvents(fn () => MemberActivation::query()->create([
+            'nim' => 'NIM-DUP',
+            'full_name' => 'Pendaftar Lain',
+            'email' => 'lain@example.test',
+        ]));
+
+        $this->verifyEmail('pendaftar@example.test');
+        $payload = $this->validPayload($city, ['nim' => 'NIM-DUP']);
+
+        $this->post(route('about.member-activation.store'), $payload)
+            ->assertSessionHasErrors(['nim']);
+    }
+
+    public function test_store_rejects_nim_already_used_by_a_member(): void
+    {
+        $city = $this->sampleCity();
+
+        Member::query()->create([
+            'nim' => 'NIM-MEMBER',
+            'full_name' => 'Anggota Terdaftar',
+            'email' => 'anggota@example.test',
+        ]);
+
+        $this->verifyEmail('pendaftar@example.test');
+        $payload = $this->validPayload($city, ['nim' => 'NIM-MEMBER']);
+
+        $this->post(route('about.member-activation.store'), $payload)
+            ->assertSessionHasErrors(['nim']);
+    }
+
+    public function test_store_rejects_email_already_used_by_a_member(): void
+    {
+        $city = $this->sampleCity();
+
+        Member::query()->create([
+            'nim' => 'NIM-ANGGOTA',
+            'full_name' => 'Anggota Terdaftar',
+            'email' => 'sudah@member.test',
+        ]);
+
+        // Email milik anggota diverifikasi OTP, tetapi tetap ditolak karena sudah jadi anggota.
+        $this->verifyEmail('sudah@member.test');
+        $payload = $this->validPayload($city, ['email' => 'sudah@member.test']);
+
+        $this->post(route('about.member-activation.store'), $payload)
+            ->assertSessionHasErrors(['email']);
+    }
+
+    public function test_store_allows_resubmit_with_same_email_updating_own_record(): void
+    {
+        $city = $this->sampleCity();
+
+        // Pendaftaran pending milik email ini sudah ada (NIM sama dengan payload).
+        MemberActivation::withoutEvents(fn () => MemberActivation::query()->create([
+            'nim' => 'NIM-PUB-1',
+            'full_name' => 'Nama Lama',
+            'email' => 'budi@example.test',
+        ]));
+
+        $this->verifyEmail('budi@example.test');
+        $payload = $this->validPayload($city, [
+            'email' => 'budi@example.test',
+            'full_name' => 'Nama Baru',
+        ]);
+
+        $this->post(route('about.member-activation.store'), $payload)
+            ->assertRedirect(route('about.member-activation.index'))
+            ->assertSessionHas('success');
+
+        // Tetap satu baris untuk email tersebut, dan datanya diperbarui.
+        $this->assertSame(
+            1,
+            MemberActivation::query()->where('email', 'budi@example.test')->count(),
+        );
+        $activation = MemberActivation::query()
+            ->where('email', 'budi@example.test')
+            ->firstOrFail();
+        $this->assertSame('Nama Baru', $activation->full_name);
     }
 }
