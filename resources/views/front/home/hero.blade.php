@@ -21,7 +21,7 @@
     <div class="hero-section-inner container position-relative">
         <div class="row">
             <div class="col-lg-8" data-aos="fade-up" data-aos-duration="1000">
-                <h1 class="display-4 fw-bold mb-3">Pemuda Berdaya. Indonesia Digdaya</h1>
+                <h1 class="display-4 fw-bold mb-3">Pemuda Berdaya,<br>Indonesia Digdaya<br></h1>
                 <p class="lead mb-4">Mari bergabung bersama kami dalam gerakan membangun bangsa melalui kolaborasi,
                     inovasi, dan aksi nyata untuk Indonesia yang lebih baik.</p>
                 <a href="{{ route('about.profil-organisasi') }}" class="btn btn-outline-light rounded-pill px-4 py-2"
