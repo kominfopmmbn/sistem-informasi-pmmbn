@@ -4,6 +4,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CollegeController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MemberActivationController;
@@ -20,9 +21,7 @@ Route::group([
     'middleware' => 'auth',
     'as' => 'dashboard.',
 ], function (): void {
-    Route::get('/', function () {
-        return view('admin.dashboard.index');
-    })->name('index');
+    Route::get('/', [DashboardController::class, 'index'])->name('index');
 });
 
 Route::group([

@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enums\Gender;
+use App\Enums\MemberActivationStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -87,5 +89,23 @@ class MemberActivation extends Model implements HasMedia
     public function member(): HasOne
     {
         return $this->hasOne(Member::class);
+    }
+
+    /**
+     * Batasi ke aktivasi yang status log TERAKHIR-nya (bukan sekadar pernah) = $status.
+     * Cocokkan lewat MAX(id) per member_activation_id.
+     */
+    public function scopeCurrentStatusIs(Builder $query, MemberActivationStatus $status): Builder
+    {
+        return $query->whereIn('id', function ($sub) use ($status): void {
+            $sub->select('member_activation_id')
+                ->from('member_activation_status_logs')
+                ->where('status_id', $status->value)
+                ->whereIn('id', function ($latest): void {
+                    $latest->selectRaw('MAX(id)')
+                        ->from('member_activation_status_logs')
+                        ->groupBy('member_activation_id');
+                });
+        });
     }
 }

@@ -51,16 +51,7 @@ class MemberActivationController extends Controller
 
         if ($status !== null) {
             // Cocokkan status TERAKHIR (log terbaru), bukan sekadar pernah berstatus tsb.
-            $query->whereIn('id', function ($sub) use ($status): void {
-                $sub->select('member_activation_id')
-                    ->from('member_activation_status_logs')
-                    ->where('status_id', $status->value)
-                    ->whereIn('id', function ($latest): void {
-                        $latest->selectRaw('MAX(id)')
-                            ->from('member_activation_status_logs')
-                            ->groupBy('member_activation_id');
-                    });
-            });
+            $query->currentStatusIs($status);
         }
 
         $members = $query->paginate(15)->withQueryString();
