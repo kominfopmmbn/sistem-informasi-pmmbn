@@ -18,22 +18,22 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" href="pages-account-settings-account.html">
+                        <a class="dropdown-item" href="#!">
                             <div class="d-flex">
-                                <div class="flex-shrink-0 me-3">
+                                <div class="shrink-0 me-3">
                                     <div class="avatar avatar-online">
                                         <img src="{{ asset('assets/img/avatars/1.png') }}" alt
                                             class="w-px-40 h-auto rounded-circle" />
                                     </div>
                                 </div>
-                                <div class="flex-grow-1">
+                                <div class="grow">
                                     <h6 class="mb-0">{{ Auth::user()->name }}</h6>
                                     <small class="text-body-secondary">{{ Auth::user()->email }}</small>
                                 </div>
                             </div>
                         </a>
                     </li>
-                    <li>
+                    {{-- <li>
                         <div class="dropdown-divider my-1"></div>
                     </li>
                     <li>
@@ -45,7 +45,7 @@
                         <a class="dropdown-item" href="pages-account-settings-account.html">
                             <i class="icon-base bx bx-cog icon-md me-3"></i><span>Settings</span>
                         </a>
-                    </li>
+                    </li> --}}
                     <li>
                         <div class="dropdown-divider my-1"></div>
                     </li>
