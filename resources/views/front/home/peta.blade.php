@@ -29,7 +29,7 @@
                         </svg>
                     </div>
                     <div>
-                        <div class="fw-bold" style="font-size:0.9rem; margin-bottom:3px;">22 Wilayah</div>
+                        <div class="fw-bold" style="font-size:0.9rem; margin-bottom:3px;">{{ $provinceCount }} Wilayah</div>
                         <div class="text-muted" style="font-size:0.8rem; line-height:1.5;">
                             Sebaran kepengurusan dan anggota di berbagai daerah di Indonesia.
                         </div>
@@ -48,7 +48,7 @@
                         </svg>
                     </div>
                     <div>
-                        <div class="fw-bold" style="font-size:0.9rem; margin-bottom:3px;">Jaringan Kampus Nasional</div>
+                        <div class="fw-bold" style="font-size:0.9rem; margin-bottom:3px;">{{ $collegeCount }} Kampus</div>
                         <div class="text-muted" style="font-size:0.8rem; line-height:1.5;">
                             Anggota berasal dari berbagai perguruan tinggi negeri dan swasta.
                         </div>
@@ -154,83 +154,13 @@
     crossorigin=""></script>
 <script>
 // ================================================
-// DATA KAMPUS - Edit sesuai data kamu
+// DATA KAMPUS - dinamis dari tabel `colleges` (HomePageController)
+// Struktur: { "Nama Provinsi": { center: [lat,lng], campuses: [{name,lat,lng,kota}] } }
 // ================================================
-var campusData = {
-    "Jawa Timur": {
-        center: [-7.536, 112.238],
-        campuses: [
-            { name: "Universitas Airlangga",               lat: -7.2804, lng: 112.7965, kota: "Surabaya", type: "PTN" },
-            { name: "Institut Teknologi Sepuluh Nopember", lat: -7.2816, lng: 112.7951, kota: "Surabaya", type: "PTN" },
-            { name: "Universitas Brawijaya",               lat: -7.9528, lng: 112.6138, kota: "Malang",   type: "PTN" },
-            { name: "Universitas Negeri Malang",           lat: -7.9694, lng: 112.6323, kota: "Malang",   type: "PTN" },
-            { name: "Universitas Jember",                  lat: -8.1670, lng: 113.7003, kota: "Jember",   type: "PTN" },
-            { name: "Universitas Negeri Surabaya",         lat: -7.3581, lng: 112.7381, kota: "Surabaya", type: "PTN" },
-        ]
-    },
-    "Jawa Tengah": {
-        center: [-7.150, 110.140],
-        campuses: [
-            { name: "Universitas Diponegoro",    lat: -7.0515, lng: 110.4381, kota: "Semarang",   type: "PTN" },
-            { name: "Universitas Gadjah Mada",   lat: -7.7717, lng: 110.3774, kota: "Yogyakarta", type: "PTN" },
-            { name: "Universitas Sebelas Maret", lat: -7.5566, lng: 110.8567, kota: "Surakarta",  type: "PTN" },
-        ]
-    },
-    "Jawa Barat": {
-        center: [-6.903, 107.618],
-        campuses: [
-            { name: "Institut Teknologi Bandung",       lat: -6.8915, lng: 107.6107, kota: "Bandung", type: "PTN" },
-            { name: "Universitas Padjadjaran",          lat: -6.9218, lng: 107.7706, kota: "Bandung", type: "PTN" },
-            { name: "Universitas Pendidikan Indonesia", lat: -6.8615, lng: 107.5944, kota: "Bandung", type: "PTN" },
-            { name: "Institut Pertanian Bogor",         lat: -6.5591, lng: 106.7295, kota: "Bogor",   type: "PTN" },
-        ]
-    },
-    "DKI Jakarta": {
-        center: [-6.208, 106.845],
-        campuses: [
-            { name: "Universitas Indonesia",      lat: -6.3612, lng: 106.8268, kota: "Depok",   type: "PTN" },
-            { name: "Universitas Negeri Jakarta", lat: -6.2001, lng: 106.9005, kota: "Jakarta", type: "PTN" },
-            { name: "Universitas Trisakti",       lat: -6.1676, lng: 106.7996, kota: "Jakarta", type: "PTS" },
-            { name: "Bina Nusantara University",  lat: -6.2007, lng: 106.7812, kota: "Jakarta", type: "PTS" },
-        ]
-    },
-    "Kalimantan Timur": {
-        center: [-0.538, 116.419],
-        campuses: [
-            { name: "Universitas Mulawarman",      lat: -0.4646, lng: 117.1481, kota: "Samarinda",  type: "PTN" },
-            { name: "Politeknik Negeri Samarinda", lat: -0.4726, lng: 117.1411, kota: "Samarinda",  type: "PTN" },
-            { name: "Universitas Balikpapan",      lat: -1.2372, lng: 116.8529, kota: "Balikpapan", type: "PTS" },
-        ]
-    },
-    "Sulawesi Selatan": {
-        center: [-5.147, 119.432],
-        campuses: [
-            { name: "Universitas Hasanuddin",      lat: -5.1337, lng: 119.4880, kota: "Makassar", type: "PTN" },
-            { name: "Universitas Negeri Makassar", lat: -5.1499, lng: 119.4328, kota: "Makassar", type: "PTN" },
-            { name: "UIN Alauddin Makassar",       lat: -5.2021, lng: 119.5010, kota: "Makassar", type: "PTN" },
-        ]
-    },
-    "Sumatera Utara": {
-        center: [2.115, 99.545],
-        campuses: [
-            { name: "Universitas Sumatera Utara", lat: 3.5648, lng: 98.6785, kota: "Medan", type: "PTN" },
-            { name: "Universitas Negeri Medan",   lat: 3.5977, lng: 98.7050, kota: "Medan", type: "PTN" },
-        ]
-    },
-    // ================================================
-    // TAMBAHKAN PROVINSI BARU DI SINI:
-    // "Nama Provinsi": {
-    //     center: [LAT, LNG],
-    //     campuses: [
-    //         { name: "Nama Kampus", lat: LAT, lng: LNG, kota: "Kota", type: "PTN" },
-    //     ]
-    // },
-    // ================================================
-};
+var campusData = @json($campusData);
 
 // ================================================
 // ICON PIN SVG (mirip Google Maps)
-// PTN = biru (#2563eb), PTS = ungu (#7c3aed)
 // ================================================
 function buatIconPin(warna) {
     var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="40" viewBox="0 0 28 40">'
@@ -246,8 +176,7 @@ function buatIconPin(warna) {
     });
 }
 
-var iconPTN = buatIconPin('#2563eb');
-var iconPTS = buatIconPin('#7c3aed');
+var iconKampus = buatIconPin('#2563eb');
 
 // ================================================
 // INISIALISASI PETA
@@ -274,13 +203,9 @@ function buatIconProvinsi(nama, jumlah) {
 // POPUP KAMPUS
 // ================================================
 function buatPopupKampus(kampus, provinsi) {
-    var badgeClass = kampus.type === 'PTN' ? 'badge-ptn' : 'badge-pts';
-    var tipeLabel  = kampus.type === 'PTN' ? 'Perguruan Tinggi Negeri' : 'Perguruan Tinggi Swasta';
     return '<div class="popup-head">🏛️ ' + kampus.name + '</div>'
          + '<div class="popup-body">'
          + '<div class="row-info"><span>📍</span><span>' + kampus.kota + ', ' + provinsi + '</span></div>'
-         + '<div class="row-info"><span>🏫</span><span>' + tipeLabel + '</span></div>'
-         + '<span class="popup-badge ' + badgeClass + '">' + kampus.type + '</span>'
          + '</div>';
 }
 
@@ -309,7 +234,7 @@ Object.keys(campusData).forEach(function(provinsi) {
     // --- Marker kampus (pin maps SVG) ---
     data.campuses.forEach(function(kampus) {
         var markerKampus = L.marker([kampus.lat, kampus.lng], {
-            icon: kampus.type === 'PTS' ? iconPTS : iconPTN
+            icon: iconKampus
         });
         markerKampus.bindPopup(buatPopupKampus(kampus, provinsi), { maxWidth: 280 });
         layerKampus.addLayer(markerKampus);

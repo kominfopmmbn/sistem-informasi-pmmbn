@@ -7,15 +7,15 @@
 
         <div class="row g-4">
             <div class="col-6 col-md-4" data-aos="flip-up" data-aos-delay="200">
-                <h1 class="display-4 fw-bold mb-0 stat-number" data-counter-target="22">22</h1>
+                <h1 class="display-4 fw-bold mb-0 stat-number" data-counter-target="{{ $provinceCount }}">{{ $provinceCount }}</h1>
                 <p class="mt-2 text-uppercase small">Provinsi</p>
             </div>
             <div class="col-6 col-md-4" data-aos="flip-up" data-aos-delay="300">
-                <h1 class="display-4 fw-bold mb-0 stat-number" data-counter-target="100">100</h1>
+                <h1 class="display-4 fw-bold mb-0 stat-number" data-counter-target="{{ $cityCount }}">{{ $cityCount }}</h1>
                 <p class="mt-2 text-uppercase small">Kabupaten/Kota</p>
             </div>
             <div class="col-6 col-md-4" data-aos="flip-up" data-aos-delay="400">
-                <h1 class="display-4 fw-bold mb-0 stat-number" data-counter-target="1000" data-counter-suffix="+">1000+</h1>
+                <h1 class="display-4 fw-bold mb-0 stat-number" data-counter-target="{{ $memberCount }}">{{ $memberCount }}</h1>
                 <p class="mt-2 text-uppercase small">Anggota Aktif</p>
             </div>
         </div>

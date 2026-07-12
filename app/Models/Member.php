@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -32,6 +33,14 @@ class Member extends Model implements HasMedia
     use InteractsWithMedia;
     use SoftDeletes;
     use Userstamps;
+
+    /**
+     * Cache jumlah anggota di halaman home. Di-invalidate oleh `booted()` di bawah + forget
+     * post-commit di MemberActivationController@accept. Tulisan yang mem-bypass Eloquent
+     * (seeder, SQL mentah, bulk update/delete) TIDAK memicu invalidasi — jalankan
+     * `php artisan cache:clear` setelahnya (TTL 1 hari = backstop).
+     */
+    public const string HOME_MEMBER_COUNT_CACHE_KEY = 'home.member_count';
 
     /** Koleksi lampiran multi-file di admin anggota. */
     public const SUPPORTING_DOCUMENTS_COLLECTION = 'supporting_documents';
@@ -98,6 +107,15 @@ class Member extends Model implements HasMedia
             'max:'.$maxKb,
             'mimes:'.self::supportingDocumentMimeList(),
         ];
+    }
+
+    protected static function booted(): void
+    {
+        // Cache home hanya menyimpan angka count(), jadi cukup invalidasi saat jumlah baris berubah.
+        $forget = fn () => Cache::forget(self::HOME_MEMBER_COUNT_CACHE_KEY);
+        static::created($forget);   // count +1
+        static::deleted($forget);   // count -1 (soft delete; fire juga saat forceDelete baris aktif)
+        static::restored($forget);  // count +1 lagi
     }
 
     protected function casts(): array
