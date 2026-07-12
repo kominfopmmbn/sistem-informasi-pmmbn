@@ -86,13 +86,31 @@
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
+    <div class="col-12">
+        <label class="form-label" for="college_map_search">Lokasi di peta</label>
+        <div class="position-relative mb-2">
+            <div class="input-group">
+                <input type="text" id="college_map_search" class="form-control"
+                    placeholder="Cari lokasi (nama kampus / alamat) lalu tekan Enter…" autocomplete="off">
+                <button type="button" id="college_map_search_btn" class="btn btn-outline-primary">Cari</button>
+            </div>
+            <ul id="college_map_search_results" class="list-group position-absolute w-100 shadow d-none"
+                style="z-index: 1100; max-height: 220px; overflow-y: auto; background-color: var(--bs-body-bg);"></ul>
+        </div>
+        <div id="college_map" class="border" style="height: 360px; border-radius: .375rem;"></div>
+        <p class="form-text text-body-secondary mb-0">
+            Cari lokasi, klik pada peta, atau geser marker untuk mengisi latitude &amp; longitude.
+        </p>
+    </div>
 </div>
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/leaflet/leaflet.css') }}" />
 @endpush
 
 @push('scripts')
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/leaflet/leaflet.js') }}"></script>
     <script src="{{ asset('assets/js/admin-college-form.js') }}"></script>
 @endpush
