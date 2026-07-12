@@ -15,6 +15,7 @@ use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 use Laravolt\Indonesia\Models\City;
 use Laravolt\Indonesia\Models\Province;
@@ -196,6 +197,28 @@ class MemberActivationAdminTest extends TestCase
             'email' => 'calon@example.test',
             'address' => 'Jl. Kenanga No. 3, Surabaya',
         ]);
+    }
+
+    public function test_accept_invalidates_member_count_cache(): void
+    {
+        Notification::fake();
+
+        /** @var User $user */
+        $user = User::factory()->create();
+        $user->assignRole('Administrator');
+        $this->actingAs($user);
+
+        $activation = MemberActivation::withoutEvents(
+            fn () => MemberActivation::query()->create($this->completeActivationAttributes())
+        );
+
+        Cache::put(Member::HOME_MEMBER_COUNT_CACHE_KEY, 999, now()->addDay());
+
+        $this->patch(route('admin.member-activations.accept', ['member_activation' => $activation]))
+            ->assertRedirect(route('admin.member-activations.index'));
+
+        // Cache count basi harus ter-forget setelah anggota baru dibuat (post-commit di accept()).
+        $this->assertTrue(Cache::missing(Member::HOME_MEMBER_COUNT_CACHE_KEY));
     }
 
     public function test_accept_copies_village_code_to_new_member(): void

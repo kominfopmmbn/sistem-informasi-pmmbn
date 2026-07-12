@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
@@ -285,6 +286,11 @@ class MemberActivationController extends Controller
         );
 
         DB::commit();
+
+        // Invalidasi ulang SETELAH commit: model event `created` sudah forget saat masih
+        // di dalam transaksi, tapi baris Member belum visible ke koneksi lain — read
+        // konkuren di window itu bisa me-repopulate count basi. Forget final di sini menutup race.
+        Cache::forget(Member::HOME_MEMBER_COUNT_CACHE_KEY);
 
         return redirect()
             ->route('admin.member-activations.index')
