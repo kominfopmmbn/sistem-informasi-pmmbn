@@ -10,18 +10,7 @@
 @endphp
 
 <div class="row g-6">
-    <div class="col-12 col-md-4">
-        <label class="form-label" for="region_city_code">Kode</label>
-        <input type="text" name="code" id="region_city_code"
-            class="form-control @error('code') is-invalid @enderror"
-            value="{{ old('code', isset($city) ? $city->code : '') }}" required maxlength="4"
-            pattern="[0-9]{4}" inputmode="numeric" autocomplete="off">
-        <div class="form-text">4 digit numerik.</div>
-        @error('code')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-    <div class="col-12 col-md-8">
+    <div class="col-12">
         <label class="form-label" for="region_city_name">Nama</label>
         <input type="text" name="name" id="region_city_name"
             class="form-control @error('name') is-invalid @enderror"

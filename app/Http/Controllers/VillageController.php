@@ -11,6 +11,7 @@ use App\Models\City;
 use App\Models\District;
 use App\Models\Province;
 use App\Models\Village;
+use App\Support\RegionCode;
 
 class VillageController extends Controller
 {
@@ -90,7 +91,10 @@ class VillageController extends Controller
 
     public function store(StoreVillageRequest $request): RedirectResponse
     {
-        Village::query()->create($this->withTimestamps($request->validated(), true));
+        $data = $request->validated();
+        $data['code'] = RegionCode::nextVillageCode(districtCode: $data['district_code']);
+
+        Village::query()->create($this->withTimestamps($data, true));
 
         return redirect()
             ->route('admin.villages.index')
@@ -110,7 +114,12 @@ class VillageController extends Controller
 
     public function update(UpdateVillageRequest $request, Village $village): RedirectResponse
     {
-        $village->update($this->withTimestamps($request->validated(), false));
+        $data = $request->validated();
+        if ((string) $data['district_code'] !== (string) $village->district_code) {
+            $data['code'] = RegionCode::nextVillageCode(districtCode: $data['district_code']);
+        }
+
+        $village->update($this->withTimestamps($data, false));
 
         return redirect()
             ->route('admin.villages.index')

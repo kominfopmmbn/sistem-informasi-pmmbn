@@ -8,18 +8,7 @@
 @endphp
 
 <div class="row g-6">
-    <div class="col-12 col-md-4">
-        <label class="form-label" for="region_province_code">Kode</label>
-        <input type="text" name="code" id="region_province_code"
-            class="form-control @error('code') is-invalid @enderror"
-            value="{{ old('code', isset($province) ? $province->code : '') }}" required maxlength="2"
-            pattern="[0-9]{2}" inputmode="numeric" autocomplete="off">
-        <div class="form-text">2 digit numerik (contoh: 11 untuk Aceh).</div>
-        @error('code')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-    <div class="col-12 col-md-8">
+    <div class="col-12">
         <label class="form-label" for="region_province_name">Nama</label>
         <input type="text" name="name" id="region_province_name"
             class="form-control @error('name') is-invalid @enderror"

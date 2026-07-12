@@ -14,7 +14,6 @@ class StoreProvinceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => ['required', 'string', 'size:2', 'regex:/^[0-9]{2}$/', 'unique:provinces,code'],
             'name' => ['required', 'string', 'max:255'],
             'meta' => ['nullable', 'json'],
         ];

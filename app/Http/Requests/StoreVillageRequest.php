@@ -14,8 +14,7 @@ class StoreVillageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/', 'unique:villages,code'],
-            'district_code' => ['required', 'string', 'size:7', 'exists:districts,code'],
+            'district_code' => ['required', 'string', 'size:6', 'exists:districts,code'],
             'name' => ['required', 'string', 'max:255'],
             'meta' => ['nullable', 'json'],
         ];

@@ -6,8 +6,10 @@ use App\Http\Requests\StoreCityRequest;
 use App\Http\Requests\UpdateCityRequest;
 use App\Models\City;
 use App\Models\Province;
+use App\Support\RegionCode;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -57,7 +59,10 @@ class CityController extends Controller
 
     public function store(StoreCityRequest $request): RedirectResponse
     {
-        City::query()->create($this->withTimestamps($request->validated(), true));
+        $data = $request->validated();
+        $data['code'] = RegionCode::nextCityCode(provinceCode: $data['province_code']);
+
+        City::query()->create($this->withTimestamps($data, true));
 
         return redirect()
             ->route('admin.cities.index')
@@ -76,7 +81,17 @@ class CityController extends Controller
 
     public function update(UpdateCityRequest $request, City $city): RedirectResponse
     {
-        $city->update($this->withTimestamps($request->validated(), false));
+        $data = $request->validated();
+
+        if ((string) $data['province_code'] !== (string) $city->province_code) {
+            $newCityCode = RegionCode::nextCityCode(provinceCode: $data['province_code']);
+            DB::transaction(function () use ($city, $data, $newCityCode) {
+                $city->update($this->withTimestamps($data, false));
+                RegionCode::recodeCity(city: $city, newCityCode: $newCityCode);
+            });
+        } else {
+            $city->update($this->withTimestamps($data, false));
+        }
 
         return redirect()
             ->route('admin.cities.index')

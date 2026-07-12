@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProvinceRequest;
 use App\Http\Requests\UpdateProvinceRequest;
+use App\Support\RegionCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -40,7 +41,10 @@ class ProvinceController extends Controller
 
     public function store(StoreProvinceRequest $request): RedirectResponse
     {
-        Province::query()->create($this->withTimestamps($request->validated(), true));
+        $data = $request->validated();
+        $data['code'] = RegionCode::nextProvinceCode();
+
+        Province::query()->create($this->withTimestamps($data, true));
 
         return redirect()
             ->route('admin.provinces.index')

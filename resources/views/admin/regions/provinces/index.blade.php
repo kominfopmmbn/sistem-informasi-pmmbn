@@ -36,7 +36,6 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Kode</th>
                         <th>Nama</th>
                         <th class="text-end">Aksi</th>
                     </tr>
@@ -45,7 +44,6 @@
                     @forelse ($provinces as $item)
                         <tr>
                             <td>{{ $provinces->firstItem() + $loop->index }}</td>
-                            <td><code class="text-body">{{ $item->code }}</code></td>
                             <td><span class="fw-medium">{{ $item->name }}</span></td>
                             <td class="text-end">
                                 @can('provinces.update')
@@ -68,7 +66,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-5">Tidak ada data provinsi.</td>
+                            <td colspan="3" class="text-center text-muted py-5">Tidak ada data provinsi.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -7,9 +7,11 @@ use App\Http\Requests\UpdateDistrictRequest;
 use App\Models\District;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use App\Models\City;
 use App\Models\Province;
+use App\Support\RegionCode;
 
 class DistrictController extends Controller
 {
@@ -82,7 +84,10 @@ class DistrictController extends Controller
 
     public function store(StoreDistrictRequest $request): RedirectResponse
     {
-        District::query()->create($this->withTimestamps($request->validated(), true));
+        $data = $request->validated();
+        $data['code'] = RegionCode::nextDistrictCode(cityCode: $data['city_code']);
+
+        District::query()->create($this->withTimestamps($data, true));
 
         return redirect()
             ->route('admin.districts.index')
@@ -102,7 +107,17 @@ class DistrictController extends Controller
 
     public function update(UpdateDistrictRequest $request, District $district): RedirectResponse
     {
-        $district->update($this->withTimestamps($request->validated(), false));
+        $data = $request->validated();
+
+        if ((string) $data['city_code'] !== (string) $district->city_code) {
+            $newDistrictCode = RegionCode::nextDistrictCode(cityCode: $data['city_code']);
+            DB::transaction(function () use ($district, $data, $newDistrictCode) {
+                $district->update($this->withTimestamps($data, false));
+                RegionCode::recodeDistrict(district: $district, newDistrictCode: $newDistrictCode);
+            });
+        } else {
+            $district->update($this->withTimestamps($data, false));
+        }
 
         return redirect()
             ->route('admin.districts.index')

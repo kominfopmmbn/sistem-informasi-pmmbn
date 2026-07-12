@@ -25,18 +25,7 @@
 @endphp
 
 <div class="row g-6">
-    <div class="col-12 col-md-4">
-        <label class="form-label" for="region_district_code">Kode</label>
-        <input type="text" name="code" id="region_district_code"
-            class="form-control @error('code') is-invalid @enderror"
-            value="{{ old('code', isset($district) ? $district->code : '') }}" required maxlength="7"
-            pattern="[0-9]{7}" inputmode="numeric" autocomplete="off">
-        <div class="form-text">7 digit numerik.</div>
-        @error('code')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-    <div class="col-12 col-md-8">
+    <div class="col-12">
         <label class="form-label" for="region_district_name">Nama</label>
         <input type="text" name="name" id="region_district_name"
             class="form-control @error('name') is-invalid @enderror"

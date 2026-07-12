@@ -32,18 +32,7 @@
 @endphp
 
 <div class="row g-6">
-    <div class="col-12 col-md-4">
-        <label class="form-label" for="region_village_code">Kode</label>
-        <input type="text" name="code" id="region_village_code"
-            class="form-control @error('code') is-invalid @enderror"
-            value="{{ old('code', isset($village) ? $village->code : '') }}" required maxlength="10"
-            pattern="[0-9]{10}" inputmode="numeric" autocomplete="off">
-        <div class="form-text">10 digit numerik.</div>
-        @error('code')
-            <div class="invalid-feedback">{{ $message }}</div>
-        @enderror
-    </div>
-    <div class="col-12 col-md-8">
+    <div class="col-12">
         <label class="form-label" for="region_village_name">Nama</label>
         <input type="text" name="name" id="region_village_name"
             class="form-control @error('name') is-invalid @enderror"

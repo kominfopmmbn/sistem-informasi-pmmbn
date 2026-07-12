@@ -88,7 +88,6 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Kode</th>
                         <th>Nama</th>
                         <th>Kecamatan</th>
                         <th>Kota</th>
@@ -100,11 +99,10 @@
                     @forelse ($villages as $item)
                         <tr>
                             <td>{{ $villages->firstItem() + $loop->index }}</td>
-                            <td><code class="text-body">{{ $item->code }}</code></td>
                             <td><span class="fw-medium">{{ $item->name }}</span></td>
-                            <td>{{ $item->district?->name_with_code ?? '—' }}</td>
-                            <td>{{ $item->district?->city?->name_with_code ?? '—' }}</td>
-                            <td>{{ $item->district?->city?->province?->name_with_code ?? '—' }}</td>
+                            <td>{{ $item->district?->name ?? '—' }}</td>
+                            <td>{{ $item->district?->city?->name ?? '—' }}</td>
+                            <td>{{ $item->district?->city?->province?->name ?? '—' }}</td>
                             <td class="text-end">
                                 @can('villages.update')
                                     <a href="{{ route('admin.villages.edit', $item) }}"
@@ -126,7 +124,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-5">Tidak ada data desa/kelurahan.</td>
+                            <td colspan="6" class="text-center text-muted py-5">Tidak ada data desa/kelurahan.</td>
                         </tr>
                     @endforelse
                 </tbody>
