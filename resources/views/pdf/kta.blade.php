@@ -4,6 +4,31 @@
     <meta charset="UTF-8">
     <title>{{ $kta->member->full_name }}</title>
     <style>
+        @font-face {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 400;
+            src: url('{{ $poppinsRegularBase64 }}') format('truetype');
+        }
+
+        /*
+         * dompdf tidak melipat 600 ke bold — 600 adalah subtype tersendiri, dan kalau face-nya
+         * tak terdaftar Poppins malah dilewati ke fallback DejaVu. Jadi face ini wajib ada.
+         */
+        @font-face {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 600;
+            src: url('{{ $poppinsSemiBoldBase64 }}') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 700;
+            src: url('{{ $poppinsBoldBase64 }}') format('truetype');
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -19,8 +44,7 @@
         }
 
         body {
-            font-family: 'DejaVu Sans', sans-serif;
-            background-color: #8b0000;
+            font-family: 'Poppins', 'DejaVu Sans', sans-serif;
             position: relative;
         }
 
@@ -41,78 +65,86 @@
             background-size: cover;
             background-position: center;
             z-index: 0;
+            /*
+             * Radius ditaruh di sini, bukan di .card: elemen inilah yang melukis background-image,
+             * dan dompdf meng-clip background mengikuti border-radius elemen itu sendiri (memotong
+             * anak position:absolute lewat overflow:hidden tidak bisa diandalkan di dompdf).
+             * BG-KTA.png sudah punya sudut transparan bawaan ~4.5mm, jadi nilai di bawah itu tidak
+             * akan terlihat efeknya — PNG-nya yang berkuasa.
+             */
+            border-radius: 5mm;
         }
 
-        /* Kiri: Logo — pakai position absolute */
-        .left-col {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 42%;        /* ← pakai % bukan mm */
-            height: 100%;
-            z-index: 1;
-            padding: 10mm 0 0 8mm;
-        }
-
+        /* Header kiri-atas: logo + nama organisasi */
         .logo {
-            width: 23mm;
-            height: 23mm;
+            position: absolute;
+            top: 9mm;
+            left: 10mm;
+            width: 17mm;
+            height: 17mm;
+            z-index: 1;
         }
 
-        /* Kanan: Konten — mulai dari 72mm */
-        .right-col {
+        .org-name {
             position: absolute;
-            top: 0;
-            left: 32%;         /* ← sama dengan width left-col */
-            width: 60%;        /* ← sisa ruang */
-            height: 100%;
+            top: 10mm;
+            left: 31mm;
+            width: 105mm;
             z-index: 1;
-            padding: 10% 6% 5% 2%;  /* ← tambah padding kanan lebih besar */
-            text-align: right;
+            font-size: 20px;
+            color: #ffffff;
+            line-height: 0.8;
+        }
+
+        /*
+         * Ketiga baris dibungkus satu blok yang di-anchor dari `bottom`, bukan tiga blok
+         * dengan offset masing-masing: nama panjang yang wrap jadi tumbuh ke atas tanpa
+         * menabrak baris daerah/nomor, berapa pun jumlah barisnya.
+         */
+        .member-info {
+            position: absolute;
+            left: 10mm;
+            bottom: 9mm;
+            width: 100mm;
+            z-index: 1;
+            color: #ffffff;
         }
 
         .member-name {
-            font-size: 18pt;           /* ← kecilkan font agar tidak terpotong */
-            font-weight: bold;
-            color: #ffffff;
-            letter-spacing: 0.5px;
-            line-height: 1.1;
-            margin-bottom: 4mm;
-            text-transform: uppercase;
-            word-break: break-word;    /* ← agar nama panjang tidak terpotong */
+            font-size: 20pt;
+            font-weight: 600;
+            line-height: 0.7;
+            word-break: break-word;
             overflow-wrap: break-word;
         }
 
-        .divider {
-            width: 25%;
-            height: 1.5px;
-            background-color: #ffffff;
-            margin-bottom: 3%;
-            margin-left: auto;
-            margin-right: 0;
+        .member-region {
+            font-size: 20pt;
+            font-weight: 600;
+            line-height: 0.7;
         }
 
         .member-id {
-            font-size: 9pt;
-            font-weight: 400;
-            color: #e8a0a0;
-            letter-spacing: 3px;
-            margin-bottom: 5%;
+            font-size: 14pt;
+            line-height: 1;
         }
 
         .qr-wrapper {
-            width: 23%;
-            height: auto;
-            border: 2px solid #ffffff;
-            border-radius: 3mm;
-            overflow: hidden;
-            margin-left: auto;
-            margin-right: 0;
+            position: absolute;
+            right: 10mm;
+            bottom: 9mm;
+            width: 22mm;
+            height: 22mm;
+            z-index: 1;
+            background-color: #ffffff;
+            border-radius: 3.5mm;
+            /* Padding ini yang jadi quiet zone QR — QR-nya sendiri di-generate dengan margin(0). */
+            padding: 2mm;
         }
 
         .qr-wrapper img {
             width: 100%;
-            height: auto;
+            height: 100%;
             display: block;
         }
     </style>
@@ -121,25 +153,27 @@
     <div class="card">
         <div class="bg-layer"></div>
 
-        <!-- Kiri: Logo -->
-        <div class="left-col">
-            @if(isset($logoBase64))
-                <img class="logo" src="{{ $logoBase64 }}" alt="Logo PMMBN">
-            @endif
-        </div>
+        @if(isset($logoBase64))
+            <img class="logo" src="{{ $logoBase64 }}" alt="Logo PMMBN">
+        @endif
 
-        <!-- Kanan: Info anggota -->
-        <div class="right-col">
+        <div class="org-name">Pergerakan Mahasiswa Moderasi<br>Beragama dan Bela Negara</div>
+
+        <div class="member-info">
             <div class="member-name">{{ $kta->member->full_name }}</div>
-            <div class="divider"></div>
-            <div class="member-id">{{ $kta->number }}</div>
 
-            @if(isset($qrBase64))
-                <div class="qr-wrapper">
-                    <img src="{{ $qrBase64 }}" alt="QR Code">
-                </div>
+            @if($regionName)
+                <div class="member-region">{{ $regionName }}</div>
             @endif
+
+            <div class="member-id">{{ $kta->number }}</div>
         </div>
+
+        @if(isset($qrBase64))
+            <div class="qr-wrapper">
+                <img src="{{ $qrBase64 }}" alt="QR Code">
+            </div>
+        @endif
     </div>
 </body>
 </html>
