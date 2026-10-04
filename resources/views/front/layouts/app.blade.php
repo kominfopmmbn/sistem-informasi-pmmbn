@@ -19,6 +19,7 @@
     @include('front.layouts.partials.footer')
 
     @include('front.layouts.partials.scripts')
+    @include('front.layouts.partials.banner-popup')
     @stack('scripts')
 
 </body>
