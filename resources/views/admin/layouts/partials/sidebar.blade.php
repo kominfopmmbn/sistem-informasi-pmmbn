@@ -70,6 +70,15 @@
             </li>
         @endcan
 
+        @can('banners.view')
+            <li class="menu-item {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.banners.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-image"></i>
+                    <div>Banner</div>
+                </a>
+            </li>
+        @endcan
+
         @canany(['members.view', 'member-activations.view'])
             <li class="menu-header small">
                 <span class="menu-header-text" data-i18n="Anggota">Anggota</span>

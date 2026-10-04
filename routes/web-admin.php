@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CollegeController;
 use App\Http\Controllers\DashboardController;
@@ -130,6 +131,13 @@ Route::middleware(['auth'])->group(function (): void {
     Route::delete('programs/{program}/media/{media}', [ProgramController::class, 'destroyGalleryMedia'])
         ->middleware('permission:programs.update')
         ->name('programs.media.destroy');
+
+    Route::resource('banners', BannerController::class)
+        ->except(['show'])
+        ->middlewareFor('index', 'permission:banners.view')
+        ->middlewareFor(['create', 'store'], 'permission:banners.create')
+        ->middlewareFor(['edit', 'update'], 'permission:banners.update')
+        ->middlewareFor('destroy', 'permission:banners.delete');
 
     Route::resource('provinces', ProvinceController::class)
         ->except(['show'])
