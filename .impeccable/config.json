@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "public/assets/js/admin-banner-form.js"
+        ],
+        "createdAt": "2026-10-04T09:18:53.474Z",
+        "reason": "Claude triage: Dropzone previewTemplate <img data-dz-thumbnail>, src set by Dropzone at runtime; same template as admin-program-form.js"
+      }
+    ]
+  }
+}
