@@ -88,7 +88,9 @@ class BannerCrudTest extends TestCase
         $banner = $this->makeBanner();
         $banner->addMedia(UploadedFile::fake()->image('a.jpg'))->toMediaCollection(Banner::IMAGE_COLLECTION);
 
-        $this->get(route('admin.banners.create'))->assertOk()->assertSee('name="image"', false);
+        $this->get(route('admin.banners.create'))->assertOk()
+            ->assertSee('id="banner-image-dropzone"', false)
+            ->assertSee('name="image"', false);
         $this->get(route('admin.banners.edit', $banner))->assertOk()->assertSee('Gambar saat ini');
     }
 

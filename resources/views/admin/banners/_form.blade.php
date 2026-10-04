@@ -7,6 +7,15 @@
     $imageAccept = collect(explode(',', Banner::imageMimeList()))->map(fn ($ext) => '.'.$ext)->implode(',');
 @endphp
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/dropzone/dropzone.css') }}" />
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('assets/vendor/libs/dropzone/dropzone.js') }}"></script>
+    <script src="{{ asset('assets/js/admin-banner-form.js') }}"></script>
+@endpush
+
 @if ($errors->any())
     <div class="alert alert-danger alert-dismissible mb-6" role="alert">
         <ul class="mb-0 ps-3">
@@ -57,12 +66,22 @@
         @enderror
     </div>
     <div class="col-md-8">
-        <label class="form-label" for="image">Gambar banner @if (! $banner)<span class="text-danger">*</span>@endif</label>
-        <input type="file" name="image" id="image" accept="{{ $imageAccept }}"
-            class="form-control @error('image') is-invalid @enderror" @required(! $banner)>
-        <div class="form-text">Format JPG/PNG/WEBP, maks. {{ $imageMaxFileMb }} MB.@if ($banner) Kosongkan bila tidak diganti.@endif</div>
+        <label class="form-label">Gambar banner @if (! $banner)<span class="text-danger">*</span>@endif</label>
+        <input type="file" name="image" id="banner_image" class="d-none" accept="{{ $imageAccept }}">
+        <div id="banner-image-dropzone"
+            class="dropzone needsclick border rounded-3 @error('image') border-danger @enderror"
+            data-max-filesize-mb="{{ $imageMaxFileMb }}" data-accepted-files="{{ $imageAccept }}">
+            <div class="dz-message needsclick text-center py-6">
+                Seret gambar ke sini atau klik untuk memilih
+                <span class="note needsclick d-block small text-body-secondary mt-2">Format JPG/PNG/WEBP, maks.
+                    {{ $imageMaxFileMb }} MB</span>
+            </div>
+        </div>
+        @if ($banner)
+            <div class="form-text">Kosongkan bila tidak diganti.</div>
+        @endif
         @error('image')
-            <div class="invalid-feedback">{{ $message }}</div>
+            <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
     </div>
     @if ($banner?->hasMedia(Banner::IMAGE_COLLECTION))
