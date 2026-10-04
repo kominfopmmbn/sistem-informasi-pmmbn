@@ -90,8 +90,17 @@ class BannerCrudTest extends TestCase
 
         $this->get(route('admin.banners.create'))->assertOk()
             ->assertSee('id="banner-image-dropzone"', false)
-            ->assertSee('name="image"', false);
-        $this->get(route('admin.banners.edit', $banner))->assertOk()->assertSee('Gambar saat ini');
+            ->assertSee('name="image"', false)
+            ->assertSee('form="banner-form"', false)
+            ->assertSee('data-share-base="'.route('home.index').'"', false)
+            ->assertDontSee('Lihat di situs');
+
+        // Edit: gambar tersimpan dipasang ke dropzone, link share siap salin, tombol buka situs.
+        $this->get(route('admin.banners.edit', $banner))->assertOk()
+            ->assertSee('data-existing-url="'.$banner->getFirstMediaUrl(Banner::IMAGE_COLLECTION).'"', false)
+            ->assertSee('data-copy-target="banner-share-url"', false)
+            ->assertSee($banner->shareUrl(), false)
+            ->assertSee('Lihat di situs');
     }
 
     public function test_store_creates_banner_with_image_and_slug_from_title(): void

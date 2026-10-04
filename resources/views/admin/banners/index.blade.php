@@ -93,23 +93,5 @@
 @endsection
 
 @push('scripts')
-    <script>
-        document.querySelectorAll('[data-copy-target]').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                var input = document.getElementById(btn.dataset.copyTarget);
-                var done = function () {
-                    btn.textContent = 'Tersalin';
-                    setTimeout(function () { btn.textContent = 'Salin'; }, 1500);
-                };
-                input.select();
-                // Clipboard API hanya tersedia di HTTPS/localhost; selain itu pakai execCommand.
-                if (navigator.clipboard && window.isSecureContext) {
-                    navigator.clipboard.writeText(input.value).then(done);
-                } else {
-                    document.execCommand('copy');
-                    done();
-                }
-            });
-        });
-    </script>
+    <script src="{{ asset('assets/js/admin-copy.js') }}"></script>
 @endpush

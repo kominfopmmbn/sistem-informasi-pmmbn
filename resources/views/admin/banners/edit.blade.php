@@ -3,25 +3,28 @@
 @section('title', 'Ubah banner')
 
 @section('content')
-    <div class="card mb-6">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Ubah banner</h5>
-            <small class="text-body-secondary d-none d-md-inline text-truncate" style="max-width: 50%">{{ $banner->title }}</small>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+        <div class="min-w-0">
+            <h4 class="mb-1">Ubah banner</h4>
+            <p class="mb-0 text-body-secondary text-truncate">{{ $banner->title }}</p>
         </div>
-        <form action="{{ route('admin.banners.update', $banner) }}" method="POST" enctype="multipart/form-data"
-            class="card-body" novalidate>
-            @csrf
-            @method('PUT')
-            @include('admin.banners._form', ['banner' => $banner])
-
-            <div class="pt-6 d-flex flex-wrap align-items-center gap-2">
-                @can('banners.update')
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                @endcan
-                @can('banners.view')
-                    <a href="{{ route('admin.banners.index') }}" class="btn btn-label-secondary">Batal</a>
-                @endcan
-            </div>
-        </form>
+        <div class="d-flex flex-wrap gap-3">
+            <a href="{{ $banner->shareUrl() }}" target="_blank" rel="noopener" class="btn btn-label-secondary">
+                <i class="icon-base bx bx-link-external me-1"></i> Lihat di situs
+            </a>
+            @can('banners.view')
+                <a href="{{ route('admin.banners.index') }}" class="btn btn-label-secondary">Batal</a>
+            @endcan
+            @can('banners.update')
+                <button type="submit" form="banner-form" class="btn btn-primary">Simpan</button>
+            @endcan
+        </div>
     </div>
+
+    <form id="banner-form" action="{{ route('admin.banners.update', $banner) }}" method="POST"
+        enctype="multipart/form-data" novalidate>
+        @csrf
+        @method('PUT')
+        @include('admin.banners._form', ['banner' => $banner])
+    </form>
 @endsection
