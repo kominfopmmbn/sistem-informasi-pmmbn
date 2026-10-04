@@ -376,4 +376,113 @@ class MemberCrudTest extends TestCase
             ])
             ->assertSessionHasErrors(['supporting_documents']);
     }
+
+    public function test_store_with_manual_kta_number_creates_verified_special_member(): void
+    {
+        $this->actingAsAdministrator();
+
+        $this->post(route('admin.members.store'), [
+            'full_name' => 'Anggota Khusus',
+            'is_special' => 1,
+            'kta_number' => 'KHUSUS-001',
+        ])->assertRedirect(route('admin.members.index'));
+
+        $member = Member::query()->where('full_name', 'Anggota Khusus')->firstOrFail();
+        $this->assertSame('KHUSUS-001', $member->kta->number);
+        $this->assertTrue($member->kta->is_manual);
+        $this->assertSame(0, $member->kta->order_number);
+
+        $this->get(route('admin.members.index', ['verification' => 'verified']))
+            ->assertOk()
+            ->assertSee('Anggota Khusus', false)
+            ->assertSee('Khusus</span>', false);
+    }
+
+    public function test_store_ignores_kta_number_when_special_checkbox_unchecked(): void
+    {
+        $this->actingAsAdministrator();
+
+        $this->post(route('admin.members.store'), [
+            'full_name' => 'Anggota Biasa',
+            'kta_number' => 'TIDAK-DIPAKAI',
+        ])->assertRedirect(route('admin.members.index'));
+
+        $this->assertNull(Member::query()->where('full_name', 'Anggota Biasa')->firstOrFail()->kta);
+    }
+
+    public function test_store_requires_kta_number_when_special_checkbox_checked(): void
+    {
+        $this->actingAsAdministrator();
+
+        $this->post(route('admin.members.store'), [
+            'full_name' => 'Anggota Khusus',
+            'is_special' => 1,
+            'kta_number' => '',
+        ])->assertSessionHasErrors(['kta_number']);
+    }
+
+    public function test_store_rejects_duplicate_kta_number(): void
+    {
+        $this->actingAsAdministrator();
+        $existing = Member::query()->create(['full_name' => 'Pemilik KTA']);
+        Kta::query()->create(['member_id' => $existing->id, 'number' => 'DUP-1', 'is_manual' => true]);
+
+        $this->post(route('admin.members.store'), [
+            'full_name' => 'Peniru',
+            'is_special' => 1,
+            'kta_number' => 'DUP-1',
+        ])->assertSessionHasErrors(['kta_number']);
+    }
+
+    public function test_update_member_without_kta_with_kta_number_creates_manual_kta(): void
+    {
+        $this->actingAsAdministrator();
+        $member = Member::query()->create(['full_name' => 'Belum Ber KTA']);
+
+        $this->put(route('admin.members.update', $member), [
+            'full_name' => 'Belum Ber KTA',
+            'is_special' => 1,
+            'kta_number' => 'KHUSUS-002',
+        ])->assertRedirect(route('admin.members.index'));
+
+        $kta = $member->fresh()->kta;
+        $this->assertSame('KHUSUS-002', $kta->number);
+        $this->assertTrue($kta->is_manual);
+    }
+
+    public function test_update_special_member_can_change_kta_number(): void
+    {
+        $this->actingAsAdministrator();
+        $member = Member::query()->create(['full_name' => 'Anggota Khusus']);
+        Kta::query()->create(['member_id' => $member->id, 'number' => 'KHUSUS-003', 'is_manual' => true]);
+
+        $this->put(route('admin.members.update', $member), [
+            'full_name' => 'Anggota Khusus',
+            'is_special' => 1,
+            'kta_number' => 'KHUSUS-004',
+        ])->assertRedirect(route('admin.members.index'));
+
+        $this->assertSame('KHUSUS-004', $member->fresh()->kta->number);
+    }
+
+    public function test_update_cannot_change_auto_generated_kta_number(): void
+    {
+        $this->actingAsAdministrator();
+        $member = Member::query()->create(['full_name' => 'Anggota Reguler']);
+        $kta = Kta::query()->create(['member_id' => $member->id]);
+
+        $this->get(route('admin.members.edit', $member))
+            ->assertOk()
+            ->assertSee('Nomor KTA otomatis tidak dapat diubah.', false);
+
+        $this->put(route('admin.members.update', $member), [
+            'full_name' => 'Anggota Reguler',
+            'is_special' => 1,
+            'kta_number' => 'COBA-UBAH',
+        ])->assertRedirect(route('admin.members.index'));
+
+        $fresh = $kta->fresh();
+        $this->assertSame($kta->number, $fresh->number);
+        $this->assertFalse($fresh->is_manual);
+    }
 }

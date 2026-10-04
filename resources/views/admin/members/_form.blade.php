@@ -204,6 +204,38 @@
         @enderror
     </div>
 
+    @php
+        $kta = isset($member) ? $member->kta : null;
+        $ktaLocked = $kta !== null && ! $kta->is_manual;
+        $isSpecial = (bool) old('is_special', $kta?->is_manual);
+    @endphp
+    @if ($ktaLocked)
+        <div class="col-12 col-md-6">
+            <label class="form-label" for="member_kta_number">Nomor KTA</label>
+            <input type="text" id="member_kta_number" class="form-control" value="{{ $kta->number }}" disabled>
+            <div class="form-text">Nomor KTA otomatis tidak dapat diubah.</div>
+        </div>
+    @else
+        <div class="col-12">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="is_special" value="1" id="member_is_special"
+                    @checked($isSpecial)>
+                <label class="form-check-label" for="member_is_special">Anggota khusus (input nomor KTA manual)</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 @unless ($isSpecial) d-none @endunless" id="member_kta_number_wrapper">
+            <label class="form-label" for="member_kta_number">Nomor KTA</label>
+            <input type="text" name="kta_number" id="member_kta_number"
+                class="form-control @error('kta_number') is-invalid @enderror"
+                value="{{ old('kta_number', $kta?->number) }}" maxlength="255" autocomplete="off"
+                placeholder="Masukkan nomor KTA">
+            @error('kta_number')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+            <div class="form-text">Anggota khusus langsung berstatus terverifikasi.</div>
+        </div>
+    @endif
+
     <div class="col-12">
         <label class="form-label" for="member_address">Alamat</label>
         <textarea name="address" id="member_address" rows="3"

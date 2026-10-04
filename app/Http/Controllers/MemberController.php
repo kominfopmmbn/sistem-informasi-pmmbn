@@ -61,6 +61,7 @@ class MemberController extends Controller
     public function store(StoreMemberRequest $request): RedirectResponse
     {
         $member = Member::query()->create($request->validatedPersistable());
+        $this->syncManualKta(member: $member, ktaNumber: $request->validated('kta_number'));
         $this->attachSupportingDocumentsFromRequest($request, $member);
 
         return redirect()
@@ -75,6 +76,7 @@ class MemberController extends Controller
             'village.district.city.province',
             'college.city',
             'college.province',
+            'kta',
             'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
         ]);
         $provinces = Province::query()->orderBy('name', 'asc')->get();
@@ -85,6 +87,7 @@ class MemberController extends Controller
     public function update(UpdateMemberRequest $request, Member $member): RedirectResponse
     {
         $member->update($request->validatedPersistable());
+        $this->syncManualKta(member: $member, ktaNumber: $request->validated('kta_number'));
         $this->attachSupportingDocumentsFromRequest($request, $member);
 
         return redirect()
@@ -99,6 +102,20 @@ class MemberController extends Controller
         return redirect()
             ->route('admin.members.index')
             ->with('success', 'Anggota berhasil dihapus.');
+    }
+
+    /** Nomor KTA manual = anggota khusus (langsung terverifikasi). KTA otomatis tidak bisa diubah. */
+    private function syncManualKta(Member $member, ?string $ktaNumber = null): void
+    {
+        // Kosong / nomor sama = tidak berubah (mengosongkan field tidak menghapus KTA).
+        if ($ktaNumber === null || $ktaNumber === $member->kta?->number) {
+            return;
+        }
+        if ($member->kta !== null && ! $member->kta->is_manual) {
+            return;
+        }
+
+        $member->kta()->updateOrCreate([], ['number' => $ktaNumber, 'is_manual' => true]);
     }
 
     /** Hapus satu lampiran koleksi pendukung (hanya milik anggota ini). */

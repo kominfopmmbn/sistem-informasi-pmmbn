@@ -74,6 +74,9 @@
                             <td>
                                 @if ($item->kta)
                                     <span class="badge bg-label-success">Sudah Verifikasi</span>
+                                    @if ($item->kta->is_manual)
+                                        <span class="badge bg-label-info">Khusus</span>
+                                    @endif
                                     <a href="{{ route('kta.show', ['ktaNumber' => $item->kta->number]) }}" target="_blank" class="btn btn-sm btn-icon btn-text-secondary" title="Lihat KTA">
                                         <i class="icon-base bx bx-file"></i>
                                     </a>

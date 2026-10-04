@@ -23,6 +23,11 @@ var memberSupportingPreviewTemplate = `<div class="dz-preview dz-file-preview">
 $(function () {
   const $form = $('#member-form');
 
+  // Checkbox "Anggota khusus" memunculkan input nomor KTA manual (hanya ada di form master anggota).
+  $('#member_is_special').on('change', function () {
+    $('#member_kta_number_wrapper').toggleClass('d-none', !this.checked);
+  });
+
   if (typeof $.fn.select2 !== 'undefined') {
     const $gender = $('#member_gender_id');
     if ($gender.length) {

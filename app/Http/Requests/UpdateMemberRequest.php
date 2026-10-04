@@ -59,6 +59,15 @@ class UpdateMemberRequest extends FormRequest
             'village_code' => ['nullable', 'string', 'size:10', 'exists:villages,code'],
             'college_id' => ['nullable', 'integer', 'exists:colleges,id'],
             'regional_leader_id' => ['nullable', 'integer', 'exists:regional_leaders,id'],
+            'is_special' => ['nullable', 'boolean'],
+            // Nomor KTA hanya dipakai bila checkbox "Anggota khusus" dicentang.
+            'kta_number' => [
+                'exclude_unless:is_special,1',
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('kta', 'number')->ignore($record instanceof Member ? $record->kta?->getKey() : null),
+            ],
             'supporting_documents' => ['nullable', 'array', 'max:'.Member::SUPPORTING_DOCUMENTS_MAX_PER_SUBMIT],
             'supporting_documents.*' => Member::supportingDocumentItemRules(),
         ];
@@ -112,6 +121,6 @@ class UpdateMemberRequest extends FormRequest
 
     public function validatedPersistable(): array
     {
-        return Arr::except($this->validator->validated(), ['supporting_documents']);
+        return Arr::except($this->validator->validated(), ['supporting_documents', 'is_special', 'kta_number']);
     }
 }

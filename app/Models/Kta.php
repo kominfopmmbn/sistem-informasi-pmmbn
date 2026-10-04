@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Mattiverse\Userstamps\Traits\Userstamps;
 
-#[Fillable(['member_id', 'order_number', 'number'])]
+#[Fillable(['member_id', 'order_number', 'number', 'is_manual'])]
 class Kta extends Model
 {
     use Userstamps;
@@ -19,12 +19,18 @@ class Kta extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'is_manual' => 'boolean',
     ];
 
     protected static function boot()
     {
         parent::boot();
         self::creating(function (self $model) {
+            // Nomor manual (anggota khusus) tidak memakai urutan tahunan; order_number 0 tak memengaruhi max.
+            if ($model->is_manual) {
+                $model->order_number = 0;
+                return;
+            }
             try {
                 $model->order_number = $model->generateOrderNumber($model);
                 $model->number = $model->generateNumber($model);
