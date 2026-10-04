@@ -76,8 +76,7 @@ Route::middleware(['auth'])->group(function (): void {
         ->middlewareFor('destroy', 'permission:roles.delete');
 
     Route::resource('members', MemberController::class)
-        ->except(['show'])
-        ->middlewareFor('index', 'permission:members.view')
+        ->middlewareFor(['index', 'show'], 'permission:members.view')
         ->middlewareFor(['create', 'store'], 'permission:members.create')
         ->middlewareFor(['edit', 'update'], 'permission:members.update')
         ->middlewareFor('destroy', 'permission:members.delete');

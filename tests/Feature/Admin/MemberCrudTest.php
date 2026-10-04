@@ -131,6 +131,57 @@ class MemberCrudTest extends TestCase
             ->assertSee('12345', false);
     }
 
+    public function test_guest_is_redirected_from_members_show_to_admin_login(): void
+    {
+        $member = Member::query()->create(['full_name' => 'Anggota Tes']);
+
+        $this->get(route('admin.members.show', $member))
+            ->assertRedirect(route('admin.auth.login'));
+    }
+
+    public function test_show_forbidden_without_members_view_permission(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $member = Member::query()->create(['full_name' => 'Anggota Tes']);
+
+        $this->get(route('admin.members.show', $member))->assertForbidden();
+    }
+
+    public function test_show_renders_member_detail(): void
+    {
+        $this->actingAsAdministrator();
+        $member = Member::query()->create([
+            'nim' => '12345',
+            'full_name' => 'Anggota Tes',
+            'email' => 'anggota@example.test',
+        ]);
+        $member->kta()->create(['number' => 'KHUSUS-777', 'is_manual' => true]);
+
+        $this->get(route('admin.members.show', $member))->assertOk()
+            ->assertViewIs('admin.members.show')
+            ->assertSee('Anggota Tes', false)
+            ->assertSee('12345', false)
+            ->assertSee('anggota@example.test', false)
+            ->assertSee('KHUSUS-777', false)
+            ->assertSee('Dokumen pendukung.', false);
+    }
+
+    public function test_show_lists_supporting_documents_and_missing_fields(): void
+    {
+        Storage::fake(config('media-library.disk_name'));
+        $this->actingAsAdministrator();
+        $member = Member::query()->create(['full_name' => 'Anggota Berkas']);
+        $member->addMedia(UploadedFile::fake()->create('ijazah.pdf', 120, 'application/pdf'))
+            ->toMediaCollection(Member::SUPPORTING_DOCUMENTS_COLLECTION);
+
+        $this->get(route('admin.members.show', $member))->assertOk()
+            ->assertSee('ijazah.pdf', false)
+            ->assertSee('KTA belum terbit', false)
+            ->assertSee('10 data belum diisi', false);
+    }
+
     public function test_index_filters_by_verification_status(): void
     {
         $this->actingAsAdministrator();

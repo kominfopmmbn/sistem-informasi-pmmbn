@@ -69,6 +69,21 @@ class MemberController extends Controller
             ->with('success', 'Anggota berhasil ditambahkan.');
     }
 
+    public function show(Member $member): View
+    {
+        $member->load([
+            'placeOfBirthCity',
+            'village.district.city.province',
+            'college.city',
+            'college.province',
+            'regionalLeader',
+            'kta',
+            'media' => fn ($q) => $q->where('collection_name', Member::SUPPORTING_DOCUMENTS_COLLECTION),
+        ]);
+
+        return view('admin.members.show', compact('member'));
+    }
+
     public function edit(Member $member): View
     {
         $member->load([

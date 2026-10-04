@@ -85,6 +85,12 @@
                                 @endif
                             </td>
                             <td class="text-end">
+                                @can('members.view')
+                                    <a href="{{ route('admin.members.show', $item) }}"
+                                        class="btn btn-sm btn-icon btn-text-secondary" title="Detail">
+                                        <i class="icon-base bx bx-show"></i>
+                                    </a>
+                                @endcan
                                 @can('members.update')
                                     <a href="{{ route('admin.members.edit', $item) }}"
                                         class="btn btn-sm btn-icon btn-text-secondary" title="Edit">

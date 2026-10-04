@@ -49,7 +49,7 @@ class KtaController extends Controller
         $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrCode);
 
         if($request->input('type') == 'view') {
-            return view('pdf.kta', compact('kta', 'regionName', 'bgKtaBase64', 'logoBase64', 'qrBase64', 'poppinsRegularBase64', 'poppinsSemiBoldBase64', 'poppinsBoldBase64'));
+            return view('pdf.kta', compact('kta', 'regionName', 'bgKtaBase64', 'logoBase64', 'qrBase64', 'poppinsRegularBase64', 'poppinsSemiBoldBase64', 'poppinsBoldBase64') + ['isWebView' => true]);
         }
 
         return pdf()

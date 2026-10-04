@@ -148,6 +148,14 @@
             display: block;
         }
     </style>
+    @if ($isWebView ?? false)
+        {{-- line-height < 1 di atas adalah kompensasi dompdf; di browser bikin baris bertumpuk, jadi dinormalkan di tampilan web saja. --}}
+        <style>
+            .org-name { line-height: 1.1; }
+            .member-name, .member-region { line-height: 1.1; }
+            .member-id { line-height: 1.3; margin-top: 1mm; }
+        </style>
+    @endif
 </head>
 <body>
     <div class="card">

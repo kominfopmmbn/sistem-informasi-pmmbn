@@ -40,6 +40,17 @@ class KtaShowTest extends TestCase
         $response->assertDontSee('<div class="member-region">', false);
     }
 
+    public function test_web_view_normalizes_line_height_for_browser(): void
+    {
+        $member = Member::query()->create(['full_name' => 'Tampilan Web']);
+        $kta = $member->kta()->create(['member_id' => $member->id]);
+
+        $this->get(route('kta.show', ['ktaNumber' => $kta->number]).'?type=view')
+            ->assertOk()
+            ->assertViewHas('isWebView', true)
+            ->assertSee('.member-name, .member-region { line-height: 1.1; }', false);
+    }
+
     public function test_unknown_number_returns_404(): void
     {
         $this->get(route('kta.show', ['ktaNumber' => '9999999999']))->assertNotFound();
