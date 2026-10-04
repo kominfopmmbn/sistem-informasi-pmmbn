@@ -29,7 +29,7 @@
                                 @if ($banner->link_url)
                                     @php($isExternal = parse_url($banner->link_url, PHP_URL_HOST) !== request()->getHost())
                                     <div class="text-center mt-3">
-                                        <a href="{{ $banner->link_url }}" class="btn btn-custom"
+                                        <a href="{{ $banner->link_url }}" class="btn btn-brand"
                                             @if ($isExternal) target="_blank" rel="noopener" @endif>Daftar Sekarang</a>
                                     </div>
                                 @endif
@@ -61,7 +61,8 @@
             if (el.dataset.forced !== '1' && seen) {
                 return;
             }
-            el.addEventListener('hidden.bs.modal', function () {
+            // Tandai saat tampil, bukan saat ditutup: klik link internal pindah halaman tanpa menutup modal.
+            el.addEventListener('shown.bs.modal', function () {
                 try { sessionStorage.setItem(key, '1'); } catch (e) {}
             });
             bootstrap.Modal.getOrCreateInstance(el).show();

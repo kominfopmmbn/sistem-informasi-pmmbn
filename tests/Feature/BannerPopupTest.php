@@ -44,6 +44,28 @@ class BannerPopupTest extends TestCase
             ->assertSee('Daftar Sekarang');
     }
 
+    public function test_popup_button_uses_global_brand_style(): void
+    {
+        // `.btn-custom` hanya ber-style di dalam `.page-card-member`; popup tampil di semua halaman.
+        $this->makeBanner();
+
+        $html = $this->get(route('home.index'))->assertOk()->getContent();
+        $popup = substr($html, strpos($html, 'id="bannerPopup"'));
+
+        $this->assertStringContainsString('class="btn btn-brand"', $popup);
+        $this->assertStringNotContainsString('btn-custom', $popup);
+    }
+
+    public function test_seen_flag_is_set_when_popup_opens_not_on_close(): void
+    {
+        // Klik link internal memicu navigasi tanpa menutup modal; flag harus sudah tersimpan saat tampil.
+        $this->makeBanner();
+
+        $this->get(route('home.index'))
+            ->assertSee("shown.bs.modal", false)
+            ->assertDontSee("hidden.bs.modal", false);
+    }
+
     public function test_banner_without_link_has_no_button(): void
     {
         $this->makeBanner(['link_url' => null]);
