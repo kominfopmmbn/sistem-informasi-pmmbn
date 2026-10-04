@@ -10,16 +10,6 @@
                 </div>
                 <div id="bannerPopupCarousel" class="carousel slide"
                     @if ($hasMultiple) data-bs-ride="carousel" @endif>
-                    @if ($hasMultiple)
-                        <div class="carousel-indicators">
-                            @foreach ($banners as $banner)
-                                <button type="button" data-bs-target="#bannerPopupCarousel"
-                                    data-bs-slide-to="{{ $loop->index }}" @class(['active' => $loop->first])
-                                    @if ($loop->first) aria-current="true" @endif
-                                    aria-label="Banner {{ $loop->iteration }}"></button>
-                            @endforeach
-                        </div>
-                    @endif
                     <div class="carousel-inner">
                         @foreach ($banners as $banner)
                             <div @class(['carousel-item', 'active' => $loop->first]) data-banner-slug="{{ $banner->slug }}">
@@ -37,16 +27,27 @@
                         @endforeach
                     </div>
                     @if ($hasMultiple)
-                        <button class="carousel-control-prev" type="button" data-bs-target="#bannerPopupCarousel"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Sebelumnya</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#bannerPopupCarousel"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Berikutnya</span>
-                        </button>
+                        {{-- Navigasi di bawah slide (bukan overlay) agar tidak menutupi gambar maupun tombol "Daftar Sekarang". --}}
+                        <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+                            <button class="carousel-control-prev position-static w-auto px-2" type="button"
+                                data-bs-target="#bannerPopupCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Sebelumnya</span>
+                            </button>
+                            <div class="carousel-indicators position-static m-0">
+                                @foreach ($banners as $banner)
+                                    <button type="button" data-bs-target="#bannerPopupCarousel"
+                                        data-bs-slide-to="{{ $loop->index }}" @class(['active' => $loop->first])
+                                        @if ($loop->first) aria-current="true" @endif
+                                        aria-label="Banner {{ $loop->iteration }}"></button>
+                                @endforeach
+                            </div>
+                            <button class="carousel-control-next position-static w-auto px-2" type="button"
+                                data-bs-target="#bannerPopupCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Berikutnya</span>
+                            </button>
+                        </div>
                     @endif
                 </div>
             </div>

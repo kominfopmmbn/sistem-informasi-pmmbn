@@ -94,6 +94,22 @@ class BannerPopupTest extends TestCase
             ->assertSeeInOrder(['data-banner-slug="pertama"', 'data-banner-slug="kedua"'], false);
     }
 
+    public function test_multiple_banners_render_navigation_below_slides(): void
+    {
+        // Panah & indikator bawaan Bootstrap berupa overlay absolut yang menutupi gambar lebar dan tombol
+        // "Daftar Sekarang"; harus mengalir dalam satu baris di bawah slide.
+        $this->makeBanner(['slug' => 'pertama']);
+        $this->makeBanner(['slug' => 'kedua']);
+
+        $this->get(route('home.index'))
+            ->assertSeeInOrder([
+                'class="carousel-inner"',
+                'class="carousel-control-prev position-static',
+                'class="carousel-indicators position-static',
+                'class="carousel-control-next position-static',
+            ], false);
+    }
+
     public function test_banner_param_moves_banner_first_and_forces_popup(): void
     {
         $this->makeBanner(['slug' => 'pertama', 'sort_order' => 1]);
