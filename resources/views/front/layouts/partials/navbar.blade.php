@@ -4,8 +4,8 @@
         <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="{{ asset('assets/img/logo/pmmbn.png') }}" alt="Logo" width="40" height="40"
                 class="d-inline-block align-text-top me-2">
-            <span class="fw-bold fs-6 text-wrap" style="max-width: 200px; line-height: 1.2;">Pergerakan Mahasiswa
-                Moderasi dan Bela Negara </span>
+            <span class="fw-bold fs-6 text-wrap" style="max-width: 300px; line-height: 1.2;">Pergerakan Mahasiswa
+                <br>Moderasi Beragama dan Bela Negara </br></span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

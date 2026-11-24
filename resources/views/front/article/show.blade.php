@@ -27,7 +27,11 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="row">
-                    <div class="col-md-2 col-lg-1 mb-4" data-aos="fade-right" data-aos-duration="600" data-aos-delay="300">
+                    <div class="col-md-9 pe-lg-5" data-aos="fade-up" data-aos-duration="600" data-aos-delay="400">
+                        <div class="article-content">
+                            {!! $article->content !!}
+                        </div>
+
                         <div class="share-sidebar">
                             <span class="fw-bold d-block mb-3" style="font-size: 0.9rem;">Share</span>
                             <div class="share-icons">
@@ -37,10 +41,6 @@
                                 <a href="#"><i class="bi bi-whatsapp"></i></a>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-md-7 col-lg-8 article-content pe-lg-5" data-aos="fade-up" data-aos-duration="600" data-aos-delay="400">
-                        {!! $article->content !!}
                     </div>
 
                     <div class="col-md-3 col-lg-3 mt-5 mt-md-0" data-aos="fade-left" data-aos-duration="600" data-aos-delay="300">
